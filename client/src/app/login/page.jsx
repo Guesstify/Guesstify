@@ -4,7 +4,7 @@ import React from "react";
 
 function index(props) {
   const handleClick = () => {
-    console.log("clicked");
+    window.location.href = 'http://localhost:8000/login';
   };
 
   return (
@@ -12,9 +12,9 @@ function index(props) {
       <header>
         <title>Login</title>
       </header>
-      <body>
+      <div>
         <button onClick={handleClick}>Click me</button>
-      </body>
+      </div>
     </>
   );
 }
