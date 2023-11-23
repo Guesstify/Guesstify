@@ -12,6 +12,7 @@ from authentication.spotify_token_cookie import set_cookie
 from authentication.spotify_token_cookie import parse_token_query
 from starlette.middleware.cors import CORSMiddleware as CORSMiddleware
 from pydantic import BaseModel
+from starlette.responses import HTMLResponse
 
 app = FastAPI()
 load_dotenv('../.env.local')
@@ -43,6 +44,8 @@ async def get_cookie(request: Request):
 # Token data model
 class TokenData(BaseModel):
     token: str
+
+
 @app.post("/set-cookie")
 async def set_cookie(response: Response, token_data: TokenData):
     token = token_data.token
@@ -86,7 +89,7 @@ async def login():
 
 
 @app.get("/login/callback")
-async def callback(response: Response, code: str = None, state: str = None):
+async def callback(code: str = None, state: str = None):
     # Check if state is present
     if state is None:
         raise HTTPException(status_code=400, detail="state_mismatch")
@@ -113,29 +116,6 @@ async def callback(response: Response, code: str = None, state: str = None):
             'grant_type': 'authorization_code'
         }
 
-        # # Make the request to get the token
-        # async with httpx.AsyncClient() as client:
-        #     response = await client.post(token_url, headers=headers, data=payload)
-
-        #     # Check if the response is successful
-        #     if response.status_code == 200:
-        #         # Redirect to your frontend with the token information
-        #         token_data = response.json()
-
-        #         # Convert the token data to a query string
-        #         token_query = urllib.parse.urlencode(token_data)
-        #         # Redirect to your frontend with the token data
-
-        #         frontend_redirect_url = f'http://localhost:3000/callback?{token_query}'
-        #         print(token_query)
-        #         token_info_json = parse_token_query(token_query)
-        #         response.set_cookie(key='spotify_token', value=token_info_json, samesite='None', secure=True)
-
-        #         return RedirectResponse(url=frontend_redirect_url)
-        #     else:
-        #         # Handle error response
-        #         raise HTTPException(
-        #             status_code=response.status_code, detail="Failed to retrieve token")
         async with httpx.AsyncClient() as client:
             token_response = await client.post(token_url, headers=headers, data=payload)
 
@@ -145,7 +125,10 @@ async def callback(response: Response, code: str = None, state: str = None):
 
                 # Redirect URL for your frontend
                 frontend_redirect_url = f'http://localhost:3000/game?token={token_query}'
-                return RedirectResponse(url=frontend_redirect_url)
+                response = RedirectResponse(url=frontend_redirect_url)
+                response.set_cookie(key='spotify_token', value=token_data['access_token'],
+                                    httponly=True, samesite='Lax')
+                return response
             else:
                 raise HTTPException(
                     status_code=token_response.status_code, detail="Failed to retrieve token")

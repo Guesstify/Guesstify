@@ -36,7 +36,7 @@ const Callback = () => {
 
     // Extracts the token
     setTokenAuth(token.slice(13));
-    setSpotifyCookie(token.slice(13));
+    // setSpotifyCookie(token.slice(13));
   }, []);
 
 
