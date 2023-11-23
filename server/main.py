@@ -85,9 +85,10 @@ async def callback(code: str = None, state: str = None):
 
                 # Convert the token data to a query string
                 token_query = urllib.parse.urlencode(token_data)
-                print("PENIS COCK LOVER", token_query)
                 # Redirect to your frontend with the token data
+                
                 frontend_redirect_url = f'http://localhost:3000/callback?{token_query}'
+                print(token_query)
                 return RedirectResponse(url=frontend_redirect_url)
             else:
                 # Handle error response
