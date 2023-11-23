@@ -13,7 +13,6 @@ from authentication.spotify_token_cookie import parse_token_query
 from starlette.middleware.cors import CORSMiddleware as CORSMiddleware
 from pydantic import BaseModel
 
-
 app = FastAPI()
 load_dotenv('../.env.local')
 client_id = os.getenv('SPOTIFY_CLIENT_ID')
@@ -87,7 +86,7 @@ async def login():
 
 
 @app.get("/login/callback")
-async def callback(request: Request, response: Response, code: str = None, state: str = None):
+async def callback(response: Response, code: str = None, state: str = None):
     # Check if state is present
     if state is None:
         raise HTTPException(status_code=400, detail="state_mismatch")
@@ -146,7 +145,6 @@ async def callback(request: Request, response: Response, code: str = None, state
 
                 # Redirect URL for your frontend
                 frontend_redirect_url = f'http://localhost:3000/game?token={token_query}'
-                print(token_query)
                 return RedirectResponse(url=frontend_redirect_url)
             else:
                 raise HTTPException(
