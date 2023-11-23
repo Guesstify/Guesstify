@@ -1,6 +1,6 @@
 from typing import Union
 from starlette.responses import RedirectResponse
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Response, HTTPException
 import secrets
 import urllib.parse
 from dotenv import load_dotenv
@@ -8,12 +8,48 @@ import os
 import base64
 import httpx
 import json
+from authentication.spotify_token_cookie import set_cookie
+from authentication.spotify_token_cookie import parse_token_query
+from starlette.middleware.cors import CORSMiddleware as CORSMiddleware
+from pydantic import BaseModel
 
 app = FastAPI()
 load_dotenv('../.env.local')
 client_id = os.getenv('SPOTIFY_CLIENT_ID')
 client_secret = os.getenv('SPOTIFY_SECRET_KEY')
 redirect_uri = 'http://localhost:8000/login/callback'
+
+
+# CORS middleware to allow requests from the frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
+
+
+@app.get("/get-cookie")
+async def get_cookie(request: Request):
+    token = request.cookies.get('spotify_token')
+    print(token)
+    if token:
+        return token
+    else:
+        raise HTTPException(status_code=400, detail="No cookie")
+
+
+# Token data model
+class TokenData(BaseModel):
+    token: str
+@app.post("/set-cookie")
+async def set_cookie(response: Response, token_data: TokenData):
+    token = token_data.token
+    print(token)
+    """Sets the Spotify token cookie."""
+    response.set_cookie(key='spotify_token', value=token,
+                        httponly=True, samesite='None', secure=True)
 
 
 @app.get("/")
@@ -24,6 +60,7 @@ def read_root():
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
+
 
 @app.get("/login")
 async def login():
@@ -47,8 +84,9 @@ async def login():
 
     return RedirectResponse(url=auth_url)
 
+
 @app.get("/login/callback")
-async def callback(code: str = None, state: str = None):
+async def callback(response: Response, code: str = None, state: str = None):
     # Check if state is present
     if state is None:
         raise HTTPException(status_code=400, detail="state_mismatch")
@@ -56,7 +94,8 @@ async def callback(code: str = None, state: str = None):
     # Check if the authorization code is present
     if code:
         # Encode the client ID and secret to Base64 for the Authorization header
-        auth_header = base64.b64encode(f'{client_id}:{client_secret}'.encode()).decode()
+        auth_header = base64.b64encode(
+            f'{client_id}:{client_secret}'.encode()).decode()
 
         # Spotify token endpoint
         token_url = 'https://accounts.spotify.com/api/token'
@@ -74,24 +113,44 @@ async def callback(code: str = None, state: str = None):
             'grant_type': 'authorization_code'
         }
 
-        # Make the request to get the token
+        # # Make the request to get the token
+        # async with httpx.AsyncClient() as client:
+        #     response = await client.post(token_url, headers=headers, data=payload)
+
+        #     # Check if the response is successful
+        #     if response.status_code == 200:
+        #         # Redirect to your frontend with the token information
+        #         token_data = response.json()
+
+        #         # Convert the token data to a query string
+        #         token_query = urllib.parse.urlencode(token_data)
+        #         # Redirect to your frontend with the token data
+
+        #         frontend_redirect_url = f'http://localhost:3000/callback?{token_query}'
+        #         print(token_query)
+        #         token_info_json = parse_token_query(token_query)
+        #         response.set_cookie(key='spotify_token', value=token_info_json, samesite='None', secure=True)
+
+        #         return RedirectResponse(url=frontend_redirect_url)
+        #     else:
+        #         # Handle error response
+        #         raise HTTPException(
+        #             status_code=response.status_code, detail="Failed to retrieve token")
         async with httpx.AsyncClient() as client:
-            response = await client.post(token_url, headers=headers, data=payload)
+            token_response = await client.post(token_url, headers=headers, data=payload)
 
-            # Check if the response is successful
-            if response.status_code == 200:
-                # Redirect to your frontend with the token information
-                token_data = response.json()
-
-                # Convert the token data to a query string
+            if token_response.status_code == 200:
+                token_data = token_response.json()
                 token_query = urllib.parse.urlencode(token_data)
-                print("PENIS COCK LOVER", token_query)
-                # Redirect to your frontend with the token data
-                frontend_redirect_url = f'http://localhost:3000/callback?{token_query}'
+
+                # Redirect URL for your frontend
+                frontend_redirect_url = f'http://localhost:3000/game?token={token_query}'
                 return RedirectResponse(url=frontend_redirect_url)
             else:
-                # Handle error response
-                raise HTTPException(status_code=response.status_code, detail="Failed to retrieve token")
+                raise HTTPException(
+                    status_code=token_response.status_code, detail="Failed to retrieve token")
+
+        raise HTTPException(status_code=400, detail="Invalid request")
 
     # Handle cases where code is not present
     raise HTTPException(status_code=400, detail="Invalid request")
