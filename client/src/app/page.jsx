@@ -1,7 +1,8 @@
 'use client'
 
 import React from 'react'
-import Link from 'next/link'
+import Header from './header'
+
 export default function Home() {
 
   const handleClick = () => {
@@ -14,6 +15,7 @@ export default function Home() {
         <title>Guesstify</title>
       </header>
       <div>
+        <div><Header /></div>
         <h1>
           Hello World
         </h1>

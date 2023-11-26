@@ -1,59 +1,35 @@
-'use client'
+"use client";
 
-import React, { useEffect, useState } from 'react';
-const Callback = () => {
-  const [tokenAuth, setTokenAuth] = useState(null);
+import React, { useEffect, useState } from "react";
 
-  async function setSpotifyCookie(accessToken) {
-    fetch('http://localhost:8000/set-cookie', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include', // Don't forget to specify this if you need cookies
-      body: JSON.stringify({
-        token: accessToken
-      })
-    })
-    .then(response => {
-      if (response.ok) {
-        return response.json(); // or response.text() if the response is not in JSON format
-      } else {
-        throw new Error('Network response was not ok.');
-      }
-    })
-    .catch(error => console.error('There has been a problem with your fetch operation:', error));
-    
-  }
-    
-  
+const About = () => {
+  const [userInfo, setUserInfo] = useState(null);
+
+  // fetch user info
   useEffect(() => {
-    // Use URLSearchParams to parse query parameters
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
-    // Set the authData state to the paramsData object
+    const user_info_url = "http://localhost:8000/user_info";
+    const requestOptions = {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include", // For including cookies in the request
+    };
 
-    // Extracts the token
-    setTokenAuth(token.slice(13));
-    // setSpotifyCookie(token.slice(13));
+    // Missing fetch call added here
+    fetch(user_info_url, requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        setUserInfo(data);
+        console.log(data);
+      })
+      .catch((error) => console.error("Error:", error));
   }, []);
 
-
   return (
-    <div>
-      {tokenAuth ? (
-        <div>
-          {/* Display or use the auth data */}
-          <p>Authenticated</p>
-          {/* Displaying the JSON data in a preformatted text for clarity */}
-          <pre>{JSON.stringify(tokenAuth, null, 2)}</pre>
-        </div>
-      ) : (
-        <p>Waiting for authentication...</p>
-      )}
-    </div>
+    <>
+      <h1>Welcome</h1>
+      {userInfo && <div>{userInfo.display_name}</div>}
+    </>
   );
 };
 
-export default Callback;
+export default About;

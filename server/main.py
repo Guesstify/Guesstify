@@ -123,7 +123,7 @@ async def callback(code: str = None, state: str = None):
                 token_data = token_response.json()
                 token_query = urllib.parse.urlencode(token_data)
 
-                # Redirect URL for your frontend
+                # Redirect URL for your frontend, must return cookie as part of the response
                 frontend_redirect_url = f'http://localhost:3000/game?token={token_query}'
                 response = RedirectResponse(url=frontend_redirect_url)
                 response.set_cookie(key='spotify_token', value=token_data['access_token'],
@@ -137,6 +137,30 @@ async def callback(code: str = None, state: str = None):
 
     # Handle cases where code is not present
     raise HTTPException(status_code=400, detail="Invalid request")
+
+
+@app.get("/user_info")
+async def user_info(request: Request):
+    token = request.cookies.get('spotify_token')
+    if token:
+
+        # User info endpoint URL and Authorization Header
+        user_info_url = 'https://api.spotify.com/v1/me'
+        user_info_header = {
+            'Authorization': f'Bearer {token}'
+        }
+        async with httpx.AsyncClient() as client:
+            
+            # Get user info by sending a GET request to the user info endpoint on Spotify
+            user_info_response = await client.get(user_info_url, headers=user_info_header)
+            if user_info_response.status_code == 200:
+                return user_info_response.json()
+            else:
+                raise HTTPException(
+                    status_code=user_info_response.status_code, detail="Failed to retrieve user info")
+    else:
+        raise HTTPException(status_code=400, detail="No cookie")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
