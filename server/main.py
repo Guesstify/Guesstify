@@ -33,6 +33,7 @@ app.add_middleware(
 
 @app.get("/get-cookie")
 async def get_cookie(request: Request):
+    """Gets the Spotify token cookie."""
     token = request.cookies.get('spotify_token')
     print(token)
     if token:
@@ -48,21 +49,17 @@ class TokenData(BaseModel):
 
 @app.post("/set-cookie")
 async def set_cookie(response: Response, token_data: TokenData):
+    """Sets the Spotify token cookie."""
     token = token_data.token
     print(token)
     """Sets the Spotify token cookie."""
     response.set_cookie(key='spotify_token', value=token,
                         httponly=True, samesite='None', secure=True)
 
-
-@app.get("/")
-def read_root():
-    return {"Hello": client_id}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.post("/delete-cookie")
+async def delete_cookie(response: Response):
+    """Deletes the Spotify token cookie."""
+    response.delete_cookie(key='spotify_token')
 
 
 @app.get("/login")
@@ -72,7 +69,7 @@ async def login():
     # Generate a random string for the state parameter
     state = secrets.token_urlsafe(16)
 
-    app_permissions = 'user-read-private user-read-email'
+    app_permissions = 'user-read-private user-read-email user-top-read user-modify-playback-state user-library-read'
 
     query_params = {
         "response_type": "code",
@@ -150,7 +147,7 @@ async def user_info(request: Request):
             'Authorization': f'Bearer {token}'
         }
         async with httpx.AsyncClient() as client:
-            
+
             # Get user info by sending a GET request to the user info endpoint on Spotify
             user_info_response = await client.get(user_info_url, headers=user_info_header)
             if user_info_response.status_code == 200:
@@ -158,6 +155,35 @@ async def user_info(request: Request):
             else:
                 raise HTTPException(
                     status_code=user_info_response.status_code, detail="Failed to retrieve user info")
+    else:
+        raise HTTPException(status_code=400, detail="No cookie")
+
+# Get user's top 50 tracks, included limit and offset parameters to make it easily customizable on front end
+
+
+@app.get("/user_top_50_tracks")
+async def user_top_50_tracks(request: Request, limit: int = 50, offset: int = 5):
+    """Gets the user's top 50 tracks."""
+    token = request.cookies.get('spotify_token')
+    if token:
+        url = 'https://api.spotify.com/v1/me/top/tracks'
+        headers = {
+            'Authorization': f'Bearer {token}'
+        }
+        params = {
+            'time_range': 'short_term',
+            'limit': limit,
+            'offset': offset
+        }
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, headers=headers, params=params)
+
+            if response.status_code != 200:
+                raise HTTPException(
+                    status_code=response.status_code, detail=response.json())
+
+            return response.json()
     else:
         raise HTTPException(status_code=400, detail="No cookie")
 
