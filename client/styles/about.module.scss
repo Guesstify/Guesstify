@@ -6,6 +6,9 @@ $color-text: rgb(255, 255, 255);
 .title {
   color: $color-primary;
   font-weight: $title-weight;
+  text-shadow: 0 0 10px rgba(0, 153, 95, 0.7), 
+               0 0 20px rgba(0, 153, 95, 0.5), 
+               0 0 30px rgba(0, 153, 95, 0.3);
 }
 .color-background {
   background-color: $color-background;

@@ -1,7 +1,25 @@
-$color-primary: rgb(0, 153, 95);
+$color-primary: rgb(0, 255, 229);
 $color-background: rgb(0, 0, 0);
-
-.title {
-  color: $color-primary;
+$title-weight: 1000;
+$title-size: 10rem;
+@mixin text-glow($color) {
+  text-shadow: 0 0 5px rgba($color, 0.3),
+               0 0 5px rgba($color, 0.5),
+               0 0 5px rgba($color, 0.3);
 }
 
+.title {
+  color: $color-primary; // Or any other color of your choice
+  font-weight: $title-weight;
+  font-size: $title-size;
+  @include text-glow(rgb(255, 255, 255)); // RGB color
+}
+
+.container {
+  background-color: $color-background;
+  height: 100vh;
+  width: 100vw;
+  h2 {
+    color: white;
+  }
+}

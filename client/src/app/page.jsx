@@ -13,9 +13,9 @@ export default function Home() {
       <header>
         <title>Guesstify</title>
       </header>
-      <div>
-        <p className={style.title}>Guesstify</p>
+      <div className={style.container}>
         <Link href="/about">About</Link>
+        <p className={style.title}>Guesstify</p>
         <h2>Welcome to Guesstify</h2>
         <button onClick={handleClick}>Login</button>
       </div>
