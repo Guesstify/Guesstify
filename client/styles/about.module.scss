@@ -1,0 +1,12 @@
+$color-primary: rgb(0, 153, 95);
+$color-background: rgb(0, 0, 0);
+$title-weight: 1000;
+$color-text: rgb(255, 255, 255);
+
+.title {
+  color: $color-primary;
+  font-weight: $title-weight;
+}
+.color-background {
+  background-color: $color-background;
+}

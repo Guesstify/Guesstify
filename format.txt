@@ -1,0 +1,14 @@
+JSON RESPONSE FOR TOP 100 TRACKS
+1. Introduce a rank componenent
+{
+    "user":"name"
+    "data":[
+        {
+            "track_name" : "name of track",
+            "rank" : "1...N",
+            "snippet" : "Link for 30 second playback",
+            "album_cover" : "Probably a link",
+            "artist" : "artist link",
+        }
+    ]
+}

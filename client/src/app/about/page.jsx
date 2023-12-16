@@ -1,11 +1,11 @@
-'use client'
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
-
+"use client";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import style from "../../../styles/about.module.scss";
 const About = () => {
   return (
     <div>
-        <p>Made by Brian Lee and Dev Kunjadia</p>
+      <p className={style.title}>Made by Brian Lee and Dev Kunjadia</p>
     </div>
   );
 };
