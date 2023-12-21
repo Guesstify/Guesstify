@@ -1,25 +1,137 @@
 $color-primary: rgb(0, 255, 229);
 $color-background: rgb(0, 0, 0);
-$title-weight: 1000;
-$title-size: 10rem;
+$primary-font: "Calibri";
+$primary-cursive: "Calibri", cursive;
+
+$title-weight: 800;
+$title-size-large: 10rem;
+
 @mixin text-glow($color) {
-  text-shadow: 0 0 5px rgba($color, 0.3),
-               0 0 5px rgba($color, 0.5),
-               0 0 5px rgba($color, 0.3);
+  text-shadow: 0 0 2px rgba($color, 0.3), 0 0 5px rgba($color, 0.5),
+    0 0 5px rgba($color, 0.3);
+}
+
+@mixin glow-bounce($color) {
+  text-shadow: 0 0 15px rgba($color, 0.3), 0 0 5px rgba($color, 0.5),
+    0 0 5px rgba($color, 0.3);
 }
 
 .title {
-  color: $color-primary; // Or any other color of your choice
-  font-weight: $title-weight;
-  font-size: $title-size;
-  @include text-glow(rgb(255, 255, 255)); // RGB color
+  color: $color-primary;
+  font-weight: $title-weight; // Corrected to use $title-weight
+  font-size: $title-size-large;
+  font-family: $primary-cursive; // Corrected to use $primary-font
+  animation: titleFadeInFromLeft 2s ease-out forwards;
 }
 
 .container {
   background-color: $color-background;
+  font-family: $primary-font;
   height: 100vh;
   width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
   h2 {
     color: white;
+    margin: 10px 0;
   }
+
+  a,
+  .title,
+  button {
+    margin: 10px 0;
+  }
+}
+
+@media only screen and (min-device-width: 320px) and (max-device-width: 568px) {
+  .title {
+    font-size: 4rem;
+    color: $color-primary;
+    font-weight: $title-weight;
+  }
+  // other styles...
+}
+
+@keyframes titleFadeInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    @include text-glow(
+      $color-primary
+    ); // Modified to use the variable $color-primary
+  }
+}
+
+/* Marquee Styling */
+.scrolling_text {
+  color: white;
+  font-size: 2em;
+  padding: 1em 0.5em 0 0.5em;
+
+}
+.marquee {
+  width: 90%;
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+  animation: marquee 15s linear infinite;
+}
+
+/* CSS */
+.spotify_login_button {
+  appearance: none;
+  background-color: #2ea44f;
+  border: 1px solid rgba(27, 31, 35, .15);
+  border-radius: 20px;
+  box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 6px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.spotify_login_button:focus:not(:focus-visible):not(.focus-visible) {
+  box-shadow: none;
+  outline: none;
+}
+
+.spotify_login_button:hover {
+  background-color: #2c974b;
+}
+
+.spotify_login_button:focus {
+  box-shadow: rgba(46, 164, 79, .4) 0 0 0 3px;
+  outline: none;
+}
+
+.spotify_login_button:disabled {
+  background-color: #94d3a2;
+  border-color: rgba(27, 31, 35, .1);
+  color: rgba(255, 255, 255, .8);
+  cursor: default;
+}
+
+.spotify_login_button:active {
+  background-color: #298e46;
+  box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
 }
