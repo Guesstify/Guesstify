@@ -4,6 +4,7 @@ from fastapi.responses import RedirectResponse
 from fastapi import FastAPI
 import secrets
 import urllib.parse
+import sys
 from dotenv import load_dotenv
 import os
 import base64
@@ -15,12 +16,29 @@ from starlette.middleware.cors import CORSMiddleware as CORSMiddleware
 from pydantic import BaseModel
 from starlette.responses import HTMLResponse
 import utilities
+import os
 
 app = FastAPI()
 load_dotenv("../.env.local")
 client_id = os.getenv("SPOTIFY_CLIENT_ID")
 client_secret = os.getenv("SPOTIFY_SECRET_KEY")
 redirect_uri = "http://localhost:8000/login/callback"
+
+
+# MongoDB CODE
+from pymongo.mongo_client import MongoClient
+
+MONGO_DB_USER = os.getenv("MONGO_DB_USER")
+MONGO_DB_PASSWORD = os.getenv("MONGO_DB_PASSWORD")
+uri = f"mongodb+srv://{MONGO_DB_USER}:{MONGO_DB_PASSWORD}@primary.okiuys9.mongodb.net/?retryWrites=true&w=majority"
+# Create a new client and connect to the server
+client = MongoClient(uri)
+# Send a ping to confirm a successful connection
+try:
+    client.admin.command("ping")
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
 
 
 # CORS middleware to allow requests from the frontend
@@ -190,7 +208,7 @@ async def user_top_tracks(request: Request, limit: int = 100, offset: int = 5):
                 raise HTTPException(
                     status_code=response.status_code, detail=response.json()
                 )
-                        
+
             return utilities.form_list(response.json())
     else:
         raise HTTPException(status_code=400, detail="No cookie")

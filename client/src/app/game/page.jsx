@@ -60,7 +60,6 @@ const TrackList = () => {
         endGame();
       }
     } else if (trackSide === "right") {
-      //trackSide === "right"
       if (rightTrack.rank < leftTrack.rank) {
         setScore(score + 1);
       } else {
