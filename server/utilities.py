@@ -1,6 +1,6 @@
 import os
 import json
-
+import random
 
 def form_list(response):
     rank = 1
@@ -15,6 +15,7 @@ def form_list(response):
         item_data["album_cover"] = item["album"]["images"][0]["url"]
         item_data["artist"] = item["artists"][0]["name"]
         data_list.append(item_data)
+    random.shuffle(data_list)
     return data_list
 
 
