@@ -9,6 +9,11 @@ const TrackList = () => {
   const [ready, setReady] = useState("loading");
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
+  const [userInfo, setUserInfo] = useState({});
+  const [gameInfo, setGameInfo] = useState({});
+  const [leftStreak, setLeftStreak] = useState(0);
+  const [rightStreak, setRightStreak] = useState(0);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -23,12 +28,40 @@ const TrackList = () => {
 
         const data = await response.json();
         setTracks(data);
+        setGameInfo((prevGameInfo) => {
+          return {
+            ...prevGameInfo,
+            tracks: data,
+          };
+        });
         setReady("ready");
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching game data:", error);
+      }
+      try {
+        const user_info_url = "http://localhost:8000/user_info";
+        const requestOptions = {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include", // For including cookies in the request
+        };
+        // Missing fetch call added here
+        fetch(user_info_url, requestOptions)
+          .then((response) => response.json())
+          .then((data) => {
+            setUserInfo(data);
+            setGameInfo((prevGameInfo) => {
+              return {
+                ...prevGameInfo,
+                userName: data.display_name,
+              };
+            });
+          })
+          .catch((error) => console.error("Error:", error));
+      } catch (error) {
+        console.error("Error fetching user data:", error);
       }
     };
-
     fetchData();
   }, []);
 
@@ -37,6 +70,20 @@ const TrackList = () => {
     getTrack(setLeftTrack, "none");
     getTrack(setRightTrack, "none");
   }, [ready]);
+
+  // code to keep track of streak counters
+  useEffect(() => {
+    console.log("left streak: ", leftStreak);
+    console.log("right streak: ", rightStreak);
+    if (leftStreak % 3 === 0) {
+      console.log("entering left streak");
+      getTrack(setLeftTrack, "none");
+    }
+    if (rightStreak % 3 === 0) {
+      console.log("entering right streak");
+      getTrack(setRightTrack, "none");
+    }
+  }, [score]); // Dependency array
 
   // Helper function to get a cookie by name
   const getCookie = (name) => {
@@ -47,23 +94,57 @@ const TrackList = () => {
     return foundCookie ? foundCookie.split("=")[1] : null;
   };
 
-  const endGame = () => {
-    setGameOver(true);
-  };
+  //Adjust game score when final score changes
+  useEffect(() => {
+    // This useEffect will run every time 'score' changes
+    setGameInfo((prevGameInfo) => ({
+      ...prevGameInfo,
+      gameScore: score,
+    }));
+  }, [score]);
 
   const getTrack = (setter, trackSide) => {
-    console.log(trackSide);
     if (trackSide === "left") {
       if (leftTrack.rank < rightTrack.rank) {
         setScore(score + 1);
+        setLeftStreak((prevStreak) => prevStreak + 1);
+        setRightStreak(0);
       } else {
-        endGame();
+        console.log(
+          "left track name: ",
+          leftTrack.track_name,
+          "right track name: ",
+          rightTrack.track_name
+        );
+        console.log(
+          "left track rank: ",
+          leftTrack.rank,
+          "right track rank: ",
+          rightTrack.rank
+        );
+        console.log("entry1: game over");
+        setGameOver(true);
       }
     } else if (trackSide === "right") {
       if (rightTrack.rank < leftTrack.rank) {
+        setRightStreak((prevStreak) => prevStreak + 1);
+        setLeftStreak(0);
         setScore(score + 1);
       } else {
-        endGame();
+        console.log(
+          "left track name: ",
+          leftTrack.track_name,
+          "right track name: ",
+          rightTrack.track_name
+        );
+        console.log(
+          "left track rank: ",
+          leftTrack.rank,
+          "right track rank: ",
+          rightTrack.rank
+        );
+        console.log("entry2: game over");
+        setGameOver(true);
       }
     }
     setTracks((prevTracks) => {
@@ -87,6 +168,8 @@ const TrackList = () => {
 
   return (
     <>
+      <h1 className={style.title}>Hello {userInfo.display_name}</h1>
+      {score >= 3 && <p>🔥YOU ARE ON A STREAK🔥</p>}
       <p>Score: {score}</p>
       {gameOver && <p>Game Over!</p>}
       {leftTrack && !gameOver && (

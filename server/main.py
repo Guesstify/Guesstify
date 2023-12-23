@@ -4,7 +4,6 @@ from fastapi.responses import RedirectResponse
 from fastapi import FastAPI
 import secrets
 import urllib.parse
-import sys
 from dotenv import load_dotenv
 import os
 import base64
@@ -14,7 +13,6 @@ from authentication.spotify_token_cookie import set_cookie
 from authentication.spotify_token_cookie import parse_token_query
 from starlette.middleware.cors import CORSMiddleware as CORSMiddleware
 from pydantic import BaseModel
-from starlette.responses import HTMLResponse
 import utilities
 import os
 
@@ -213,7 +211,10 @@ async def user_top_tracks(request: Request, limit: int = 100, offset: int = 5):
     else:
         raise HTTPException(status_code=400, detail="No cookie")
 
-
+@app.post("/store_game")
+def store_game(request: Request):
+    pass
+    
 if __name__ == "__main__":
     import uvicorn
 

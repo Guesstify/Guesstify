@@ -30,7 +30,7 @@ const About = () => {
   // Handling function for clicking the "Start Game" button
   const handleGlobal = () => {
     // Perform actions when the "Start Game" button is clicked
-    console.log("Default mode clicked");
+    // console.log("Entering Game");
     router.push("/game/");
   };
 
