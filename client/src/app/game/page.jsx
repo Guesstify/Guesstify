@@ -143,37 +143,52 @@ const TrackList = () => {
 
   return (
     <>
-      <h1 className={style.title}>Hello {userInfo.display_name}</h1>
-      {score >= 3 && <p>🔥YOU ARE ON A STREAK🔥</p>}
-      <p>Score: {score}</p>
-      {gameOver && <p>Game Over!</p>}
-      {leftTrack && !gameOver && (
-        <div>
-          <p>Which song does THE_USER listen to more?</p>
-          <div className={style.container}>
-            <div className="leftTrack">
-              <p>{`Rank ${leftTrack.rank}: ${leftTrack.track_name} by ${leftTrack.artist}`}</p>
-              <img
-                src={leftTrack.album_cover}
-                alt={`Album cover for ${leftTrack.track_name}`}
-                onClick={() => getTrack(setRightTrack, "left")}
-              />
+      <div className={style.container}>
+        <h1 className={style.title}>Guesstify</h1>
+        {score >= 3 ? (
+          <p className={style.score}>🔥Score: {score}🔥</p>
+        ) : (
+          <p className={style.score}>Score: {score}</p>
+        )}
+        {gameOver && <p className={style.score}>Game Over!</p>}
+        {leftTrack && !gameOver && (
+          <div>
+            <h2 className={style.title_question}>
+              Which song have you listened to more?
+            </h2>
+            <div className={style.track_selectors}>
+              <div className={style.parentOfSong}>
+                <img
+                  className={style.image}
+                  src={leftTrack.album_cover}
+                  alt={`Album cover for ${leftTrack.track_name}`}
+                  onClick={() => getTrack(setRightTrack, "left")}
+                />
+                <p
+                  className={style.track_names}
+                >{`${leftTrack.track_name} by ${leftTrack.artist}`}</p>
+              </div>
+              <div className={style.parentOfSong}>
+                <img
+                  className={style.image}
+                  src={rightTrack.album_cover}
+                  alt={`Album cover for ${rightTrack.track_name}`}
+                  // We set the opposite track side here because the one we pick stay
+                  onClick={() => {
+                    getTrack(setLeftTrack, "right");
+                  }}
+                />
+                <p
+                  className={style.track_names}
+                >{`${rightTrack.track_name} by ${rightTrack.artist}`}</p>
+              </div>
             </div>
-            <div className="rightTrack">
-              <p>{`Rank ${rightTrack.rank}: ${rightTrack.track_name} by ${rightTrack.artist}`}</p>
-              <img
-                src={rightTrack.album_cover}
-                alt={`Album cover for ${rightTrack.track_name}`}
-                // We set the opposite track side here because the one we pick stay
-                onClick={() => {
-                  getTrack(setLeftTrack, "right");
-                }}
-              />
+            <div className={style.track_player}>
+              <AudioPlayer src={newTrack.snippet} />
             </div>
           </div>
-          <AudioPlayer src={newTrack.snippet} />
-        </div>
-      )}
+        )}
+      </div>
     </>
   );
 };
