@@ -73,14 +73,14 @@ const TrackList = () => {
 
   // code to keep track of streak counters
   useEffect(() => {
-    console.log("left streak: ", leftStreak);
-    console.log("right streak: ", rightStreak);
-    if (leftStreak % 3 === 0) {
+    if (leftStreak === 3) {
       console.log("entering left streak");
+      setLeftStreak(0);
       getTrack(setLeftTrack, "none");
     }
-    if (rightStreak % 3 === 0) {
+    if (rightStreak >= 3 && rightStreak % 3 === 0) {
       console.log("entering right streak");
+      setRightStreak(0);
       getTrack(setRightTrack, "none");
     }
   }, [score]); // Dependency array
@@ -110,19 +110,6 @@ const TrackList = () => {
         setLeftStreak((prevStreak) => prevStreak + 1);
         setRightStreak(0);
       } else {
-        console.log(
-          "left track name: ",
-          leftTrack.track_name,
-          "right track name: ",
-          rightTrack.track_name
-        );
-        console.log(
-          "left track rank: ",
-          leftTrack.rank,
-          "right track rank: ",
-          rightTrack.rank
-        );
-        console.log("entry1: game over");
         setGameOver(true);
       }
     } else if (trackSide === "right") {
@@ -131,22 +118,10 @@ const TrackList = () => {
         setLeftStreak(0);
         setScore(score + 1);
       } else {
-        console.log(
-          "left track name: ",
-          leftTrack.track_name,
-          "right track name: ",
-          rightTrack.track_name
-        );
-        console.log(
-          "left track rank: ",
-          leftTrack.rank,
-          "right track rank: ",
-          rightTrack.rank
-        );
-        console.log("entry2: game over");
         setGameOver(true);
       }
     }
+    console.log(tracks.length);
     setTracks((prevTracks) => {
       if (Array.isArray(prevTracks) && prevTracks.length > 0) {
         const [nextTrack, ...remainingTracks] = prevTracks;
@@ -190,7 +165,9 @@ const TrackList = () => {
                 src={rightTrack.album_cover}
                 alt={`Album cover for ${rightTrack.track_name}`}
                 // We set the opposite track side here because the one we pick stay
-                onClick={() => getTrack(setLeftTrack, "right")}
+                onClick={() => {
+                  getTrack(setLeftTrack, "right");
+                }}
               />
             </div>
           </div>

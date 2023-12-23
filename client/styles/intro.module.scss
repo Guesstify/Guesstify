@@ -1,37 +1,23 @@
-@import "./variables.module";
+$color-primary: rgb(0, 218, 7);
+$color-shadow: #ffffff;
+$color-background: rgb(25, 20, 20);
+$button-color: rgb(214, 214, 214);
+$primary-font: "Calibri";
+$primary-cursive: "Calibri", cursive;
+$title-weight: 800;
+$title-size-large: 600%;
 
 .title {
-  margin-top: 10px;
+  margin-top: 0%;
   color: $color-primary;
   font-weight: $title-weight; // Corrected to use $title-weight
   font-size: $title-size-large;
   font-family: $primary-cursive; // Corrected to use $primary-font
   animation: titleFadeInFromLeft 2s ease-out forwards;
-  text-align: center;
-}
-
-.container {
-  margin-bottom: -5px;
-  margin-top: -35px;
-  background-color: $color-background;
-  font-family: $primary-font;
-  height: 110vh;
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  h2 {
-    color: white;
-    margin: 10px 0;
-  }
-
-  a,
-  .title,
-  button {
-    margin: 10px 0;
-  }
+  text-align: center; /* Horizontally centers the text */
+  justify-content: center; /* Horizontally centers the container's content */
+  margin-bottom: 10px; /* Reduce the bottom margin */
+  animation: titleFadeInFromLeft 2s ease-out forwards;
 }
 
 @keyframes titleFadeInFromLeft {
@@ -44,23 +30,31 @@
     transform: translateX(0);
   }
 }
+.container {
+  background-color: $color-background;
+  font-family: $primary-font;
+  height: 100vh;
+  width: 100vw;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
-/* Marquee Styling */
-.scrolling_text {
+.summary {
   color: white;
-  font-size: 2em;
-  padding: 1em 0.5em 0 0.5em;
-}
-.marquee {
-  width: 90%;
-  overflow: hidden;
-  white-space: nowrap;
-  box-sizing: border-box;
-  animation: marquee 15s linear infinite;
+  font-size: 250%;
+  width: 75%;
+  text-align: center; /* Horizontally centers the text */
+  display: flex;
+  justify-content: center; /* Horizontally centers the container's content */
+  align-items: center; /* Vertically centers the container's content */
+  margin-bottom: 10px; /* Reduce the bottom margin */
+  padding-bottom: 10px; /* Reduce the bottom padding */
 }
 
-/* CSS for login button*/
-.spotify_login_button {
+.game_button {
   appearance: none;
   background-color: $button-color;
   border: 1px solid rgba(27, 31, 35, 0.15);
@@ -72,67 +66,52 @@
   display: inline-block;
   font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial,
     sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-  font-size: $web_button_size;
+  font-size: 400%;
   font-weight: 600;
   line-height: 20px;
-  padding: 20px 20px 20px 20px;
-  position: relative;
+  margin-top: 30px;
+  padding: 20px 20px 30px 20px;
   text-align: center;
   text-decoration: none;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-  vertical-align: middle;
-  white-space: nowrap;
   transition: background-color 0.5s ease; /* Add this line */
 }
 
-.spotify_login_button:focus:not(:focus-visible):not(.focus-visible) {
+.game_button:focus:not(:focus-visible):not(.focus-visible) {
   box-shadow: none;
   outline: none;
   color: rgb(0, 0, 0);
 }
 
-.spotify_login_button:hover {
+.game_button:hover {
   background-color: rgb(255, 255, 255);
   color: rgb(0, 0, 0);
 }
 
-.spotify_login_button:focus {
+.game_button:focus {
   box-shadow: rgba(46, 164, 79, 0.4) 0 0 0 3px;
   outline: none;
 }
 
-.spotify_login_button:disabled {
+.game_button:disabled {
   background-color: $color-primary;
   border-color: rgba(27, 31, 35, 0.1);
   color: rgb(0, 0, 0);
   cursor: default;
 }
 
-.spotify_login_button:active {
+.game_button:active {
   background-color: $color-primary;
   box-shadow: rgba(20, 70, 32, 0.2) 0 1px 0 inset;
   color: rgb(64, 64, 64);
 }
 
 @media only screen and (min-device-width: 320px) and (max-device-width: 568px) {
-  .title {
-    font-size: 6.5rem;
-    color: $color-primary;
-    font-weight: $title-weight;
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  .spotify_login_button {
-    margin-top: 30px;
-    font-size: 1.8rem;
-    padding-top: 15px;
-    padding-bottom: 15px;
-  }
-  .container {
-    margin-bottom: 0px;
-    margin-top: 0px;
-    height: 100vh;
+  .summary {
+    width: 100%;
+    margin-left: 80%;
+    margin-right: 80%;
   }
 }

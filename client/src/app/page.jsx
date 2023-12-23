@@ -25,11 +25,9 @@ export default function Home() {
       </header>
       <div className={style.container}>
         <p className={style.title}>Guesstify</p>
-        <h2>Test your taste :D</h2>
         <button className={style.spotify_login_button} onClick={handleClick}>
-          Login With Spotify
+          Login with Spotify
         </button>
-        <Link href="/about">About</Link>
         <div className={style.marquee}>
           <Marquee>
             {messages.map((message, index) => (

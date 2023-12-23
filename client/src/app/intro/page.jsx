@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import style from "../../../styles/home.module.scss";
+import style from "../../../styles/intro.module.scss";
 
 const About = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -34,23 +34,22 @@ const About = () => {
     router.push("/game/");
   };
 
-  /* [TODO: I am able to send my link to others to play my game :) ] */
-  // // Handling function for clicking the "End Game" button
-  // const handleShared = () => {
-  //   // Perform actions when the "End Game" button is clicked
-  //   console.log("Shared mode clicked");
-  // };
-
   return (
-    <>
-      <h1 className={style.title}>Welcome</h1>
-      {userInfo && <div>{userInfo.display_name}</div>}
+    <div className={style.container}>
+      <h1 className={style.title}>Guesstify</h1>
+      <p className={style.summary}>
+        Hey {userInfo ? userInfo.display_name : "Guest"}!!! <br></br>
+        Lets see how well
+        you know your music!
+      </p>
       <div>
-        <button onClick={handleGlobal}>Play</button>
+        <button className={style.game_button} onClick={handleGlobal}>
+          Play
+        </button>
         {/* This is the second mode to implement */}
         {/* <button onClick={handleShared}>Shared Mode</button> */}
       </div>
-    </>
+    </div>
   );
 };
 
