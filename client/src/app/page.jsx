@@ -24,7 +24,17 @@ export default function Home() {
         <title>Guesstify</title>
       </header>
       <div className={style.container}>
-        <p className={style.title}>Guesstify</p>
+        <div className={style.title}>
+          <span>G</span>
+          <span>U</span>
+          <span>E</span>
+          <span>S</span>
+          <span>S</span>
+          <span>T</span>
+          <span>I</span>
+          <span>F</span>
+          <span>Y</span>
+        </div>
         <button className={style.spotify_login_button} onClick={handleClick}>
           Login with Spotify
         </button>
