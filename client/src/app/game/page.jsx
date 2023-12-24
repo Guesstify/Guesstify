@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import style from "../../../styles/game.module.scss";
 const TrackList = () => {
   const [tracks, setTracks] = useState([]);
@@ -26,15 +26,26 @@ const TrackList = () => {
           },
         });
 
-        const data = await response.json();
-        setTracks(data);
-        setGameInfo((prevGameInfo) => {
-          return {
-            ...prevGameInfo,
-            tracks: data,
-          };
-        });
-        setReady("ready");
+        fetch("http://localhost:8000/user_top_tracks", {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            setTracks(data);
+            setGameInfo((prevGameInfo) => ({
+              ...prevGameInfo,
+              tracks: data,
+            }));
+            setReady("ready");
+          })
+          .catch((error) => {
+            // Handle any errors here
+            console.error("Error fetching data:", error);
+          });
       } catch (error) {
         console.error("Error fetching game data:", error);
       }
@@ -66,6 +77,7 @@ const TrackList = () => {
   }, []);
 
   useEffect(() => {
+    console.log("ready")
     // Additional actions after response.json() resolves
     getTrack(setLeftTrack, "none");
     getTrack(setRightTrack, "none");
@@ -104,6 +116,7 @@ const TrackList = () => {
   }, [score]);
 
   const getTrack = (setter, trackSide) => {
+    console.log("getTrack")
     if (trackSide === "left") {
       if (leftTrack.rank < rightTrack.rank) {
         setScore(score + 1);
@@ -127,6 +140,7 @@ const TrackList = () => {
         const [nextTrack, ...remainingTracks] = prevTracks;
         setter(nextTrack);
         setNewTrack(nextTrack);
+        console.log("length:", remainingTracks.length)
         return remainingTracks;
       }
     });
@@ -140,6 +154,7 @@ const TrackList = () => {
       </audio>
     );
   };
+  const audioPlayer = useMemo(() => <AudioPlayer src={newTrack.snippet} />, [newTrack]);
 
   return (
     <>
@@ -151,7 +166,7 @@ const TrackList = () => {
           <p className={style.score}>Score: {score}</p>
         )}
         {gameOver && <p className={style.score}>Game Over!</p>}
-        {leftTrack && !gameOver && (
+        {newTrack && rightTrack && !gameOver && (
           <div>
             <h2 className={style.title_question}>
               Which song have you listened to more?
@@ -184,7 +199,7 @@ const TrackList = () => {
               </div>
             </div>
             <div className={style.track_player}>
-              <AudioPlayer src={newTrack.snippet} />
+              {audioPlayer}
             </div>
           </div>
         )}

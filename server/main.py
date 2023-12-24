@@ -197,7 +197,7 @@ async def user_top_tracks(request: Request, limit: int = 100, offset: int = 5):
     if token:
         url = "https://api.spotify.com/v1/me/top/tracks"
         headers = {"Authorization": f"Bearer {token}"}
-        params = {"time_range": "short_term", "limit": limit, "offset": offset}
+        params = {"time_range": "long_term", "limit": limit, "offset": offset}
 
         async with httpx.AsyncClient() as client:
             response = await client.get(url, headers=headers, params=params)
