@@ -14,65 +14,61 @@ const TrackList = () => {
   const [leftStreak, setLeftStreak] = useState(0);
   const [rightStreak, setRightStreak] = useState(0);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const accessToken = getCookie("accessToken");
-        const response = await fetch("http://localhost:8000/user_top_tracks", {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+  const fetchData = async () => {
+    try {
+      const accessToken = getCookie("accessToken");
 
-        fetch("http://localhost:8000/user_top_tracks", {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+      fetch("http://localhost:8000/user_top_tracks", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setTracks(data);
+          setGameInfo((prevGameInfo) => ({
+            ...prevGameInfo,
+            tracks: data,
+          }));
+          setReady("ready");
         })
-          .then((response) => response.json())
-          .then((data) => {
-            setTracks(data);
-            setGameInfo((prevGameInfo) => ({
+        .catch((error) => {
+          // Handle any errors here
+          console.error("Error fetching data:", error);
+        });
+    } catch (error) {
+      console.error("Error fetching game data:", error);
+    }
+    try {
+      const user_info_url = "http://localhost:8000/user_info";
+      const requestOptions = {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // For including cookies in the request
+      };
+      // Missing fetch call added here
+      fetch(user_info_url, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          setUserInfo(data);
+          setGameInfo((prevGameInfo) => {
+            return {
               ...prevGameInfo,
-              tracks: data,
-            }));
-            setReady("ready");
-          })
-          .catch((error) => {
-            // Handle any errors here
-            console.error("Error fetching data:", error);
+              userName: data.display_name,
+            };
           });
-      } catch (error) {
-        console.error("Error fetching game data:", error);
-      }
-      try {
-        const user_info_url = "http://localhost:8000/user_info";
-        const requestOptions = {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include", // For including cookies in the request
-        };
-        // Missing fetch call added here
-        fetch(user_info_url, requestOptions)
-          .then((response) => response.json())
-          .then((data) => {
-            setUserInfo(data);
-            setGameInfo((prevGameInfo) => {
-              return {
-                ...prevGameInfo,
-                userName: data.display_name,
-              };
-            });
-          })
-          .catch((error) => console.error("Error:", error));
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
+        })
+        .catch((error) => console.error("Error:", error));
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+    console.log("initial fetch")
+  };
+
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -116,7 +112,7 @@ const TrackList = () => {
   }, [score]);
 
   const getTrack = (setter, trackSide) => {
-    console.log("getTrack")
+    console.log(" before getTrack: ", tracks.length)
     if (trackSide === "left") {
       if (leftTrack.rank < rightTrack.rank) {
         setScore(score + 1);

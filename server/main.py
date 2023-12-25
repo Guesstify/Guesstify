@@ -23,20 +23,20 @@ client_secret = os.getenv("SPOTIFY_SECRET_KEY")
 redirect_uri = "http://localhost:8000/login/callback"
 
 
-# MongoDB CODE
-from pymongo.mongo_client import MongoClient
+# # MongoDB CODE
+# from pymongo.mongo_client import MongoClient
 
-MONGO_DB_USER = os.getenv("MONGO_DB_USER")
-MONGO_DB_PASSWORD = os.getenv("MONGO_DB_PASSWORD")
-uri = f"mongodb+srv://{MONGO_DB_USER}:{MONGO_DB_PASSWORD}@primary.okiuys9.mongodb.net/?retryWrites=true&w=majority"
-# Create a new client and connect to the server
-client = MongoClient(uri)
-# Send a ping to confirm a successful connection
-try:
-    client.admin.command("ping")
-    print("Pinged your deployment. You successfully connected to MongoDB!")
-except Exception as e:
-    print(e)
+# MONGO_DB_USER = os.getenv("MONGO_DB_USER")
+# MONGO_DB_PASSWORD = os.getenv("MONGO_DB_PASSWORD")
+# uri = f"mongodb+srv://{MONGO_DB_USER}:{MONGO_DB_PASSWORD}@primary.okiuys9.mongodb.net/?retryWrites=true&w=majority"
+# # Create a new client and connect to the server
+# client = MongoClient(uri)
+# # Send a ping to confirm a successful connection
+# try:
+#     client.admin.command("ping")
+#     print("Pinged your deployment. You successfully connected to MongoDB!")
+# except Exception as e:
+#     print(e)
 
 
 # CORS middleware to allow requests from the frontend
@@ -197,7 +197,7 @@ async def user_top_tracks(request: Request, limit: int = 100, offset: int = 5):
     if token:
         url = "https://api.spotify.com/v1/me/top/tracks"
         headers = {"Authorization": f"Bearer {token}"}
-        params = {"time_range": "long_term", "limit": limit, "offset": offset}
+        params = {"time_range": "short_term", "limit": limit, "offset": offset}
 
         async with httpx.AsyncClient() as client:
             response = await client.get(url, headers=headers, params=params)
