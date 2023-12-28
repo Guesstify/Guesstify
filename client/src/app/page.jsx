@@ -4,8 +4,10 @@ import React from "react";
 import style from "../../styles/home.module.scss";
 import Link from "next/link";
 export default function Home() {
+  const backendUrl = process.env.BACKEND_URL;
+  console.log(backendUrl);
   const handleClick = () => {
-    window.location.href = "http://localhost:8000/login";
+    window.location.href = `${backendUrl}/login`;
   };
   const messages = [
     "Test Your Taste!",

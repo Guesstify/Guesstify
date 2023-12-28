@@ -10,7 +10,6 @@ const About = () => {
 
   // fetch user info
   useEffect(() => {
-    const user_info_url = "http://localhost:8000/user_info";
     const requestOptions = {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -18,7 +17,7 @@ const About = () => {
     };
 
     // Missing fetch call added here
-    fetch(user_info_url, requestOptions)
+    fetch(`${backendUrl}/user_info`, requestOptions)
       .then((response) => response.json())
       .then((data) => {
         setUserInfo(data);
@@ -39,8 +38,7 @@ const About = () => {
       <h1 className={style.title}>Guesstify</h1>
       <p className={style.summary}>
         Hey {userInfo ? userInfo.display_name : "Guest"}!!! <br></br>
-        Lets see how well
-        you know your music!
+        Lets see how well you know your music!
       </p>
       <div>
         <button className={style.game_button} onClick={handleGlobal}>

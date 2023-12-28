@@ -19,7 +19,7 @@ const TrackList = () => {
     try {
       const accessToken = getCookie("accessToken");
       const backendUrl = process.env.BACKEND_URL;
-      fetch("http://localhost:8000/user_top_tracks", {
+      fetch(`${backendUrl}/user_top_tracks`, {
         method: "GET",
         credentials: "include",
         headers: {
@@ -43,14 +43,13 @@ const TrackList = () => {
       console.error("Error fetching game data:", error);
     }
     try {
-      const user_info_url = "http://localhost:8000/user_info";
       const requestOptions = {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include", // For including cookies in the request
       };
       // Missing fetch call added here
-      fetch(user_info_url, requestOptions)
+      fetch(`${backendUrl}/user_info`, requestOptions)
         .then((response) => response.json())
         .then((data) => {
           setUserInfo(data);
@@ -65,16 +64,15 @@ const TrackList = () => {
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
-    console.log("initial fetch")
+    console.log("initial fetch");
   };
-
 
   useEffect(() => {
     fetchData();
   }, []);
 
   useEffect(() => {
-    console.log("ready")
+    console.log("ready");
     // Additional actions after response.json() resolves
     getTrack(setLeftTrack, "none");
     getTrack(setRightTrack, "none");
@@ -113,7 +111,7 @@ const TrackList = () => {
   }, [score]);
 
   const getTrack = (setter, trackSide) => {
-    console.log(" before getTrack: ", tracks.length)
+    console.log(" before getTrack: ", tracks.length);
     if (trackSide === "left") {
       if (leftTrack.rank < rightTrack.rank) {
         setScore(score + 1);
@@ -137,7 +135,7 @@ const TrackList = () => {
         const [nextTrack, ...remainingTracks] = prevTracks;
         setter(nextTrack);
         setNewTrack(nextTrack);
-        console.log("length:", remainingTracks.length)
+        console.log("length:", remainingTracks.length);
         return remainingTracks;
       }
     });
@@ -151,7 +149,10 @@ const TrackList = () => {
       </audio>
     );
   };
-  const audioPlayer = useMemo(() => <AudioPlayer src={newTrack.snippet} />, [newTrack]);
+  const audioPlayer = useMemo(
+    () => <AudioPlayer src={newTrack.snippet} />,
+    [newTrack]
+  );
 
   return (
     <>
@@ -195,9 +196,7 @@ const TrackList = () => {
                 >{`${rightTrack.track_name} by ${rightTrack.artist}`}</p>
               </div>
             </div>
-            <div className={style.track_player}>
-              {audioPlayer}
-            </div>
+            <div className={style.track_player}>{audioPlayer}</div>
           </div>
         )}
       </div>
