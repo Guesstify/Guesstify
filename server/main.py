@@ -3,6 +3,7 @@ from fastapi import FastAPI, Request, Response, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi import FastAPI
 import secrets
+import uvicorn
 import urllib.parse
 from dotenv import load_dotenv
 import os
@@ -15,6 +16,7 @@ from starlette.middleware.cors import CORSMiddleware as CORSMiddleware
 from pydantic import BaseModel
 import utilities
 import os
+
 
 app = FastAPI()
 load_dotenv("../.env.local")
@@ -211,11 +213,16 @@ async def user_top_tracks(request: Request, limit: int = 100, offset: int = 5):
     else:
         raise HTTPException(status_code=400, detail="No cookie")
 
+
 @app.post("/store_game")
 def store_game(request: Request):
     pass
-    
-if __name__ == "__main__":
-    import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+if __name__ == "__main__":
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=os.getenv("PORT", default=8000),
+        log_level="info",
+    )
