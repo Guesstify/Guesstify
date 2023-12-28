@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import style from "../../../styles/game.module.scss";
-const TrackList = () => {
+export default function TrackList() {
   const [tracks, setTracks] = useState([]);
   const [leftTrack, setLeftTrack] = useState({});
   const [rightTrack, setRightTrack] = useState({});
@@ -64,16 +64,14 @@ const TrackList = () => {
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
-    console.log("initial fetch")
   };
-
 
   useEffect(() => {
     fetchData();
+    console.log("fetching data");
   }, []);
 
   useEffect(() => {
-    console.log("ready")
     // Additional actions after response.json() resolves
     getTrack(setLeftTrack, "none");
     getTrack(setRightTrack, "none");
@@ -82,12 +80,10 @@ const TrackList = () => {
   // code to keep track of streak counters
   useEffect(() => {
     if (leftStreak === 3) {
-      console.log("entering left streak");
       setLeftStreak(0);
       getTrack(setLeftTrack, "none");
     }
     if (rightStreak >= 3 && rightStreak % 3 === 0) {
-      console.log("entering right streak");
       setRightStreak(0);
       getTrack(setRightTrack, "none");
     }
@@ -112,7 +108,6 @@ const TrackList = () => {
   }, [score]);
 
   const getTrack = (setter, trackSide) => {
-    console.log(" before getTrack: ", tracks.length)
     if (trackSide === "left") {
       if (leftTrack.rank < rightTrack.rank) {
         setScore(score + 1);
@@ -130,13 +125,11 @@ const TrackList = () => {
         setGameOver(true);
       }
     }
-    console.log(tracks.length);
     setTracks((prevTracks) => {
       if (Array.isArray(prevTracks) && prevTracks.length > 0) {
         const [nextTrack, ...remainingTracks] = prevTracks;
         setter(nextTrack);
         setNewTrack(nextTrack);
-        console.log("length:", remainingTracks.length)
         return remainingTracks;
       }
     });
@@ -150,7 +143,10 @@ const TrackList = () => {
       </audio>
     );
   };
-  const audioPlayer = useMemo(() => <AudioPlayer src={newTrack.snippet} />, [newTrack]);
+  const audioPlayer = useMemo(
+    () => <AudioPlayer src={newTrack.snippet} />,
+    [newTrack]
+  );
 
   return (
     <>
@@ -194,14 +190,10 @@ const TrackList = () => {
                 >{`${rightTrack.track_name} by ${rightTrack.artist}`}</p>
               </div>
             </div>
-            <div className={style.track_player}>
-              {audioPlayer}
-            </div>
+            <div className={style.track_player}>{audioPlayer}</div>
           </div>
         )}
       </div>
     </>
   );
-};
-
-export default TrackList;
+}
