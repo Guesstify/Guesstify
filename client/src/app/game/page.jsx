@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import style from "../../../styles/game.module.scss";
+
 const TrackList = () => {
   const [tracks, setTracks] = useState([]);
   const [leftTrack, setLeftTrack] = useState({});
@@ -17,7 +18,7 @@ const TrackList = () => {
   const fetchData = async () => {
     try {
       const accessToken = getCookie("accessToken");
-
+      const backendUrl = process.env.BACKEND_URL;
       fetch("http://localhost:8000/user_top_tracks", {
         method: "GET",
         credentials: "include",
