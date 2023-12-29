@@ -156,7 +156,7 @@ async def callback(code: str = None, state: str = None):
                 response.set_cookie(
                     key="spotify_token",
                     value=token_data["access_token"],
-                    httponly=True,
+                    httponly=False,
                     samesite="Lax",
                 )
                 return response
