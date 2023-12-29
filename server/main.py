@@ -165,6 +165,7 @@ async def callback(code: str = None, state: str = None):
                 # Redirect URL for your frontend, must return cookie as part of the response
                 frontend_redirect_url = f"{front_end_url}/intro?token={token_query}"
                 response = RedirectResponse(url=frontend_redirect_url)
+                print("cookies are about to be set")
                 response.set_cookie(
                     key="spotify_token",
                     value=token_data["access_token"],
