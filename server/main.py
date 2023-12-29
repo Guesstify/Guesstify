@@ -41,6 +41,16 @@ redirect_uri = f"{backend_url}/login/callback"
 
 
 # CORS middleware to allow requests from the frontend
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=[
+#         "http://localhost:3000",  # The origin of the frontend application
+#         "https://guesstify.vercel.app",  # Production frontend domain
+#     ],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -48,8 +58,13 @@ app.add_middleware(
         "https://guesstify.vercel.app",  # Production frontend domain
     ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "HEAD", "OPTIONS"],
+    allow_headers=[
+        "Access-Control-Allow-Headers",
+        "Content-Type",
+        "Authorization",
+        "Access-Control-Allow-Origin",
+    ],
 )
 
 
@@ -152,9 +167,8 @@ async def callback(code: str = None, state: str = None):
                 response.set_cookie(
                     key="spotify_token",
                     value=token_data["access_token"],
-                    httponly=False,
-                    samesite="Lax",
-                    secure=True,
+                    httponly=True,
+                    samesite="none",
                 )
                 return response
             else:
