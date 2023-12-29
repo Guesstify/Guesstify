@@ -162,6 +162,7 @@ async def callback(code: str = None, state: str = None):
                     value=token_data["access_token"],
                     httponly=True,
                     samesite="None",
+                    secure=True,
                 )
                 return response
             else:
