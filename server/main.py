@@ -187,7 +187,7 @@ async def user_info(request: Request):
                     detail="Failed to retrieve user info",
                 )
     else:
-        print("error location: user_info endpoint2"")
+        print("error location: user_info endpoint2")
         raise HTTPException(status_code=400, detail="No cookie")
 
 
