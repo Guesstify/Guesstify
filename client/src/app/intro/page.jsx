@@ -17,7 +17,7 @@ const About = () => {
     };
 
     // Missing fetch call added here
-    fetch("http://localhost:8000/user_info", requestOptions)
+    fetch(`${backendUrl}/user_info`, requestOptions)
       .then((response) => response.json())
       .then((data) => {
         setUserInfo(data);

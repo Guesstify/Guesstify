@@ -39,6 +39,7 @@ export default function Home() {
           href={`${backendUrl}/login`}
         >
           Login with Spotify
+          {backendUrl}
         </Link>
         <div className={style.marquee}>
           <Marquee>
