@@ -23,7 +23,6 @@ client_secret = os.getenv("SPOTIFY_SECRET_KEY")
 front_end_url = os.getenv("FRONTEND_URL")
 backend_url = os.getenv("NEXT_PUBLIC_BACKEND_URL")
 redirect_uri = f"{backend_url}/login/callback"
-print(redirect_uri)
 
 # # MongoDB CODE
 # from pymongo.mongo_client import MongoClient
@@ -53,7 +52,7 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return "Stop"
+    return redirect_uri
 
 
 @app.get("/get-cookie")
