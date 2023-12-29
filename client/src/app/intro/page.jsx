@@ -12,13 +12,17 @@ const About = () => {
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: { Accept: "application/json" }, // Set 'Accept' header instead of 'Content-Type'
       credentials: "include", // For including cookies in the request
     };
 
-    // Missing fetch call added here
     fetch(`${backendUrl}/user_info`, requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
       .then((data) => {
         setUserInfo(data);
         console.log(data);

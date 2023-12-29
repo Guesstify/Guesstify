@@ -43,10 +43,13 @@ redirect_uri = f"{backend_url}/login/callback"
 # CORS middleware to allow requests from the frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://guesstify.vercel.app"],  # Allows all origins
+    allow_origins=[
+        "http://localhost:3000",  # The origin of the frontend application
+        "https://your-frontend-domain.vercel.app",  # Production frontend domain
+    ],
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
