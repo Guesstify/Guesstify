@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import os
 import base64
 import httpx
+import uvicorn
 import json
 from authentication.spotify_token_cookie import set_cookie
 from authentication.spotify_token_cookie import parse_token_query
@@ -238,11 +239,9 @@ def store_game(request: Request):
 
 
 if __name__ == "__main__":
-    import uvicorn
-
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=os.getenv("PORT", default=8000),
+        port=int(os.getenv("PORT", default=8000)),
         log_level="info",
     )
