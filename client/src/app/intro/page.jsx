@@ -14,7 +14,7 @@ const About = () => {
       method: "GET",
       credentials: "include", // For including cookies in the request
       headers: {
-        "Access-Control-Allow-Origin": "https://guesstify.vercel.app/",
+        accept: "application/json",
       },
     };
 

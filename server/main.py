@@ -39,11 +39,15 @@ redirect_uri = f"{backend_url}/login/callback"
 # except Exception as e:
 #     print(e)
 
-
+origins = [
+    "https://www.guesstify.app",
+    "https://guesstify-git-main-guesstify.vercel.app",
+    "https://guesstify-mtk8oipn2-guesstify.vercel.app",
+]
 # CORS middleware to allow requests from the frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=origins,  # Allows all origins
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
