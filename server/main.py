@@ -161,7 +161,7 @@ async def callback(code: str = None, state: str = None):
                     key="spotify_token",
                     value=token_data["access_token"],
                     httponly=True,
-                    samesite="Lax",
+                    samesite="None",
                 )
                 return response
             else:
