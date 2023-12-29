@@ -21,7 +21,9 @@ load_dotenv(".env.local")
 client_id = os.getenv("SPOTIFY_CLIENT_ID")
 client_secret = os.getenv("SPOTIFY_SECRET_KEY")
 front_end_url = os.getenv("FRONTEND_URL")
-redirect_uri = "http://localhost:8000/login/callback"
+backend_url = os.getenv("NEXT_PUBLIC_BACKEND_URL")
+redirect_uri = f"{backend_url}/login/callback"
+print(redirect_uri)
 
 # # MongoDB CODE
 # from pymongo.mongo_client import MongoClient
