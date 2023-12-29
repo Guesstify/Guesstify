@@ -181,7 +181,7 @@ async def user_info(request: Request):
             if user_info_response.status_code == 200:
                 return user_info_response.json()
             else:
-                print("error location: user_info endpoint"")
+                print("error location: user_info endpoint")
                 raise HTTPException(
                     status_code=user_info_response.status_code,
                     detail="Failed to retrieve user info",
