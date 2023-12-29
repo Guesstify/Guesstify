@@ -62,7 +62,6 @@ async def root():
 async def get_cookie(request: Request):
     """Gets the Spotify token cookie."""
     token = request.cookies.get("spotify_token")
-    print(token)
     if token:
         return token
     else:
@@ -78,7 +77,6 @@ class TokenData(BaseModel):
 async def set_cookie(response: Response, token_data: TokenData):
     """Sets the Spotify token cookie."""
     token = token_data.token
-    # print(f"setting {token}")
     """Sets the Spotify token cookie."""
     response.set_cookie(
         key="spotify_token", value=token, httponly=True, samesite="None", secure=True
@@ -151,8 +149,6 @@ async def callback(code: str = None, state: str = None):
                 # Redirect URL for your frontend, must return cookie as part of the response
                 frontend_redirect_url = f"{front_end_url}/intro?token={token_query}"
                 response = RedirectResponse(url=frontend_redirect_url)
-                print("response", response)
-                print("callback", token_data["access_token"])
                 response.set_cookie(
                     key="spotify_token",
                     value=token_data["access_token"],
@@ -185,11 +181,13 @@ async def user_info(request: Request):
             if user_info_response.status_code == 200:
                 return user_info_response.json()
             else:
+                print("error location: user_info endpoint"")
                 raise HTTPException(
                     status_code=user_info_response.status_code,
                     detail="Failed to retrieve user info",
                 )
     else:
+        print("error location: user_info endpoint2"")
         raise HTTPException(status_code=400, detail="No cookie")
 
 
