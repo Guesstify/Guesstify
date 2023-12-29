@@ -19,6 +19,7 @@ const About = () => {
       .then((response) => {
         if (!response.ok) {
           console.log(response.status);
+          console.log(response.statusText);
           throw new Error("Network response was not ok");
         }
         return response.json();
