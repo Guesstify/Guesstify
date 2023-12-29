@@ -7,7 +7,7 @@ import style from "../../../styles/intro.module.scss";
 const About = () => {
   const [userInfo, setUserInfo] = useState(null);
   const router = useRouter();
-
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   // fetch user info
   useEffect(() => {
     const requestOptions = {
@@ -17,7 +17,7 @@ const About = () => {
     };
 
     // Missing fetch call added here
-    fetch(`${backendUrl}/user_info`, requestOptions)
+    fetch("http://localhost:8000/user_info", requestOptions)
       .then((response) => response.json())
       .then((data) => {
         setUserInfo(data);

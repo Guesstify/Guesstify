@@ -4,11 +4,8 @@ import React from "react";
 import style from "../../styles/home.module.scss";
 import Link from "next/link";
 export default function Home() {
-  const backendUrl = process.env.BACKEND_URL;
-  console.log(backendUrl);
-  const handleClick = () => {
-    window.location.href = `${backendUrl}/login`;
-  };
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   const messages = [
     "Test Your Taste!",
     "Test your friends!",
@@ -37,9 +34,12 @@ export default function Home() {
           <span>F</span>
           <span>Y</span>
         </div>
-        <button className={style.spotify_login_button} onClick={handleClick}>
+        <Link
+          className={style.spotify_login_button}
+          href={`${backendUrl}/login`}
+        >
           Login with Spotify
-        </button>
+        </Link>
         <div className={style.marquee}>
           <Marquee>
             {messages.map((message, index) => (

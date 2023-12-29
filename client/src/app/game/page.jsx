@@ -14,11 +14,11 @@ const TrackList = () => {
   const [gameInfo, setGameInfo] = useState({});
   const [leftStreak, setLeftStreak] = useState(0);
   const [rightStreak, setRightStreak] = useState(0);
-
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const fetchData = async () => {
     try {
       const accessToken = getCookie("accessToken");
-      const backendUrl = process.env.BACKEND_URL;
+
       fetch(`${backendUrl}/user_top_tracks`, {
         method: "GET",
         credentials: "include",

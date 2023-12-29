@@ -17,11 +17,11 @@ import utilities
 import os
 
 app = FastAPI()
-load_dotenv("../.env.local")
+load_dotenv(".env.local")
 client_id = os.getenv("SPOTIFY_CLIENT_ID")
 client_secret = os.getenv("SPOTIFY_SECRET_KEY")
+front_end_url = os.getenv("FRONTEND_URL")
 redirect_uri = "http://localhost:8000/login/callback"
-
 
 # # MongoDB CODE
 # from pymongo.mongo_client import MongoClient
@@ -49,6 +49,11 @@ app.add_middleware(
 )
 
 
+@app.get("/")
+async def root():
+    return "Stop"
+
+
 @app.get("/get-cookie")
 async def get_cookie(request: Request):
     """Gets the Spotify token cookie."""
@@ -69,7 +74,7 @@ class TokenData(BaseModel):
 async def set_cookie(response: Response, token_data: TokenData):
     """Sets the Spotify token cookie."""
     token = token_data.token
-    print(f"setting {token}")
+    # print(f"setting {token}")
     """Sets the Spotify token cookie."""
     response.set_cookie(
         key="spotify_token", value=token, httponly=True, samesite="None", secure=True
@@ -101,12 +106,12 @@ async def login():
 
     query_string = urllib.parse.urlencode(query_params)
     auth_url = f"https://accounts.spotify.com/authorize?{query_string}"
-
     return RedirectResponse(url=auth_url)
 
 
 @app.get("/login/callback")
 async def callback(code: str = None, state: str = None):
+    """Handles the callback from Spotify's OAuth service."""
     # Check if state is present
     if state is None:
         raise HTTPException(status_code=400, detail="state_mismatch")
@@ -140,10 +145,10 @@ async def callback(code: str = None, state: str = None):
                 token_query = urllib.parse.urlencode(token_data)
 
                 # Redirect URL for your frontend, must return cookie as part of the response
-                frontend_redirect_url = (
-                    f"http://localhost:3000/intro?token={token_query}"
-                )
+                frontend_redirect_url = f"{front_end_url}/intro?token={token_query}"
                 response = RedirectResponse(url=frontend_redirect_url)
+                print("response", response)
+                print("callback", token_data["access_token"])
                 response.set_cookie(
                     key="spotify_token",
                     value=token_data["access_token"],
@@ -157,8 +162,6 @@ async def callback(code: str = None, state: str = None):
                     detail="Failed to retrieve token",
                 )
 
-        raise HTTPException(status_code=400, detail="Invalid request")
-
     # Handle cases where code is not present
     raise HTTPException(status_code=400, detail="Invalid request")
 
@@ -166,7 +169,6 @@ async def callback(code: str = None, state: str = None):
 @app.get("/user_info")
 async def user_info(request: Request):
     token = request.cookies.get("spotify_token")
-    print("get /user_info", token)
     if token:
         # User info endpoint URL and Authorization Header
         user_info_url = "https://api.spotify.com/v1/me"
@@ -211,11 +213,18 @@ async def user_top_tracks(request: Request, limit: int = 100, offset: int = 5):
     else:
         raise HTTPException(status_code=400, detail="No cookie")
 
+
 @app.post("/store_game")
 def store_game(request: Request):
     pass
-    
+
+
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=os.getenv("PORT", default=8000),
+        log_level="info",
+    )
