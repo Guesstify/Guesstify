@@ -45,7 +45,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",  # The origin of the frontend application
-        "https://your-frontend-domain.vercel.app",  # Production frontend domain
+        "https://guesstify.vercel.app",  # Production frontend domain
     ],
     allow_credentials=True,
     allow_methods=["*"],
