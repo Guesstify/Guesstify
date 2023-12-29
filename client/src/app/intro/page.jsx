@@ -17,6 +17,7 @@ const About = () => {
 
     fetch(`${backendUrl}/user_info`, requestOptions)
       .then((response) => {
+        console.log("user_info")
         if (!response.ok) {
           console.log(response.status);
           throw new Error("Network response was not ok");

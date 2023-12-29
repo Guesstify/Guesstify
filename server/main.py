@@ -14,6 +14,7 @@ from authentication.spotify_token_cookie import parse_token_query
 from starlette.middleware.cors import CORSMiddleware as CORSMiddleware
 from pydantic import BaseModel
 import utilities
+import requests
 import os
 
 app = FastAPI()
@@ -23,8 +24,9 @@ client_secret = os.getenv("SPOTIFY_SECRET_KEY")
 front_end_url = os.getenv("FRONTEND_URL")
 backend_url = os.getenv("NEXT_PUBLIC_BACKEND_URL")
 redirect_uri = f"{backend_url}/login/callback"
+server_cookie = ""
 
-# # MongoDB CODE
+# MongoDB CODE
 # from pymongo.mongo_client import MongoClient
 
 # MONGO_DB_USER = os.getenv("MONGO_DB_USER")
@@ -149,7 +151,7 @@ async def callback(code: str = None, state: str = None):
                 token_query = urllib.parse.urlencode(token_data)
 
                 # Redirect URL for your frontend, must return cookie as part of the response
-                frontend_redirect_url = f"{front_end_url}/intro?token={token_query}"
+                frontend_redirect_url = f"{front_end_url}/load?token={token_query}"
                 response = RedirectResponse(url=frontend_redirect_url)
                 print("response", response)
                 print("callback", token_data["access_token"])
@@ -168,6 +170,11 @@ async def callback(code: str = None, state: str = None):
 
     # Handle cases where code is not present
     raise HTTPException(status_code=400, detail="Invalid request")
+
+@app.get("/get_token")
+async def user_info():
+    session = requests.Session()
+    print(session.cookies.get_dict())
 
 
 @app.get("/user_info")
