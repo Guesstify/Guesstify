@@ -17,14 +17,9 @@ const TrackList = () => {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const fetchData = async () => {
     try {
-      const accessToken = getCookie("accessToken");
-
       fetch(`${backendUrl}/user_top_tracks`, {
         method: "GET",
         credentials: "include",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
       })
         .then((response) => response.json())
         .then((data) => {

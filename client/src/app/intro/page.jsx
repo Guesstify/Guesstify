@@ -8,17 +8,17 @@ const About = () => {
   const [userInfo, setUserInfo] = useState(null);
   const router = useRouter();
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-  // fetch user info
+  // fetch user
   useEffect(() => {
     const requestOptions = {
       method: "GET",
-      headers: { Accept: "application/json" }, // Set 'Accept' header instead of 'Content-Type'
       credentials: "include", // For including cookies in the request
     };
 
     fetch(`${backendUrl}/user_info`, requestOptions)
       .then((response) => {
         if (!response.ok) {
+          console.log(response.status);
           throw new Error("Network response was not ok");
         }
         return response.json();
