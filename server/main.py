@@ -43,6 +43,8 @@ origins = [
     "https://www.guesstify.app",
     "https://guesstify-git-main-guesstify.vercel.app",
     "https://guesstify-mtk8oipn2-guesstify.vercel.app",
+    "https://guesstify.vercel.app",
+    "http://localhost:3000",
 ]
 # CORS middleware to allow requests from the frontend
 app.add_middleware(
@@ -51,6 +53,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
+    expose_headers=["*"],
 )
 
 
