@@ -13,6 +13,9 @@ const About = () => {
     const requestOptions = {
       method: "GET",
       credentials: "include", // For including cookies in the request
+      headers: {
+        "Access-Control-Allow-Origin": "https://guesstify.vercel.app/",
+      },
     };
 
     fetch(`${backendUrl}/user_info`, requestOptions)
