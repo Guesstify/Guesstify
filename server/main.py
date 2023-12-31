@@ -202,7 +202,7 @@ async def user_info(request: Request):
                     detail="Failed to retrieve user info",
                 )
     else:
-        raise HTTPException(status_code=400, detail="No cookie")
+        raise HTTPException(status_code=400, detail=f"No cookie, current token is : {token}")
 
 
 # Get user's top 50 tracks, included limit and offset parameters to make it easily customizable on front end
