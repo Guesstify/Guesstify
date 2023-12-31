@@ -10,18 +10,21 @@ const About = () => {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   // fetch user
   useEffect(() => {
+    const spotifyToken = getCookie('spotify_token'); // Retrieve the Spotify token
+
     const requestOptions = {
       method: "GET",
       credentials: "include", // For including cookies in the request
       headers: {
         accept: "application/json",
+        'Authorization': `Bearer ${spotifyToken}` // Assuming the token is used for authorization
       },
     };
-
     fetch(`${backendUrl}/user_info`, requestOptions)
       .then((response) => {
         console.log("user_info")
         if (!response.ok) {
+          console.log(response.details);
           console.log(response.status);
           console.log(response.statusText);
           throw new Error("Network response was not ok");
