@@ -13,6 +13,9 @@ const About = () => {
     const requestOptions = {
       method: "GET",
       credentials: "include", // For including cookies in the request
+      headers: {
+        accept: "application/json",
+      },
     };
 
     fetch(`${backendUrl}/user_info`, requestOptions)
@@ -20,6 +23,7 @@ const About = () => {
         console.log("user_info")
         if (!response.ok) {
           console.log(response.status);
+          console.log(response.statusText);
           throw new Error("Network response was not ok");
         }
         return response.json();

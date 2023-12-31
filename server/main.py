@@ -41,23 +41,27 @@ server_cookie = ""
 # except Exception as e:
 #     print(e)
 
-
+origins = [
+    "https://www.guesstify.app",
+    "https://guesstify-git-main-guesstify.vercel.app",
+    "https://guesstify-mtk8oipn2-guesstify.vercel.app",
+    "https://guesstify.vercel.app",
+    "http://localhost:3000",
+]
 # CORS middleware to allow requests from the frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",  # The origin of the frontend application
-        "https://guesstify.vercel.app",  # Production frontend domain
-    ],
+    allow_origins=origins,  # Allows all origins
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+    expose_headers=["*"],
 )
 
 
 @app.get("/")
 async def root():
-    return redirect_uri
+    return "Stop"
 
 
 @app.get("/get-cookie")
@@ -159,7 +163,8 @@ async def callback(code: str = None, state: str = None):
                     key="spotify_token",
                     value=token_data["access_token"],
                     httponly=True,
-                    samesite="Lax",
+                    samesite="None",
+                    secure=True,
                 )
                 return response
             else:
@@ -236,6 +241,6 @@ if __name__ == "__main__":
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=os.getenv("PORT", default=8000),
+        port=int(os.getenv("PORT", default=8000)),
         log_level="info",
     )
