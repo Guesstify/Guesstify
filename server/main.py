@@ -27,19 +27,19 @@ redirect_uri = f"{backend_url}/login/callback"
 server_cookie = ""
 
 # MongoDB CODE
-from pymongo.mongo_client import MongoClient
+# from pymongo.mongo_client import MongoClient
 
-MONGO_DB_USER = os.getenv("MONGO_DB_USER")
-MONGO_DB_PASSWORD = os.getenv("MONGO_DB_PASSWORD")
-uri = f"mongodb+srv://{MONGO_DB_USER}:{MONGO_DB_PASSWORD}@primary.okiuys9.mongodb.net/?retryWrites=true&w=majority"
-# Create a new client and connect to the server
-client = MongoClient(uri)
-# Send a ping to confirm a successful connection
-try:
-    client.admin.command("ping")
-    print("Pinged your deployment. You successfully connected to MongoDB!")
-except Exception as e:
-    print(e)
+# MONGO_DB_USER = os.getenv("MONGO_DB_USER")
+# MONGO_DB_PASSWORD = os.getenv("MONGO_DB_PASSWORD")
+# uri = f"mongodb+srv://{MONGO_DB_USER}:{MONGO_DB_PASSWORD}@primary.okiuys9.mongodb.net/?retryWrites=true&w=majority"
+# # Create a new client and connect to the server
+# client = MongoClient(uri)
+# # Send a ping to confirm a successful connection
+# try:
+#     client.admin.command("ping")
+#     print("Pinged your deployment. You successfully connected to MongoDB!")
+# except Exception as e:
+#     print(e)
 
 origins = [
     "https://www.guesstify.app",
