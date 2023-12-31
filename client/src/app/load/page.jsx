@@ -23,12 +23,26 @@ const Load = () => {
         };
       
         // Extract access_token from the URL
-        const accessToken = getQueryParam("token");
+        const accessToken = extracAccessToken(getQueryParam("token"));
       
+        // Function to extract the value after access_token=
+        const extractAccessToken = (url) => {
+            const tokenParam = "access_token=";
+            const tokenStartIndex = url.indexOf(tokenParam);
+            
+            if (tokenStartIndex !== -1) {
+            const accessToken = url.substring(tokenStartIndex + tokenParam.length).split("&")[0];
+            return accessToken;
+            }
+            
+            return null; // Access token not found
+        };
+        
         // Check if access_token is present
         if (accessToken) {
+
           // Set the access_token as a cookie (adjust the expiration time as needed)
-          setCookie("access_token", accessToken, 7); // Expires in 7 days
+          setCookie("spotify_token", accessToken, 7); // Expires in 7 days
         }
       
         // Optional: Redirect to a different URL without the token parameters
