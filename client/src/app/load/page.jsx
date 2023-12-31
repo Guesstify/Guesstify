@@ -23,7 +23,7 @@ const Load = () => {
         };
       
         // Extract access_token from the URL
-        const accessToken = extracAccessToken(getQueryParam("token"));
+        const accessToken = extractAccessToken(getQueryParam("token"));
       
         // Function to extract the value after access_token=
         const extractAccessToken = (url) => {
