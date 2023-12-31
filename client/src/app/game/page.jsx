@@ -87,14 +87,6 @@ const TrackList = () => {
     }
   }, [score]); // Dependency array
 
-  // Helper function to get a cookie by name
-  const getCookie = (name) => {
-    const cookieString = document.cookie;
-    const cookies = cookieString.split(";").map((cookie) => cookie.trim());
-    const foundCookie = cookies.find((cookie) => cookie.startsWith(`${name}=`));
-
-    return foundCookie ? foundCookie.split("=")[1] : null;
-  };
 
   //Adjust game score when final score changes
   useEffect(() => {

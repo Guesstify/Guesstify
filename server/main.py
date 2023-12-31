@@ -1,5 +1,5 @@
 from typing import Union
-from fastapi import FastAPI, Request, Response, HTTPException
+from fastapi import FastAPI, Request, Response, HTTPException, Header, Depends
 from fastapi.responses import RedirectResponse
 from fastapi import FastAPI
 import secrets
@@ -159,13 +159,13 @@ async def callback(code: str = None, state: str = None):
                 response = RedirectResponse(url=frontend_redirect_url)
                 print("response", response)
                 print("callback", token_data["access_token"])
-                response.set_cookie(
-                    key="spotify_token",
-                    value=token_data["access_token"],
-                    httponly=True,
-                    samesite="None",
-                    secure=True,
-                )
+                # response.set_cookie(
+                #     key="spotify_token",
+                #     value=token_data["access_token"],
+                #     httponly=True,
+                #     samesite="None",
+                #     secure=True,
+                # )
                 return response
             else:
                 raise HTTPException(
@@ -183,17 +183,21 @@ async def user_info():
 
 
 @app.get("/user_info")
-async def user_info(request: Request):
-    token = request.cookies.get("spotify_token")
-    if token:
+async def user_info(authorization: str = Header(None)):
+    if authorization:
+        # Extract the token from the authorization header
+        # Assuming the header is in the format "Bearer <token>"
+        token_type, _, token = authorization.partition(' ')
+        if token_type.lower() != 'bearer' or not token:
+            raise HTTPException(status_code=400, detail="Invalid authorization header format")
+
         # User info endpoint URL and Authorization Header
         user_info_url = "https://api.spotify.com/v1/me"
         user_info_header = {"Authorization": f"Bearer {token}"}
+
         async with httpx.AsyncClient() as client:
             # Get user info by sending a GET request to the user info endpoint on Spotify
-            user_info_response = await client.get(
-                user_info_url, headers=user_info_header
-            )
+            user_info_response = await client.get(user_info_url, headers=user_info_header)
             if user_info_response.status_code == 200:
                 return user_info_response.json()
             else:
@@ -202,7 +206,7 @@ async def user_info(request: Request):
                     detail="Failed to retrieve user info",
                 )
     else:
-        raise HTTPException(status_code=400, detail=f"No cookie, current token is : {token}")
+        raise HTTPException(status_code=400, detail="Authorization header not found")
 
 
 # Get user's top 50 tracks, included limit and offset parameters to make it easily customizable on front end

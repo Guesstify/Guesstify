@@ -1,17 +1,18 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import style from "../../../styles/intro.module.scss";
+import Cookies from 'js-cookie';
 
 const About = () => {
   const [userInfo, setUserInfo] = useState(null);
   const router = useRouter();
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-  // fetch user
-  useEffect(() => {
-    const spotifyToken = getCookie('spotify_token'); // Retrieve the Spotify token
 
+  useEffect(() => {
+    const spotifyToken = Cookies.get('spotify_token') // => 'value'
+    // Retrieve the Spotify token
+    console.log("spotify_token", spotifyToken)
     const requestOptions = {
       method: "GET",
       credentials: "include", // For including cookies in the request
