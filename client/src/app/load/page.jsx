@@ -1,10 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-const router = useRouter();
 
 const Load = () => {
-
+    const router = useRouter();
     
     // Function to extract a parameter from the URL
     const getQueryParam = (name) => {
