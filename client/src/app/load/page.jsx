@@ -23,7 +23,7 @@ const Load = () => {
         };
       
         // Extract access_token from the URL
-        const accessToken = extractAccessToken(getQueryParam("token"));
+        const accessToken = getQueryParam("token");
       
         // Function to extract the value after access_token=
         const extractAccessToken = (url) => {
@@ -42,7 +42,7 @@ const Load = () => {
         if (accessToken) {
 
           // Set the access_token as a cookie (adjust the expiration time as needed)
-          setCookie("spotify_token", accessToken, 7); // Expires in 7 days
+          setCookie("spotify_token", extractAccessToken(accessToken), 7); // Expires in 7 days
         }
       
         // Optional: Redirect to a different URL without the token parameters
