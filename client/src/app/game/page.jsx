@@ -47,9 +47,11 @@ const TrackList = () => {
     try {
       const requestOptions = {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
         credentials: "include", // For including cookies in the request
-        Authorization: `Bearer ${spotifyToken}`, // Assuming the token is used for authorization
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${spotifyToken}`, // Assuming the token is used for authorization
+        },
       };
       // Missing fetch call added here
       fetch(`${backendUrl}/user_info`, requestOptions)

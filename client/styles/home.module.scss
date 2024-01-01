@@ -1,66 +1,9 @@
 @import "./variables.module";
 
-.title {
-  color: #D7AC40;
-  text-align: center;
-  font-family: "logo";
-  font-size: 150px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  position: relative;
-  padding-top: 0px; 
-  padding-bottom: 200px;
-}
-
-.title span {
-  display: inline-block;
-  margin-right: 10px;
-  color: #D7AC40;
-  animation: colorChange 1.6s ease-in-out;
-}
-
-/* Delay each letter's animation */
-.title span:nth-child(1) {
-  animation-delay: 0s;
-}
-
-.title span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.title span:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-.title span:nth-child(4) {
-  animation-delay: 0.6s;
-}
-
-.title span:nth-child(5) {
-  animation-delay: 0.8s;
-}
-
-.title span:nth-child(6) {
-  animation-delay: 1.0s;
-}
-
-.title span:nth-child(7) {
-  animation-delay: 1.2s;
-}
-
-.title span:nth-child(8) {
-  animation-delay: 1.4s;
-}
-
-.title span:nth-child(9) {
-  animation-delay: 1.6s;
-}
-
-
 @keyframes colorChange {
-  0%, 100% {
-    color: #D7AC40;
+  0%,
+  100% {
+    color: $color-primary;
   }
   50% {
     color: white;
@@ -75,10 +18,58 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  .title {
+    color: $color-primary;
+    text-align: center;
+    font-family: $primary-cursive;
+    font-size: 6rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    position: relative;
+    padding-top: 0px;
+    padding-bottom: 0rem;
+    margin-left: 0.5rem;
+    margin-right: 1rem;
+  }
 
-  h2 {
+  .title span {
+    display: inline-block;
+    margin-right: 10px;
+    color: $color-primary;
+    animation: colorChange 1.2s ease-in-out;
+  }
+  /* Delay each letter's animation */
+  .title span:nth-child(1) {
+    animation-delay: 0s;
+  }
+  .title span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .title span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  .title span:nth-child(4) {
+    animation-delay: 0.6s;
+  }
+  .title span:nth-child(5) {
+    animation-delay: 0.8s;
+  }
+  .title span:nth-child(6) {
+    animation-delay: 1s;
+  }
+  .title span:nth-child(7) {
+    animation-delay: 1.2s;
+  }
+  .title span:nth-child(8) {
+    animation-delay: 1.4s;
+  }
+  .title span:nth-child(9) {
+    animation-delay: 1.6s;
+  }
+  .summary {
     color: white;
-    margin: 10px 0;
+    font-size: 3rem;
   }
 
   a,
@@ -86,16 +77,87 @@
   button {
     margin: 10px 0;
   }
+
+  /* Marquee Styling */
+  .scrolling_text {
+    color: white;
+    font-size: 2em;
+    padding: 1em 0.5em 0 0.5em;
+  }
+  .marquee {
+    width: 90%;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+    animation: marquee 15s linear infinite;
+  }
+
+  /* CSS for login button*/
+  .spotify_login_button {
+    appearance: none;
+    background-color: $button-color;
+    border: 1px solid rgba(27, 31, 35, 0.15);
+    border-radius: 20px;
+    box-shadow: rgba(27, 31, 35, 0.1) 0 1px 0;
+    box-sizing: border-box;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    display: inline-block;
+    font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial,
+      sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-size: $web_button_size;
+    font-weight: 600;
+    line-height: 20px;
+    padding: 20px 20px 20px 20px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: middle;
+    white-space: nowrap;
+    transition: background-color 0.5s ease; /* Add this line */
+    transition: color 0.1 ease;
+  }
+
+  .spotify_login_button:focus:not(:focus-visible):not(.focus-visible) {
+    box-shadow: none;
+    outline: none;
+    color: rgb(0, 0, 0);
+  }
+
+  .spotify_login_button:hover {
+    background-color: $spotify-color;
+    color: rgb(256, 256, 256);
+  }
+
+  .spotify_login_button:focus {
+    box-shadow: rgb(0, 0, 0, 0.4) 0 0 0 3px;
+    outline: none;
+  }
+
+  .spotify_login_button:disabled {
+    background-color: $spotify-color;
+    border-color: rgba(27, 31, 35, 0.1);
+    color: rgb(0, 0, 0);
+    cursor: default;
+  }
+
+  .spotify_login_button:active {
+    background-color: $spotify-color;
+    box-shadow: rgba(20, 70, 32, 0.2) 0 1px 0 inset;
+    color: rgb(64, 64, 64);
+  }
 }
 @font-face {
   font-family: "logo";
-  src: url('../fonts/Mexcellent.eot');
-  src: url('../fonts/Mexcellent.eot') format('embedded-opentype'),
-       url('../fonts/Mexcellent.woff2') format('woff2'),
-       url('../fonts/Mexcellent.woff') format('woff'),
-       url('../fonts/Mexcellent.ttf') format('truetype');
+  src: url("../fonts/Mexcellent.eot");
+  src: url("../fonts/Mexcellent.eot") format("embedded-opentype"),
+    url("../fonts/Mexcellent.woff2") format("woff2"),
+    url("../fonts/Mexcellent.woff") format("woff"),
+    url("../fonts/Mexcellent.ttf") format("truetype");
 }
-
 @keyframes titleFadeInFromLeft {
   from {
     opacity: 0;
@@ -106,96 +168,39 @@
     transform: translateX(0);
   }
 }
-
-/* Marquee Styling */
-.scrolling_text {
-  color: white;
-  font-size: 2em;
-  padding: 1em 0.5em 0 0.5em;
-}
-.marquee {
-  width: 90%;
-  overflow: hidden;
-  white-space: nowrap;
-  box-sizing: border-box;
-  animation: marquee 15s linear infinite;
-}
-
-/* CSS for login button*/
-.spotify_login_button {
-  appearance: none;
-  background-color: $button-color;
-  border: 1px solid rgba(27, 31, 35, 0.15);
-  border-radius: 20px;
-  box-shadow: rgba(27, 31, 35, 0.1) 0 1px 0;
-  box-sizing: border-box;
-  color: rgb(0, 0, 0);
-  cursor: pointer;
-  display: inline-block;
-  font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial,
-    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-  font-size: $web_button_size;
-  font-weight: 600;
-  line-height: 20px;
-  padding: 20px 20px 20px 20px;
-  position: relative;
-  text-align: center;
-  text-decoration: none;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  vertical-align: middle;
-  white-space: nowrap;
-  transition: background-color 0.5s ease; /* Add this line */
-  transition: color 0.1 ease;
-}
-
-.spotify_login_button:focus:not(:focus-visible):not(.focus-visible) {
-  box-shadow: none;
-  outline: none;
-  color: rgb(0, 0, 0);
-}
-
-.spotify_login_button:hover {
-  background-color: $spotify-color;
-  color: rgb(256, 256, 256);
-}
-
-.spotify_login_button:focus {
-  box-shadow: rgb(0, 0, 0, 0.4) 0 0 0 3px;
-  outline: none;
-}
-
-.spotify_login_button:disabled {
-  background-color: $spotify-color;
-  border-color: rgba(27, 31, 35, 0.1);
-  color: rgb(0, 0, 0);
-  cursor: default;
-}
-
-.spotify_login_button:active {
-  background-color: $spotify-color;
-  box-shadow: rgba(20, 70, 32, 0.2) 0 1px 0 inset;
-  color: rgb(64, 64, 64);
-}
-
 @media only screen and (min-device-width: 320px) and (max-device-width: 568px) {
-  .title {
-    font-size: 6.5rem;
-    color: $color-primary;
-    font-weight: $title-weight;
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  .spotify_login_button {
-    margin-top: 30px;
-    font-size: 1.8rem;
-    padding-top: 15px;
-    padding-bottom: 15px;
-  }
   .container {
     margin-bottom: 0px;
-    margin-top: 0px;
+    margin-top: -4rem;
     height: 100vh;
+    .title span {
+      font-size: 4rem;
+      color: $color-primary;
+      font-family: $primary-font;
+      font-weight: $title-weight;
+      text-align: center;
+      margin-left: 0rem;
+      margin-right: 0rem;
+      margin-top: -4rem;
+      padding-top: -2rem;
+    }
+    .summary {
+      color: white;
+      font-size: 1.5rem;
+    }
+    .spotify_login_button {
+      margin-top: 1.5rem;
+      font-size: 1.5rem;
+      padding-top: 15px;
+      padding-bottom: 15px;
+    }
+    .marquee{
+      width:75%;
+    }
+  }
+}
+@media only screen and (min-device-width: 1400px) {
+  .title span {
+    font-size: 10rem;
   }
 }

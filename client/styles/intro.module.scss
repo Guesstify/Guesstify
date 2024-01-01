@@ -114,4 +114,11 @@ $title-size-large: 600%;
     margin-left: 80%;
     margin-right: 80%;
   }
+}@media only screen and (min-device-width: 320px) and (max-device-width: 568px) {
+  .container{
+    margin-top: -4rem;
+  }
+  .title {
+    font-family: $primary-font;
+  }
 }
