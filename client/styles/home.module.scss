@@ -171,16 +171,17 @@
 @media only screen and (min-device-width: 320px) and (max-device-width: 568px) {
   .container {
     margin-bottom: 0px;
-    margin-top: 0px;
+    margin-top: -4rem;
     height: 100vh;
     .title span {
-      font-size: 3rem;
+      font-size: 4rem;
       color: $color-primary;
+      font-family: $primary-font;
       font-weight: $title-weight;
       text-align: center;
       margin-left: 0rem;
       margin-right: 0rem;
-      margin-top: -2rem;
+      margin-top: -4rem;
       padding-top: -2rem;
     }
     .summary {
