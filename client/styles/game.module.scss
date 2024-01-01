@@ -6,7 +6,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh; // Ensure the container takes at least the full height of the viewport
+  min-height: 110vh; // Ensure the container takes at least the full height of the viewport
   width: 100vw;
   .title {
     color: $color-primary;
@@ -34,8 +34,22 @@
     display: flex;
     justify-content: center; /* Horizontally centers the container's content */
     align-items: center; /* Vertically centers the container's content */
-    margin-top: -1rem;
+    margin-top: 0.5rem;
   }
+  .heartsContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-top: -20px; /* Increase this value if you need to move it up more */
+    margin-bottom: 10rem;
+  }
+
+  .hearts {
+    font-size: 1.5rem;
+    margin-right: 4px;
+  }
+
   .title_question {
     margin-top: -1.5rem;
     color: white;
@@ -81,13 +95,13 @@
   .container {
     margin-top: -8rem;
     height: 110vh;
-    .title{
+    .title {
       font-size: 5rem;
-      font-family: $primary-font
+      font-family: $primary-font;
     }
-    .title_question{
+    .title_question {
       font-size: 1.5rem;
-      font-family: $primary-font
+      font-family: $primary-font;
     }
     .game_button {
       font-size: 200%;
@@ -107,7 +121,7 @@
           font-size: 1rem;
           text-align: center;
           height: 5rem;
-          width: 5rem;
+          width: 10rem;
         }
       }
     }
