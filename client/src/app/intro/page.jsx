@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import style from "../../../styles/intro.module.scss";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 const About = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -10,20 +10,20 @@ const About = () => {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   useEffect(() => {
-    const spotifyToken = Cookies.get('spotify_token') // => 'value'
+    const spotifyToken = Cookies.get("spotify_token"); // => 'value'
+    console.log(spotifyToken);
     // Retrieve the Spotify token
-    console.log("spotify_token", spotifyToken)
     const requestOptions = {
       method: "GET",
       credentials: "include", // For including cookies in the request
       headers: {
         accept: "application/json",
-        'Authorization': `Bearer ${spotifyToken}` // Assuming the token is used for authorization
+        Authorization: `Bearer ${spotifyToken}`, // Assuming the token is used for authorization
       },
     };
     fetch(`${backendUrl}/user_info`, requestOptions)
       .then((response) => {
-        console.log("user_info")
+        console.log("user_info");
         if (!response.ok) {
           console.log(response.details);
           console.log(response.status);
