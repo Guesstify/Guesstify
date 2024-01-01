@@ -78,8 +78,28 @@
 }
 
 @media only screen and (min-device-width: 320px) and (max-device-width: 568px) {
-  .game_button {
-    font-size: 200%;
-    padding: 10px 10px 20px 10px;
+  .container {
+    .game_button {
+      font-size: 200%;
+      padding: 10px 10px 20px 10px;
+    }
+    .track_selectors {
+      .parentOfSong {
+        .image {
+          width: 80%;
+          justify-self: end;
+          height: auto;
+          border-radius: 10%; /* Optional: if you want rounded corners */
+          box-shadow: 0 0 4px 4px white;
+        }
+        .track_names {
+          color: white;
+          font-size: 1rem;
+          text-align: center;
+          height: 5rem;
+          width: 5rem;
+        }
+      }
+    }
   }
 }
