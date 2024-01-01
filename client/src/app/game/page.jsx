@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import style from "../../../styles/game.module.scss";
+import Cookies from "js-cookie";
 
 const TrackList = () => {
   const [tracks, setTracks] = useState([]);
@@ -16,11 +17,17 @@ const TrackList = () => {
   const [rightStreak, setRightStreak] = useState(0);
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const fetchData = async () => {
+    const spotifyToken = Cookies.get("spotify_token"); // => 'value'
+    const requestOptions = {
+      method: "GET",
+      credentials: "include", // For including cookies in the request
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${spotifyToken}`, // Assuming the token is used for authorization
+      },
+    };
     try {
-      fetch(`${backendUrl}/user_top_tracks`, {
-        method: "GET",
-        credentials: "include",
-      })
+      fetch(`${backendUrl}/user_top_tracks`, requestOptions)
         .then((response) => response.json())
         .then((data) => {
           setTracks(data);
@@ -42,6 +49,7 @@ const TrackList = () => {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include", // For including cookies in the request
+        Authorization: `Bearer ${spotifyToken}`, // Assuming the token is used for authorization
       };
       // Missing fetch call added here
       fetch(`${backendUrl}/user_info`, requestOptions)
@@ -86,7 +94,6 @@ const TrackList = () => {
       getTrack(setRightTrack, "none");
     }
   }, [score]); // Dependency array
-
 
   //Adjust game score when final score changes
   useEffect(() => {
