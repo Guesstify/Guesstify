@@ -1,5 +1,5 @@
 from typing import Union
-from fastapi import FastAPI, Request, Response, HTTPException, Header, Depends
+from fastapi import FastAPI, Request, Response, HTTPException, Header, Depends, Cookie
 from fastapi.responses import RedirectResponse
 from fastapi import FastAPI
 import secrets
@@ -61,16 +61,15 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return "Stop"
+    return "Stops"
 
 
 @app.get("/get-cookie")
-async def get_cookie(request: Request):
+async def get_cookie(spotify_token: str = Cookie(None)):
     """Gets the Spotify token cookie."""
-    token = request.cookies.get("spotify_token")
-    print(token)
-    if token:
-        return token
+    print("cookie value: ", spotify_token)
+    if spotify_token:
+        return spotify_token
     else:
         raise HTTPException(status_code=400, detail="No cookie")
 
@@ -155,17 +154,14 @@ async def callback(code: str = None, state: str = None):
                 token_query = urllib.parse.urlencode(token_data)
 
                 # Redirect URL for your frontend, must return cookie as part of the response
-                frontend_redirect_url = f"{front_end_url}/load?token={token_query}"
+                frontend_redirect_url = f"{front_end_url}/intro"
                 response = RedirectResponse(url=frontend_redirect_url)
                 print("response", response)
                 print("callback", token_data["access_token"])
-                # response.set_cookie(
-                #     key="spotify_token",
-                #     value=token_data["access_token"],
-                #     httponly=True,
-                #     samesite="None",
-                #     secure=True,
-                # )
+                response.set_cookie(
+                    key="spotify_token",
+                    value=token_data["access_token"]
+                )
                 return response
             else:
                 raise HTTPException(
@@ -213,9 +209,11 @@ async def user_info(authorization: str = Header(None)):
 
 
 @app.get("/user_top_tracks")
-async def user_top_tracks(request: Request, limit: int = 100, offset: int = 5):
+async def user_top_tracks(request: Request, limit: int = 50, offset: int = 0):
     """Gets the user's top 50 tracks."""
+    print("hereeee")
     token = request.cookies.get("spotify_token")
+    print(token)
     if token:
         url = "https://api.spotify.com/v1/me/top/tracks"
         headers = {"Authorization": f"Bearer {token}"}
@@ -223,6 +221,7 @@ async def user_top_tracks(request: Request, limit: int = 100, offset: int = 5):
 
         async with httpx.AsyncClient() as client:
             response = await client.get(url, headers=headers, params=params)
+
 
             if response.status_code != 200:
                 raise HTTPException(

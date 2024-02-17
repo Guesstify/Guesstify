@@ -24,11 +24,10 @@ export default function Home() {
       </header>
       <div className={style.container}>
         <div className={style.title}>
-          <span>G</span>
-          <span>U</span>
-          <span>E</span>
           <span>S</span>
-          <span>S</span>
+          <span>P</span>
+          <span>A</span>
+          <span>W</span>
           <span>T</span>
           <span>I</span>
           <span>F</span>

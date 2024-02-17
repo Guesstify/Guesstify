@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import style from "../../../styles/game.module.scss";
+import Cookies from 'js-cookie';
 
 const TrackList = () => {
   const [tracks, setTracks] = useState([]);
@@ -17,9 +18,18 @@ const TrackList = () => {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const fetchData = async () => {
     try {
+      const spotifyToken = Cookies.get('spotify_token')
+
+      console.log("yetttta")
+      console.log(spotifyToken)
+
       fetch(`${backendUrl}/user_top_tracks`, {
         method: "GET",
         credentials: "include",
+        headers: {
+          accept: "application/json",
+          'Authorization': `Bearer ${spotifyToken}` // Assuming the token is used for authorization
+        },
       })
         .then((response) => response.json())
         .then((data) => {
