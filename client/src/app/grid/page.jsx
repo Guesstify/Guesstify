@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import style from "../../../styles/intro.module.scss";
 import Cookies from 'js-cookie';
 
-const Request = () => {
+const Grid = () => {
   const [userInfo, setUserInfo] = useState(null);
   const router = useRouter();
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -65,4 +65,4 @@ const Request = () => {
   );
 };
 
-export default Request;
+export default Grid;

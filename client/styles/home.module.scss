@@ -1,7 +1,7 @@
 @import "./variables.module";
 
 .title {
-  color: #D7AC40;
+  color: rgb(111, 78, 55);
   text-align: center;
   font-family: "logo";
   font-size: 150px;
@@ -16,7 +16,7 @@
 .title span {
   display: inline-block;
   margin-right: 10px;
-  color: #D7AC40;
+  color: rgb(111, 78, 55);
   animation: colorChange 1.6s ease-in-out;
 }
 
