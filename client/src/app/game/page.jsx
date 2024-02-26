@@ -20,8 +20,6 @@ const TrackList = () => {
     try {
       const spotifyToken = Cookies.get('spotify_token')
 
-      console.log("yetttta")
-      console.log(spotifyToken)
 
       fetch(`${backendUrl}/user_top_tracks`, {
         method: "GET",

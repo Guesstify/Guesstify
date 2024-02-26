@@ -52,7 +52,6 @@ const About = () => {
       <p className={style.summary}>
         Hey {userInfo ? userInfo.display_name : "Guest"}!!! <br></br>
         Lets see how well you know your music!
-        {backendUrl}
       </p>
       <div>
         <button className={style.game_button} onClick={handleGlobal}>

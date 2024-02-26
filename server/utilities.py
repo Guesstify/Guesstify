@@ -2,7 +2,7 @@ import os
 import json
 import random
 
-def form_list(response):
+def form_track_list(response):
     rank = 1
 
     data_list = []
@@ -18,7 +18,6 @@ def form_list(response):
     random.shuffle(data_list)
     return data_list
 
-
 # {
 #     "user":"name"
 #     "data":[
@@ -28,6 +27,28 @@ def form_list(response):
 #             "Snippet" : "Link for 30 second playback",
 #             "Album Cover" : "Probably a link",
 #             "Artist" : "artist link",
+#         }
+#     ]
+# }
+
+
+def form_artist_list(response):
+
+    data_list = []
+    for item in response["items"]:
+        item_data = {}
+        item_data["artist_name"] = item["name"]
+        item_data["artist_picture"] = item["images"][0]["url"]
+        data_list.append(item_data)
+    return data_list
+
+
+# {
+#     "data": [
+#         {
+#             "artist_name": "name of artist",
+#             "artist_picture": "picture link",
+
 #         }
 #     ]
 # }

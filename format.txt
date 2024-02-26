@@ -1,4 +1,4 @@
-JSON RESPONSE FOR TOP 100 TRACKS
+JSON RESPONSE FOR TOP 50 TRACKS
 1. Introduce a rank componenent
 {
     "user":"name"
@@ -9,6 +9,20 @@ JSON RESPONSE FOR TOP 100 TRACKS
             "snippet" : "Link for 30 second playback",
             "album_cover" : "Probably a link",
             "artist" : "artist link",
+        }
+    ]
+}
+
+
+
+JSON RESPONSE FOR TOP 24 ARTISTS
+{
+    "user": "name"
+    "data": [
+        {
+            "artist_name": "name of artist",
+            "artist_picture": "picture link",
+
         }
     ]
 }

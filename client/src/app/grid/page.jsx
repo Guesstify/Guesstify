@@ -1,68 +1,69 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import style from "../../../styles/intro.module.scss";
+import style from "../../../styles/grid.module.scss";
 import Cookies from 'js-cookie';
 
-const Grid = () => {
-  const [userInfo, setUserInfo] = useState(null);
-  const router = useRouter();
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  useEffect(() => {
-    const spotifyToken = Cookies.get('spotify_token') // => 'value'
-    // Retrieve the Spotify token
-    console.log("spotify_token", spotifyToken)
-    const requestOptions = {
-      method: "GET",
-      credentials: "include", // For including cookies in the request
-      headers: {
-        accept: "application/json",
-        'Authorization': `Bearer ${spotifyToken}` // Assuming the token is used for authorization
-      },
-    };
-    fetch(`${backendUrl}/user_info`, requestOptions)
-      .then((response) => {
-        console.log("user_info")
+
+const ImageGrid = ({ data }) => {
+
+  return (
+      <div className={style.image_grid}>
+          {data.map((item, index) => (
+              <div key={index} className={style.grid_item}>
+                  <img src={item.artist_picture} alt={`Artist: ${item.artist_name}`} onClick={() => ChooseArtist(item.artist_name)} />
+                  <p>{item.artist_name}</p>
+              </div>
+          ))}
+      </div>
+  );
+};
+
+const ChooseArtist = (ArtistName) => {
+  console.log(ArtistName, " clicked")
+}
+
+const Grid = () => {
+   const [artists, setArtists] = useState([]);
+   const [isLoading, setIsLoading] = useState(true);
+   const spotifyToken = Cookies.get('spotify_token')
+
+    useEffect(() => {
+      fetch(`${backendUrl}/user_top_artists`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          'Authorization': `Bearer ${spotifyToken}`
+        },
+      })
+      .then(response => {
         if (!response.ok) {
-          console.log(response.details);
-          console.log(response.status);
-          console.log(response.statusText);
-          throw new Error("Network response was not ok");
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
       })
-      .then((data) => {
-        setUserInfo(data);
-        console.log(data);
+      .then(fetchData => {
+        setArtists(fetchData);
+        setIsLoading(false);
       })
-      .catch((error) => console.error("Error:", error));
-  }, []);
+      .catch(error => console.error("Failed to fetch artist data:", error));
+    }, []);
 
-  // Handling function for clicking the "Start Game" button
-  const handleGlobal = () => {
-    // Perform actions when the "Start Game" button is clicked
-    // console.log("Entering Game");
-    router.push("/game/");
-  };
-
-  return (
-    <div className={style.container}>
-      <h1 className={style.title}>Guesstify</h1>
-      <p className={style.summary}>
-        Hey {userInfo ? userInfo.display_name : "Guest"}!!! <br></br>
-        Lets see how well you know your music!
-        {backendUrl}
-      </p>
-      <div>
-        <button className={style.game_button} onClick={handleGlobal}>
-          Play
-        </button>
-        {/* This is the second mode to implement */}
-        {/* <button onClick={handleShared}>Shared Mode</button> */}
-      </div>
-    </div>
+    return ( 
+      <div className={style.container}>
+            <h1>Your Top Artists</h1>
+            {isLoading ? (
+                <div className={style.spinner}></div> // Display spinner when loading
+              ) : (
+                <ImageGrid data={artists} />
+              )
+            }
+        </div>
   );
+
+  
 };
 
 export default Grid;

@@ -16,6 +16,7 @@ from pydantic import BaseModel
 import utilities
 import requests
 import os
+from datetime import datetime, timedelta
 
 app = FastAPI()
 load_dotenv(".env.local")
@@ -158,9 +159,12 @@ async def callback(code: str = None, state: str = None):
                 response = RedirectResponse(url=frontend_redirect_url)
                 print("response", response)
                 print("callback", token_data["access_token"])
+                ten_years = timedelta(days=365 * 10)
+                expires = datetime.now() + ten_years
                 response.set_cookie(
                     key="spotify_token",
-                    value=token_data["access_token"]
+                    value=token_data["access_token"],
+                    expires=ten_years.total_seconds(),
                 )
                 return response
             else:
@@ -211,9 +215,7 @@ async def user_info(authorization: str = Header(None)):
 @app.get("/user_top_tracks")
 async def user_top_tracks(request: Request, limit: int = 50, offset: int = 0):
     """Gets the user's top 50 tracks."""
-    print("hereeee")
     token = request.cookies.get("spotify_token")
-    print(token)
     if token:
         url = "https://api.spotify.com/v1/me/top/tracks"
         headers = {"Authorization": f"Bearer {token}"}
@@ -228,9 +230,34 @@ async def user_top_tracks(request: Request, limit: int = 50, offset: int = 0):
                     status_code=response.status_code, detail=response.json()
                 )
 
-            return utilities.form_list(response.json())
+            return utilities.form_track_list(response.json())
     else:
         raise HTTPException(status_code=400, detail="No cookie")
+
+@app.get("/user_top_artists")
+async def user_top_tracks(request: Request, limit: int = 24, offset: int = 0):
+    """Gets the user's top 24 artists."""
+    token = request.cookies.get("spotify_token")
+    if token:
+        url = "https://api.spotify.com/v1/me/top/artists"
+        headers = {"Authorization": f"Bearer {token}"}
+        params = {"time_range": "medium_term", "limit": limit, "offset": offset}
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, headers=headers, params=params)
+
+
+            if response.status_code != 200:
+                raise HTTPException(
+                    status_code=response.status_code, detail=response.json()
+                )
+
+            return utilities.form_artist_list(response.json())
+    else:
+        raise HTTPException(status_code=400, detail="No cookie")
+
+
+
 
 
 @app.post("/store_game")
