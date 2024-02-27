@@ -12,10 +12,32 @@ const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
          let selectedIndex = dropdown.selectedIndex;
          // get a selected option and text value using the text property
          let selectedValue = dropdown.options[selectedIndex].text;
-         output.innerHTML = "The selected value is " + selectedValue;
       }
 
 const Recommend = () => {
+
+    const spotifyToken = Cookies.get('spotify_token')
+
+    useEffect(() => {
+      fetch(`${backendUrl}/user_top_artists`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          'Authorization': `Bearer ${spotifyToken}`
+        },
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(fetchData => {
+        setArtists(fetchData["data_list"]);
+        setIsLoading(false);
+      })
+      .catch(error => console.error("Failed to fetch artist data:", error));
+    }, []);
 
     return ( 
         <div className={style.container}>
@@ -34,13 +56,19 @@ const Recommend = () => {
                     <option>Latin</option>
                     <option>Metal</option>
                     <option>Movies</option>
+                    <option>Piano</option>
+                    <option>Pop</option>
+
                 </select>
 
                 <h2>Energy</h2>
-                <input type="range" id="energy" name="energy"></input>
+                <input type="range" id="energy" name="energy" min="0" max="1" step="0.01"></input>
 
                 <h2>Danceability</h2>
-                <input type="range" id="danceability" name="danceability"></input>
+                <input type="range" id="danceability" name="danceability" min="0" max="1" step="0.01"></input>
+
+                <h2>Popularity</h2>
+                <input type="range" id="popularity" name="popularity" min="0" max="100" step="1"></input>
             </form>
         </div>
     );

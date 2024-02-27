@@ -31,10 +31,10 @@ const TrackList = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          setTracks(data);
+          setTracks(data["data_list"]);
           setGameInfo((prevGameInfo) => ({
             ...prevGameInfo,
-            tracks: data,
+            tracks: data["data_list"],
           }));
           setReady("ready");
         })
@@ -45,28 +45,28 @@ const TrackList = () => {
     } catch (error) {
       console.error("Error fetching game data:", error);
     }
-    try {
-      const requestOptions = {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include", // For including cookies in the request
-      };
-      // Missing fetch call added here
-      fetch(`${backendUrl}/user_info`, requestOptions)
-        .then((response) => response.json())
-        .then((data) => {
-          setUserInfo(data);
-          setGameInfo((prevGameInfo) => {
-            return {
-              ...prevGameInfo,
-              userName: data.display_name,
-            };
-          });
-        })
-        .catch((error) => console.error("Error:", error));
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
+    // try {
+    //   const requestOptions = {
+    //     method: "GET",
+    //     headers: { "Content-Type": "application/json" },
+    //     credentials: "include", // For including cookies in the request
+    //   };
+    //   // Missing fetch call added here
+    //   fetch(`${backendUrl}/user_info`, requestOptions)
+    //     .then((response) => response.json())
+    //     .then((data) => {
+    //       setUserInfo(data);
+    //       setGameInfo((prevGameInfo) => {
+    //         return {
+    //           ...prevGameInfo,
+    //           userName: data.display_name,
+    //         };
+    //       });
+    //     })
+    //     .catch((error) => console.error("Error:", error));
+    // } catch (error) {
+    //   console.error("Error fetching user data:", error);
+    // }
     console.log("initial fetch");
   };
 

@@ -45,7 +45,7 @@ const Grid = () => {
         return response.json();
       })
       .then(fetchData => {
-        setArtists(fetchData);
+        setArtists(fetchData["data_list"]);
         setIsLoading(false);
       })
       .catch(error => console.error("Failed to fetch artist data:", error));

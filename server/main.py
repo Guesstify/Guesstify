@@ -257,7 +257,31 @@ async def user_top_tracks(request: Request, limit: int = 24, offset: int = 0):
         raise HTTPException(status_code=400, detail="No cookie")
 
 
+@app.get("/recommend_songs")
+async def recommend_songs(request:Request, limit: int = 10, offset: int = 0):
+    # uses user listening history and chosen genre to recommend 10 songs
+    token = request.cookies.get("spotify_token")
+    if token:
+        url = "https://api.spotify.com/v1/recommendations"
+        headers = {"Authorization": f"Bearer {token}"}
+        params = {"time_range": "medium_term", "limit": limit, "offset": offset}
 
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, headers=headers, params=params)
+
+
+            if response.status_code != 200:
+                raise HTTPException(
+                    status_code=response.status_code, detail=response.json()
+                )
+
+            return utilities.recommend_songs(response.json())
+    else:
+        raise HTTPException(status_code=400, detail="No cookie")
+
+#need to lowercase all chars in genre string
+# for static usage: my top seeds artists are: 4SpbR6yFEvexJuaBpgAU5p,3TVXtAsR1Inumwj472S9r4,06HL4z0CvFAxyc27GXpf02,5K4W6rqBFWDnAN6FQUkS6x,6USv9qhCn6zfxlBQIYJ9qs
+# for static usage: my top seed tracks are: 7dJYggqjKo71KI9sLzqCs8,14mmDeJOYO6feKPLrdU2li,1aAKe7L1OKsoXJHqy8uMwH,2PspwQLfDzLUOyaxQ7de5L,0THW04vlFAkfflASMFam0t
 
 
 @app.post("/store_game")
