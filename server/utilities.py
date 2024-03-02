@@ -63,7 +63,7 @@ def form_artist_list(response):
                 genre_dict[genre] = []
                 genre_dict[genre].append(item["id"])
             else:
-                if len(genre_dict[genre] < 5):
+                if len(genre_dict[genre]) < 5:
                     genre_dict[genre].append(item["id"])
 
     returnDict["data_list"] = data_list
@@ -85,15 +85,15 @@ def form_artist_list(response):
 # }
 
 
-def recommend_songs(reponse):
+def recommend_songs(response):
 
     returnDict = {}
     data_list = []
 
     for item in response["tracks"]:
         item_data = {}
-        item_data["album_image"] = item["album"]["images"]["url"]
-        item_data["album_name"] = item["album"]["images"]["url"]
+        item_data["album_image"] = item["album"]["images"][0]["url"]
+        item_data["album_name"] = item["album"]["name"]
         item_data["artist_name"] = item["artists"][0]["name"]
         item_data["song_name"] = item["name"]
         item_data["song_snippet"] = item["preview_url"]

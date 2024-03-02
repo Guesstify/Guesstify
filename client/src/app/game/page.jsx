@@ -144,6 +144,7 @@ const TrackList = () => {
       </audio>
     );
   };
+  
   const audioPlayer = useMemo(
     () => <AudioPlayer src={newTrack.snippet} />,
     [newTrack]

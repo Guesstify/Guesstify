@@ -22,7 +22,7 @@
 
   .image_grid {
     display: grid;
-    grid-template-columns: repeat(8, 11vw); // 8 columns
+    grid-template-columns: repeat(6, 11vw); // 8 columns
     gap: 1vw; // Adjust the space between grid items as needed
     justify-content: center;
     max-width: 100vw;

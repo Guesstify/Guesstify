@@ -235,7 +235,7 @@ async def user_top_tracks(request: Request, limit: int = 50, offset: int = 0):
         raise HTTPException(status_code=400, detail="No cookie")
 
 @app.get("/user_top_artists")
-async def user_top_tracks(request: Request, limit: int = 24, offset: int = 0):
+async def user_top_tracks(request: Request, limit: int = 18, offset: int = 0):
     """Gets the user's top 24 artists."""
     token = request.cookies.get("spotify_token")
     if token:
@@ -258,17 +258,22 @@ async def user_top_tracks(request: Request, limit: int = 24, offset: int = 0):
 
 
 @app.get("/recommend_songs")
-async def recommend_songs(request:Request, limit: int = 10, offset: int = 0):
+async def recommend_songs(request:Request, limit: int = 10, market: str = "US"):
     # uses user listening history and chosen genre to recommend 10 songs
     token = request.cookies.get("spotify_token")
+    seed_genres = request.query_params.get("seed_genre").lower()
+    print(seed_genres)
+
+    if not seed_genres:
+        return HTTPException(status_code=500, detail="no_genre")
+    
     if token:
         url = "https://api.spotify.com/v1/recommendations"
         headers = {"Authorization": f"Bearer {token}"}
-        params = {"time_range": "medium_term", "limit": limit, "offset": offset}
+        params = {"seed_genres": seed_genres, "limit": limit, "market": market, "target_popularity": 100}
 
         async with httpx.AsyncClient() as client:
             response = await client.get(url, headers=headers, params=params)
-
 
             if response.status_code != 200:
                 raise HTTPException(
