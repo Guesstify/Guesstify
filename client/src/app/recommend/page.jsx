@@ -85,7 +85,7 @@ const Recommend = () => {
                     <option value="hip-hop">Hip-Hop</option>
                     <option value="indian">Indian</option>
                     <option value="indie">Indie</option>
-                    <option value="jazz">Jazz</option>
+                    <option value="jazz" >Jazz</option>
                     <option value="k-pop">K-Pop</option>
                     <option value="latin">Latin</option>
                     <option value="metal">Metal</option>
