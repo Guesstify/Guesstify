@@ -72,7 +72,7 @@ const Recommend = () => {
 
             <br></br>
 
-            {currentIndex > 0 && songList.length > 0 && <button name="prev" onClick={ () => setCurrentIndex(currentIndex-1)}>prev</button>}
+            {currentIndex  > 0 && songList.length > 0 && <button name="prev" onClick={ () => setCurrentIndex(currentIndex-1)}>prev</button>}
             {currentIndex < 17 && songList.length > 0 && <button name="next" onClick={ () => setCurrentIndex(currentIndex+1)}>next</button>}
             
             <form className={style.form} onSubmit={handleSubmit}>
