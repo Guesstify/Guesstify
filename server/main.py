@@ -26,6 +26,9 @@ front_end_url = os.getenv("FRONTEND_URL")
 backend_url = os.getenv("NEXT_PUBLIC_BACKEND_URL")
 redirect_uri = f"{backend_url}/login/callback"
 server_cookie = ""
+mongodb_password = os.getenv("MONGO_DB_PASSWORD")
+mongodb_user = os.getenv("MONGO_DB_USER")
+
 
 # MongoDB CODE
 # from pymongo.mongo_client import MongoClient
@@ -86,8 +89,9 @@ async def set_cookie(response: Response, token_data: TokenData):
     token = token_data.token
     # print(f"setting {token}")
     """Sets the Spotify token cookie."""
+    cookie_expiration_time = 10800
     response.set_cookie(
-        key="spotify_token", value=token, httponly=True, samesite="None", secure=True
+        key="spotify_token", value=token, httponly=True, samesite="None", secure=True, max_age=cookie_expiration_time
     )
 
 
@@ -122,7 +126,7 @@ async def login():
 @app.get("/login/callback")
 async def callback(code: str = None, state: str = None):
     """Handles the callback from Spotify's OAuth service."""
-    # Check if state is present
+    # Check if state is prdesent
     if state is None:
         raise HTTPException(status_code=400, detail="state_mismatch")
 
@@ -252,7 +256,8 @@ async def user_top_tracks(request: Request, limit: int = 18, offset: int = 0):
                     status_code=response.status_code, detail=response.json()
                 )
 
-            return utilities.form_artist_list(response.json())
+            returnVal = utilities.form_artist_list(response.json())
+            return returnVal
     else:
         raise HTTPException(status_code=400, detail="No cookie")
 
@@ -261,7 +266,9 @@ async def user_top_tracks(request: Request, limit: int = 18, offset: int = 0):
 async def recommend_songs(request:Request, limit: int = 10, market: str = "US"):
     # uses user listening history and chosen genre to recommend 10 songs
     token = request.cookies.get("spotify_token")
-    seed_genres = request.query_params.get("seed_genre").lower()
+    seed_genres = request.query_params.get("seed_genres").lower()
+    target_popularity = request.query_params.get("popularity")
+
     print(seed_genres)
 
     if not seed_genres:
@@ -270,7 +277,10 @@ async def recommend_songs(request:Request, limit: int = 10, market: str = "US"):
     if token:
         url = "https://api.spotify.com/v1/recommendations"
         headers = {"Authorization": f"Bearer {token}"}
-        params = {"seed_genres": seed_genres, "limit": limit, "market": market, "target_popularity": 100}
+        params = {"seed_genres": seed_genres, "limit": limit, "market": market, 
+                   "target_popularity": target_popularity,}
+
+        print(params)
 
         async with httpx.AsyncClient() as client:
             response = await client.get(url, headers=headers, params=params)
@@ -287,6 +297,33 @@ async def recommend_songs(request:Request, limit: int = 10, market: str = "US"):
 #need to lowercase all chars in genre string
 # for static usage: my top seeds artists are: 4SpbR6yFEvexJuaBpgAU5p,3TVXtAsR1Inumwj472S9r4,06HL4z0CvFAxyc27GXpf02,5K4W6rqBFWDnAN6FQUkS6x,6USv9qhCn6zfxlBQIYJ9qs
 # for static usage: my top seed tracks are: 7dJYggqjKo71KI9sLzqCs8,14mmDeJOYO6feKPLrdU2li,1aAKe7L1OKsoXJHqy8uMwH,2PspwQLfDzLUOyaxQ7de5L,0THW04vlFAkfflASMFam0t
+
+@app.get("/artist_top_tracks")
+async def recommend_songs(request:Request, market: str = "US"):
+    # uses user listening history and chosen genre to recommend 10 songs
+    token = request.cookies.get("spotify_token")
+    artist_id = request.query_params.get("artist_id")
+    
+    if token:
+        url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks"
+        headers = {"Authorization": f"Bearer {token}"}
+        params = {"market": market}
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, headers=headers, params=params)
+
+            if response.status_code != 200:
+                print("issue here")
+                raise HTTPException(
+                    status_code=response.status_code, detail=response.json()
+                )
+
+            returnVal= utilities.artist_fetch_info(response.json())
+            print(returnVal)
+            return returnVal
+    else:
+        raise HTTPException(status_code=400, detail="No cookie")
+
 
 
 @app.post("/store_game")

@@ -18,7 +18,7 @@ const RecommendImage = ({ data, currentIndex }) => {
     <div className={style.recommend_image}>
       <img src={data[currentIndex].album_image} onClick={() => ChooseArtist(data[currentIndex].artist_name)} />
       <p className={style.descriptionSong}>{data[currentIndex].song_name}</p>
-      <p className={style.description}>{data[currentIndex].artist_name}</p>
+      {/* <p className={style.description}>{data[currentIndex].artist_name}</p> */}
     </div>
   );
 };
@@ -27,7 +27,7 @@ const Recommend = () => {
     const [myGenre, setMyGenre] = useState("Choose a genre!");
     const [energy, setEnergy] = useState(0.5);
     const [danceability, setDanceability] = useState(0.5);
-    const [popularity, setPopularity] = useState(0.5);
+    const [popularity, setPopularity] = useState(50);
     const [songList, setSongList] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -35,7 +35,7 @@ const Recommend = () => {
     const handleSubmit = async (event) => {
       event.preventDefault(); // Prevent default form submission behavior
     
-      fetch(`${backendUrl}/recommend_songs?seed_genre=${myGenre}`, {
+      fetch(`${backendUrl}/recommend_songs?seed_genres=${myGenre}&energy=${energy}&popularity=${popularity}`, {
         method: "GET",
         credentials: "include",
         headers: {
@@ -73,7 +73,7 @@ const Recommend = () => {
             <br></br>
 
             {currentIndex  > 0 && songList.length > 0 && <button name="prev" onClick={ () => setCurrentIndex(currentIndex-1)}>prev</button>}
-            {currentIndex < 17 && songList.length > 0 && <button name="next" onClick={ () => setCurrentIndex(currentIndex+1)}>next</button>}
+            {currentIndex < songList.length-1 && songList.length > 0 && <button name="next" onClick={ () => setCurrentIndex(currentIndex+1)}>next</button>}
             
             <form className={style.form} onSubmit={handleSubmit}>
                 <h2>Genre Seed</h2>

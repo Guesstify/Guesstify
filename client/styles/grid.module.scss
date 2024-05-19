@@ -13,7 +13,8 @@
   margin: 0; // Remove default margins
   padding: 0; // Remove default paddings
   overflow: hidden; // Hide overflow to prevent scrollbars
-  background-color: rgb(111, 78, 55);;
+  background-color: $background-color;
+  font-family: sans-serif;
   
   h1{
     font-family: sans-serif;
@@ -56,6 +57,100 @@
             font-weight: bold;
             color: rgb(251, 236, 216);
         }
+
+        
     }
+    
+  }
 }
+
+
+
+.modal{
+  width: 74vw;
+  height: 84vh;
+  background-color: $text-color;
+  display: flex;
+
+  .artistInfo{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-left: 5vw;
+    margin-top: 4vh;
+
+    h1{
+      font-size: xxx-large;
+      margin-top: 5vh;
+      margin-left: 0vw;
+      font-family: sans-serif;
+      color: $background-color;
+    }
+
+    img{
+      transition: transform ease-out 0.3s;
+    }
+    img:hover { transform: scale(1.08); }
+
+    .card_image{
+      margin-top: 3vh;
+      margin-left: 0vw;
+      height: 45vh;
+      width: auto;
+    }
+  }
+
+  .songList{
+    position: absolute;
+    top: 0; // Align to the top of the .modal
+    right: 0; // Align to the right of the .modal
+    margin-right: 1em;
+    margin-bottom: 1em;
+    margin-left: 1em;
+    margin-top: 3.5vh;
+    width: 40%;
+    
+
+    word-wrap: break-word; // This ensures that long words will break and wrap onto the next line
+    max-width: 100%; // This restricts the width of the title to the width of its container
+
+    .trackItem {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1vh; // Space between track items
+    
+      img{
+        transition: transform ease-out 0.3s;
+      }
+      img:hover { transform: scale(1.15); }
+
+      .albumArt {
+        width: 7vw; // Adjust the size as needed
+        height: auto; // Adjust the size as needed
+        margin-right: 1em; // Space between image and text
+      }
+    
+      .trackInfo {
+        text-align: left;
+        p{
+          font-size: large;
+          font-family: sans-serif;
+          color: $background-color;
+          margin-top: 1.5vh;
+          margin-bottom: 1.5vh;
+          font-style: bolder;
+        }
+      }
+    }
+    
+  }
+  .close{
+    position:absolute;
+    top: 2%;
+    right: 2%;
+  }
+
+  
+
 }
+

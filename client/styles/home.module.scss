@@ -17,7 +17,7 @@
   display: inline-block;
   margin-right: 10px;
   color: rgb(111, 78, 55);
-  animation: colorChange 1.6s ease-in-out;
+  animation: colorChange 8s ease-in-out infinite;
 }
 
 /* Delay each letter's animation */
@@ -59,11 +59,14 @@
 
 
 @keyframes colorChange {
-  0%, 100% {
+  0%, 20%{
     color: #D7AC40;
   }
-  50% {
+  10% {
     color: white;
+  }
+  30%, 100% {
+    color: rgb(111, 78, 55);  /* Return to initial color */
   }
 }
 .container {
@@ -87,14 +90,20 @@
     margin: 10px 0;
   }
 }
+// @font-face {
 @font-face {
-  font-family: "logo";
-  src: url('../fonts/Mexcellent.eot');
-  src: url('../fonts/Mexcellent.eot') format('embedded-opentype'),
-       url('../fonts/Mexcellent.woff2') format('woff2'),
-       url('../fonts/Mexcellent.woff') format('woff'),
-       url('../fonts/Mexcellent.ttf') format('truetype');
-}
+  font-family: 'logo';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../fonts/Mordis-DYYnd.woff') format('woff');
+  }
+//   font-family: "logo";
+//   src: url('../fonts/Mexcellent.eot');
+//   src: url('../fonts/Mexcellent.eot') format('embedded-opentype'),
+//        url('../fonts/Mexcellent.woff2') format('woff2'),
+//        url('../fonts/Mexcellent.woff') format('woff'),
+//        url('../fonts/Mexcellent.ttf') format('truetype');
+// }
 
 @keyframes titleFadeInFromLeft {
   from {

@@ -23,15 +23,14 @@ export default function Home() {
         <title>Guesstify</title>
       </header>
       <div className={style.container}>
+          <h1>Spotify</h1>
         <div className={style.title}>
-          <span>S</span>
-          <span>P</span>
-          <span>A</span>
-          <span>W</span>
-          <span>T</span>
+          <span>V</span>
           <span>I</span>
-          <span>F</span>
+          <span>N</span>
           <span>Y</span>
+          <span>L</span>
+          <span>S</span>
         </div>
         <Link
           className={style.spotify_login_button}

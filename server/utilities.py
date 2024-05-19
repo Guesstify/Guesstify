@@ -52,7 +52,10 @@ def form_artist_list(response):
         item_data = {}
         item_data["artist_name"] = item["name"]
         item_data["artist_picture"] = item["images"][0]["url"]
+        item_data["id"] = item["id"]
         data_list.append(item_data)
+
+
         if len(top_seeds) < 5:
             top_seeds.append(item["id"])
 
@@ -65,6 +68,7 @@ def form_artist_list(response):
             else:
                 if len(genre_dict[genre]) < 5:
                     genre_dict[genre].append(item["id"])
+
 
     returnDict["data_list"] = data_list
     returnDict["top_seeds"] = top_seeds
@@ -104,7 +108,23 @@ def recommend_songs(response):
     return returnDict
 
 
+def artist_fetch_info(response):
+    returnDict = {}
+    data_list = []
 
+    for track in response["tracks"]:
+        if len(data_list) > 4:
+            break
+        item_data = {}
+        item_data["track_name"] = track["name"]
+        item_data["album_name"] = track["album"]["name"]
+        item_data["album_image"] = track["album"]["images"][0]["url"]
+        item_data["popularity"] = track["popularity"]
+        data_list.append(item_data)
+
+    returnDict["data_list"] = data_list
+
+    return returnDict
 
 
 
