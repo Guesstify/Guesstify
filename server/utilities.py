@@ -126,6 +126,28 @@ def artist_fetch_info(response):
 
     return returnDict
 
+def form_playlist_list(response):
+    returnDict = {}
+    data_list = []
+
+    #if the playlist doesn't have at least 15 tracks, it doesn't work
+    for playlist in response["items"]:
+
+        if playlist["images"] == None or playlist["tracks"]["total"] < 15:
+            continue
+
+        item_data = {}
+        item_data["playlist_name"] = playlist["name"]
+
+        item_data["playlist_image"] = playlist["images"][0]["url"]
+        item_data["playlist_owner"] = playlist["owner"]["id"]
+        item_data["playlist_id"] = playlist["id"]
+        data_list.append(item_data)
+
+    returnDict["data_list"] = data_list
+
+    return returnDict
+
 
 
 # for each artist returned, create a hash map with artists' genre as key and artist id as value such that we can use it for recommender

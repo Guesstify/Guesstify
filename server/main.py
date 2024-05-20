@@ -15,6 +15,7 @@ from starlette.middleware.cors import CORSMiddleware as CORSMiddleware
 from pydantic import BaseModel
 import utilities
 import requests
+import time
 import os
 from datetime import datetime, timedelta
 
@@ -108,7 +109,7 @@ async def login():
     # Generate a random string for the state parameter
     state = secrets.token_urlsafe(16)
 
-    app_permissions = "user-read-private user-read-email user-top-read user-modify-playback-state user-library-read"
+    app_permissions = "user-read-private playlist-read-private user-read-email user-top-read user-modify-playback-state user-library-read"
 
     query_params = {
         "response_type": "code",
@@ -242,11 +243,12 @@ async def user_top_tracks(request: Request, limit: int = 50, offset: int = 0):
 async def user_top_tracks(request: Request, limit: int = 18, offset: int = 0):
     """Gets the user's top 24 artists."""
     token = request.cookies.get("spotify_token")
+    
     if token:
         url = "https://api.spotify.com/v1/me/top/artists"
         headers = {"Authorization": f"Bearer {token}"}
         params = {"time_range": "medium_term", "limit": limit, "offset": offset}
-
+        startTime = time.time()
         async with httpx.AsyncClient() as client:
             response = await client.get(url, headers=headers, params=params)
 
@@ -255,8 +257,11 @@ async def user_top_tracks(request: Request, limit: int = 18, offset: int = 0):
                 raise HTTPException(
                     status_code=response.status_code, detail=response.json()
                 )
-
+            fetchTime = time.time()
             returnVal = utilities.form_artist_list(response.json())
+            dataProcessTime = time.time()
+            print("fetch time: ", fetchTime - startTime)
+            print("data processing time: ", dataProcessTime - fetchTime)
             return returnVal
     else:
         raise HTTPException(status_code=400, detail="No cookie")
@@ -324,6 +329,36 @@ async def recommend_songs(request:Request, market: str = "US"):
     else:
         raise HTTPException(status_code=400, detail="No cookie")
 
+
+@app.get("/user_playlists")
+async def user_playlists(request:Request):
+    # uses user listening history and chosen genre to recommend 10 songs
+    token = request.cookies.get("spotify_token")
+
+    offset = request.query_params.get("offset")
+    limit = request.query_params.get("limit")
+
+    
+    if token:
+        url = f"https://api.spotify.com/v1/me/playlists?limit={limit}&offset={offset}"
+        headers = {"Authorization": f"Bearer {token}"}
+
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, headers=headers)
+
+            if response.status_code != 200:
+                print("issue here")
+                raise HTTPException(
+                    status_code=response.status_code, detail=response.json()
+                )
+
+            returnVal= utilities.form_playlist_list(response.json())
+            for playlist in returnVal["data_list"]:
+                print(playlist["playlist_name"])
+            return returnVal
+    else:
+        raise HTTPException(status_code=400, detail="No cookie")
 
 
 @app.post("/store_game")

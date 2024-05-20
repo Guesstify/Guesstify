@@ -34,6 +34,7 @@ const About = () => {
       })
       .then((data) => {
         setUserInfo(data);
+        Cookies.set('username', data["id"]);
         console.log(data);
       })
       .catch((error) => console.error("Error:", error));

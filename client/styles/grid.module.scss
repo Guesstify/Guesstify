@@ -32,15 +32,15 @@
     margin: 0;
 
     .grid_item {
-        height: 4vh;
+        height: 20%;
         width: 90%; // Each item takes the full width of its cell
-        padding-top: 12.5vw; // Aspect ratio hack (adjust height here)
+        padding-top: 100%; // Aspect ratio hack (adjust height here)
         position: relative;
 
         img {
             position: absolute;
-            width: 11vw;
-            height: 11vw;
+            width: 100%;
+            aspect-ratio: 1/1;
             object-fit: scale-down; // Adjust how images fit within the container
             top: 0;
             left: 0;

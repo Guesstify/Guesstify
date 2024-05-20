@@ -92,6 +92,8 @@ const Grid = () => {
     .catch(error => console.error("Failed to fetch artist data:", error))
   }, []);
 
+
+
  useEffect(() => {
   const fetchArtistsTopTracks = async () => {
     if (artists.length > 0) {
