@@ -130,6 +130,9 @@ def form_playlist_list(response):
     returnDict = {}
     data_list = []
 
+    if len(response["items"]) == 0:
+        return None
+
     #if the playlist doesn't have at least 15 tracks, it doesn't work
     for playlist in response["items"]:
 
@@ -145,6 +148,8 @@ def form_playlist_list(response):
         data_list.append(item_data)
 
     returnDict["data_list"] = data_list
+
+
 
     return returnDict
 

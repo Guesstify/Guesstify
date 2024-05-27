@@ -338,6 +338,8 @@ async def user_playlists(request:Request):
     offset = request.query_params.get("offset")
     limit = request.query_params.get("limit")
 
+    start_time = time.time()
+
     
     if token:
         url = f"https://api.spotify.com/v1/me/playlists?limit={limit}&offset={offset}"
@@ -354,8 +356,10 @@ async def user_playlists(request:Request):
                 )
 
             returnVal= utilities.form_playlist_list(response.json())
-            for playlist in returnVal["data_list"]:
-                print(playlist["playlist_name"])
+            end_time = time.time()
+            print("offset ", offset)
+            print(f"started at: {start_time}    ended at: {end_time}")
+            print()
             return returnVal
     else:
         raise HTTPException(status_code=400, detail="No cookie")
