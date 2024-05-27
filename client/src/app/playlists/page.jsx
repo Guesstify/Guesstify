@@ -3,9 +3,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import style from "../../../styles/playlists.module.scss";
+import hamster from "../../../styles/playlists.hamster.module.scss";
 import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faCompactDisc } from '@fortawesome/free-solid-svg-icons';
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 const spotifyToken = Cookies.get('spotify_token');
 const username = Cookies.get('username');
@@ -128,7 +130,29 @@ const Playlists = () => {
           </div>
         </div>
       ) : (
-        <p>Waiting...</p>
+        <div className={hamster.loader}>
+          <div aria-label="Orange and tan hamster running in a metal wheel" role="img" className={hamster.wheel_and_hamster}>
+            <div className={hamster.wheel}></div>
+            <div className={hamster.hamster}>
+              <div className={hamster.hamster__body}>
+                <div className={hamster.hamster__head}>
+                  <div className={hamster.hamster__ear}></div>
+                  <div className={hamster.hamster__eye}></div>
+                  <div className={hamster.hamster__nose}></div>
+                </div>
+                <div className={hamster.hamster__limb}>
+                  <div className={hamster.fr}></div>
+                  <div className={hamster.fl}></div>
+                  <div className={hamster.br}></div>
+                  <div className={hamster.bl}></div>
+                </div>
+                <div className={hamster.hamster__tail}></div>
+              </div>
+            </div>
+            <div className={hamster.spoke}></div>
+          </div>
+        </div>
+
       )}
     </div>
   );

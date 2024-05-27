@@ -123,4 +123,15 @@
     }
 
   }
+
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 500%;
+    height: 500%;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
 }
