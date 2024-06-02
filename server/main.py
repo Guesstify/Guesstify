@@ -364,6 +364,35 @@ async def user_playlists(request:Request):
     else:
         raise HTTPException(status_code=400, detail="No cookie")
 
+@app.get("/playlist_items")
+async def playlist_items(request:Request):
+    # uses user listening history and chosen genre to recommend 10 songs
+    token = request.cookies.get("spotify_token")
+
+    offset = request.query_params.get("offset")
+    limit = request.query_params.get("limit")
+    playlist_id = request.query_params.get("id")
+
+    print("playlist_id: ", playlist_id)
+
+    if token:
+        url = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks?offset={offset}&limit=100&market=US&locale=en-US,en;q%3D0.9"
+        headers = {"Authorization": f"Bearer {token}"}
+
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, headers=headers)
+
+            if response.status_code != 200:
+                print("issue here")
+                raise HTTPException(
+                    status_code=response.status_code, detail=response.json()
+                )
+
+            returnVal= utilities.get_playlist_items(response.json(), offset)
+            return returnVal
+    else:
+        raise HTTPException(status_code=400, detail="No cookie")
 
 @app.post("/store_game")
 def store_game(request: Request):

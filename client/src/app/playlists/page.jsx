@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import style from "../../../styles/playlists.module.scss";
-import hamster from "../../../styles/playlists.hamster.module.scss";
+import hamster from "../../../styles/hamster.module.scss";
 import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
@@ -90,6 +90,8 @@ const Playlists = () => {
       setSearchResults([]);
     }
   };
+
+  
 
   return (
     <div className={style.container}>
