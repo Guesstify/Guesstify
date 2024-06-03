@@ -36,29 +36,9 @@ const Playlists = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const searchBoxRef = useRef(null);
+  const effectRan = useRef(false);
 
   useEffect(() => {
-    const fetchAllPlaylists = async () => {
-      try {
-        const results = await Promise.all([
-          fetchPlaylists(0, 50),
-          fetchPlaylists(50, 50),
-          fetchPlaylists(100, 50),
-          fetchPlaylists(150, 50),
-          fetchPlaylists(200, 50)
-        ]);
-
-        const allPlaylists = results.flatMap(data => data ? data.data_list : []);
-        setUserPlaylists(allPlaylists);
-        setPlaylistsReady(true);
-      }
-      catch (error) {
-        console.error("Failed to fetch playlists data:", error);
-      }
-    };
-
-    fetchAllPlaylists();
-
     // Add event listener for clicks outside the search box
     const handleClickOutside = (event) => {
       if (searchBoxRef.current && !searchBoxRef.current.contains(event.target)) {
@@ -67,9 +47,35 @@ const Playlists = () => {
     };
     document.addEventListener("mousedown", handleClickOutside);
 
+    if(effectRan.current === false){
+      const fetchAllPlaylists = async () => {
+        try {
+          const results = await Promise.all([
+            fetchPlaylists(0, 49),
+            fetchPlaylists(50, 50),
+            fetchPlaylists(100, 50),
+            fetchPlaylists(150, 50),
+            fetchPlaylists(200, 50)
+          ]);
+
+          const allPlaylists = results.flatMap(data => data ? data.data_list : []);
+          setUserPlaylists(allPlaylists);
+          setPlaylistsReady(true);
+        }
+        catch (error) {
+          console.error("Failed to fetch playlists data:", error);
+        }
+      };
+
+      fetchAllPlaylists();
+    }
+
+    
+
     return () => {
       // Cleanup the event listener on component unmount
       document.removeEventListener("mousedown", handleClickOutside);
+      effectRan.current = true;
     };
   }, []);
 

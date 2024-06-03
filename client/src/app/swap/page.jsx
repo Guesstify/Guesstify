@@ -22,6 +22,7 @@ const Swap = () => {
   const [rightStreak, setRightStreak] = useState(0);
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const searchParams = useSearchParams();
+  const effectRan = useRef(false);
 
   async function fetchPlaylistItems(offset) {
     
@@ -48,24 +49,44 @@ const Swap = () => {
  
   useEffect(() => {
 
-    const fetchAllItems = async () => {
-      console.log("fetching all Items");
-      try {
-        const results = await Promise.all([
-          fetchPlaylistItems(0),
-          fetchPlaylistItems(100),
-        ]);
+    if(effectRan.current === false){
+      const fetchAllItems = async () => {
+        console.log("fetching all Items");
+  
+        try {
+          const results = await Promise.all([
+            fetchPlaylistItems(0),
+            fetchPlaylistItems(100),
+          ]);
+  
+          let allTracks = results.flatMap(data => data ? data.data_list : []);
+          // Sort allTracks based on the popularity score in descending order
+          allTracks.sort((a, b) => b.popularity - a.popularity);
+  
+          // Append ranking based on the sorting
+          allTracks.forEach((track, index) => {
+            track.ranking = index + 1;
+          });
+  
+          setTracks(allTracks);
+          console.log("tracks length: ")
+          console.log(allTracks.length)
+          setReady("ready");
+          console
+        }
+        catch (error) {
+          console.error("Failed to fetch playlist items", error);
+        }
+        
+      };
 
-        const allTracks = results.flatMap(data => data ? data.data_list : []);
-        setTracks(allTracks);
-        setReady("ready");
-      }
-      catch (error) {
-        console.error("Failed to fetch playlist items", error);
-      }
-    };
+      fetchAllItems();
+    }
     
-    fetchAllItems();
+    
+    return () => {
+      effectRan.current = true;
+    }
 
 
   }, []);
@@ -74,8 +95,8 @@ const Swap = () => {
   useEffect(() => {
     console.log("ready");
     // Additional actions after response.json() resolves
-    getTrack(setLeftTrack, "none");
-    getTrack(setRightTrack, "none");
+    getTrack(setLeftTrack, "none", {}, {},0);
+    getTrack(setRightTrack, "none", {}, {}, 1);
   }, [ready]);
 
   // code to keep track of streak counters
@@ -83,7 +104,7 @@ const Swap = () => {
     if (leftStreak === 3) {
       console.log("entering left streak");
       setLeftStreak(0);
-      getTrack(setLeftTrack, "none");
+      getTrack(setLeftTrack, "none", leftTrack, rightTrack, 0);
     }
     if (rightStreak >= 3 && rightStreak % 3 === 0) {
       console.log("entering right streak");
@@ -93,8 +114,7 @@ const Swap = () => {
   }, [score]); // Dependency array
 
 
-  const getTrack = (setter, trackSide) => {
-    console.log(" before getTrack: ", tracks.length);
+  const getTrack = (setter, trackSide, leftTrack, rightTrack, startVal) => {
     if (trackSide === "left") {
         setLeftStreak((prevStreak) => prevStreak + 1);
         setRightStreak(0);
@@ -102,14 +122,23 @@ const Swap = () => {
         setRightStreak((prevStreak) => prevStreak + 1);
         setLeftStreak(0);
     }
-    console.log(tracks.length);
     setTracks((prevTracks) => {
       if (Array.isArray(prevTracks) && prevTracks.length > 0) {
-        const [nextTrack, ...remainingTracks] = prevTracks;
+        var nextTrack;
+        if(!leftTrack || !rightTrack){
+          nextTrack = prevTracks[startVal];
+        }
+        else{
+          // Randomly select a track until it has a different rank than the current track
+          do {
+              nextTrack = prevTracks[Math.floor(Math.random() * prevTracks.length)];
+          } while (((nextTrack.ranking === leftTrack.ranking) || (nextTrack.ranking === rightTrack.ranking)) && prevTracks.length > 1);
+        }
+        
         setter(nextTrack);
         setNewTrack(nextTrack);
-        console.log("length:", remainingTracks.length);
-        return remainingTracks;
+        console.log("length:", prevTracks.length);
+        return prevTracks;
       }
     });
   }
@@ -143,11 +172,11 @@ const Swap = () => {
                   className={style.image}
                   src={leftTrack.track_image}
                   alt={`Album cover for ${leftTrack.track_name}`}
-                  onClick={() => getTrack(setRightTrack, "left")}
+                  onClick={() => getTrack(setRightTrack, "left", leftTrack, rightTrack, 0)}
                 />
                 <p
                   className={style.track_names}
-                >{`${leftTrack.track_name} by ${leftTrack.artist}`}</p>
+                >{`${leftTrack.track_name} by ${leftTrack.track_artist}`}</p>
               </div>
               <div className={style.parentOfSong}>
                 <img
@@ -156,12 +185,12 @@ const Swap = () => {
                   alt={`Album cover for ${rightTrack.track_name}`}
                   // We set the opposite track side here because the one we pick stay
                   onClick={() => {
-                    getTrack(setLeftTrack, "right");
+                    getTrack(setLeftTrack, "right", leftTrack, rightTrack, 1);
                   }}
                 />
                 <p
                   className={style.track_names}
-                >{`${rightTrack.track_name} by ${rightTrack.artist}`}</p>
+                >{`${rightTrack.track_name} by ${rightTrack.track_artist}`}</p>
               </div>
             </div>
             <div className={style.track_player}>{audioPlayer}</div>

@@ -146,7 +146,7 @@ def form_playlist_list(response):
         item_data["playlist_owner"] = playlist["owner"]["id"]
         item_data["playlist_id"] = playlist["id"]
         data_list.append(item_data)
-
+        
     returnDict["data_list"] = data_list
 
     return returnDict
@@ -162,11 +162,11 @@ def get_playlist_items(response, offset):
 
         item_data = {}
         item_data["track_name"] = track["track"]["name"]
+        item_data["popularity"] = track["track"]["popularity"]
         item_data["snippet"] = track["track"]["preview_url"]
 
         item_data["track_image"] = track["track"]["album"]["images"][0]["url"]
         item_data["track_artist"] = track["track"]["artists"][0]["name"]
-        item_data["track_id"] = track["track"]["id"]
         item_data["track_num"] = int(offset)+index
         data_list.append(item_data)
 
