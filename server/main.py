@@ -109,7 +109,7 @@ async def login():
     # Generate a random string for the state parameter
     state = secrets.token_urlsafe(16)
 
-    app_permissions = "user-read-private playlist-read-private user-read-email user-top-read user-modify-playback-state user-library-read"
+    app_permissions = "playlist-modify-public user-read-private playlist-read-private user-read-email user-top-read user-modify-playback-state user-library-read playlist-modify-private"
 
     query_params = {
         "response_type": "code",
@@ -390,6 +390,42 @@ async def playlist_items(request:Request):
                 )
 
             returnVal= utilities.get_playlist_items(response.json(), offset)
+            return returnVal
+    else:
+        raise HTTPException(status_code=400, detail="No cookie")
+
+
+@app.post("/create_playlist")
+async def create_playlist(request:Request):
+    # uses user listening history and chosen genre to recommend 10 songs
+    token = request.cookies.get("spotify_token")
+    playlist_name = request.query_params.get("playlist_name")
+    username = request.query_params.get("username")
+
+
+    if token:
+        url = f"https://api.spotify.com/v1/users/{username}/playlists"
+        headers = {"Authorization": f"Bearer {token}",
+                   "Content-Type": "application/json"
+        }
+        payload = {
+            "name": playlist_name,
+            "public": True,
+            "description": "Spotify vinyls generated"
+        }
+
+        async with httpx.AsyncClient() as client:
+            response = await client.post(url, headers=headers, data=json.dumps(payload))
+
+            if response.status_code != 201:
+                print("issue here")
+                raise HTTPException(
+                    status_code=response.status_code, detail=response.json()
+                )
+
+        
+            returnVal= response.json()["id"]
+            print(returnVal)
             return returnVal
     else:
         raise HTTPException(status_code=400, detail="No cookie")

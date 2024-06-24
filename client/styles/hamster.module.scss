@@ -4,6 +4,10 @@
   align-items: center;
   height: 100vh; /* 100% of the viewport height */
   width: 100vw; /* 100% of the viewport width */
+  position: fixed; /* Fix the loader to the viewport */
+  top: 0;
+  left: 0;
+  z-index: 9999; /* Ensure it stays on top of other content */
 }
 
 .wheel_and_hamster {

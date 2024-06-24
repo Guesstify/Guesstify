@@ -8,9 +8,11 @@ import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { faCompactDisc } from '@fortawesome/free-solid-svg-icons';
+import HeaderComponent from '../header';
+import '../../../styles/header.module.scss';
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 const spotifyToken = Cookies.get('spotify_token');
-const username = Cookies.get('username');
+
 
 async function fetchPlaylists(offset, limit) {
   const response = await fetch(`${backendUrl}/user_playlists?offset=${offset}&limit=${limit}`, {
@@ -39,6 +41,13 @@ const Playlists = () => {
   const effectRan = useRef(false);
 
   useEffect(() => {
+    if (!spotifyToken) {
+
+        router.push("/")
+    }
+  }, [spotifyToken]);
+
+  useEffect(() => {
     // Add event listener for clicks outside the search box
     const handleClickOutside = (event) => {
       if (searchBoxRef.current && !searchBoxRef.current.contains(event.target)) {
@@ -64,6 +73,9 @@ const Playlists = () => {
         }
         catch (error) {
           console.error("Failed to fetch playlists data:", error);
+          if (error.response && error.response.status === 401) {
+            router.push("/");
+          }
         }
       };
 
@@ -79,8 +91,8 @@ const Playlists = () => {
     };
   }, []);
 
-  const moveToSwap = (playlistID) => {
-    router.push("/swap?id=" + playlistID);
+  const moveToSwap = (playlistID, playlistName) => {
+    router.push("/swap?id=" + playlistID + "&name=" + playlistName);
   };
 
   const handleSearch = (event) => {
@@ -101,6 +113,7 @@ const Playlists = () => {
 
   return (
     <div className={style.container}>
+      <HeaderComponent/>
       <h1>User Playlists</h1>
       {playlistsReady ? (
         <div>
@@ -120,7 +133,7 @@ const Playlists = () => {
               <div className={style.result_box}>
                 <ul>
                   {searchResults.map(result => (
-                    <li key={result.playlist_id} onClick={() => moveToSwap(result.playlist_id)}>
+                    <li key={result.playlist_id} onClick={() => moveToSwap(result.playlist_id, result.playlist_name)}>
                       {result.playlist_name}
                     </li>
                   ))}
@@ -130,7 +143,7 @@ const Playlists = () => {
           </div>
           <div className={style.playlist_grid}>
             {userPlaylists.map((playlist) => (
-              <div key={playlist.playlist_id} className={style.playlist_item} onClick={() => moveToSwap(playlist.playlist_id)}>
+              <div key={playlist.playlist_id} className={style.playlist_item} onClick={() => moveToSwap(playlist.playlist_id, playlist.playlist_name)}>
                 <img className={style.playlist_image} src={playlist.playlist_image} alt={playlist.playlist_name} />
                 <p>{playlist.playlist_name.length > 31 ? `${playlist.playlist_name.substring(0, 28)}...` : playlist.playlist_name}</p>
               </div>

@@ -155,13 +155,23 @@ def get_playlist_items(response, offset):
     returnDict = {}
     data_list = []
 
+    print(response)
+
     if len(response["items"]) == 0:
         return None
 
+    # return response
+
     for index, track in enumerate(response["items"]):
 
+        if track["track"] is None:  # Check if track is None
+            continue
+
+        print(index)
         item_data = {}
         item_data["track_name"] = track["track"]["name"]
+        item_data["track_uri"] = track["track"]["uri"]
+        print(item_data["track_name"])
         item_data["popularity"] = track["track"]["popularity"]
         item_data["snippet"] = track["track"]["preview_url"]
 
@@ -173,6 +183,7 @@ def get_playlist_items(response, offset):
     returnDict["data_list"] = data_list
 
     return returnDict
+
 
 
 

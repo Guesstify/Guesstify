@@ -1,7 +1,7 @@
 @import "./variables.module";
 
 .title {
-  color: rgb(111, 78, 55);
+  color: $text-color;
   text-align: center;
   font-family: "logo";
   font-size: 150px;
@@ -16,7 +16,7 @@
 .title span {
   display: inline-block;
   margin-right: 10px;
-  color: rgb(111, 78, 55);
+  color: $text-color;
   animation: colorChange 8s ease-in-out infinite;
 }
 
@@ -66,11 +66,11 @@
     color: white;
   }
   30%, 100% {
-    color: rgb(111, 78, 55);  /* Return to initial color */
+    color: $text-color;  /* Return to initial color */
   }
 }
 .container {
-  background-color: $color-background;
+  background-color: $background-color;
   font-family: $primary-font;
   height: 100%;
   width: 100%;
@@ -191,7 +191,7 @@
 @media only screen and (min-device-width: 320px) and (max-device-width: 568px) {
   .title {
     font-size: 6.5rem;
-    color: $color-primary;
+    color: $text-color;
     font-weight: $title-weight;
     text-align: center;
     margin-bottom: 30px;

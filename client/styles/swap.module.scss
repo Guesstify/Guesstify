@@ -1,17 +1,28 @@
 @import "./variables.module";
+
 .container {
-  background-color: $color-background;
-  font-family: $primary-font;
+  height: 100vh;
+  width: 100%;
   display: flex;
+  position:relative;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  min-height: 100vh; // Ensure the container takes at least the full height of the viewport
-  width: 100vw;
+  margin: 0; // Remove default margins
+  padding: 0; // Remove default paddings
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: $background-color;
+  font-family: sans-serif;
+  color: $text-color;
+
+  
+
   .title {
-    color: $color-primary;
+    margin-top: 2vh;
+    color: $text-color;
     font-weight: 5rem; // Corrected to use $title-weight
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-family: $primary-cursive; // Corrected to use $primary-font
     animation: titleFadeInFromLeft 2s ease-out forwards;
     text-align: center;
@@ -26,6 +37,7 @@
       transform: translateX(0);
     }
   }
+
   .score {
     color: white;
     font-size: 2rem;
@@ -36,45 +48,100 @@
     align-items: center; /* Vertically centers the container's content */
     margin-top: -1rem;
   }
+
   .title_question {
     margin-top: -1.5rem;
+    margin-bottom: 2vh;
     color: white;
-    font-size: 2rem;
+    font-size: 1.5rem;
     text-align: center; /* Horizontally centers the text */
     justify-content: center;
   }
+
   .track_selectors {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     margin-top: 1rem;
+
     .parentOfSong {
+      margin-top: 2vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      .image {
-        width: auto;
-        justify-self: end;
-        height: 15rem;
+      margin-bottom: 2.5vh;
+
+      .logo{
+        width: 3.5vw;
+        height: auto;
       }
+
+      .image {
+        width: 25.5vw;
+        justify-self: end;
+        height: auto;
+        cursor: pointer;
+        transition: transform ease-out 0.3s;
+      }
+
+      img:hover { transform: scale(0.95); }
+
       .track_names {
-        color: white;
-        font-size: 1rem;
-        text-align: center;
-        height: 5rem;
-        width: 12rem;
+        display: flex; /* Use flexbox */
+        align-items: center; /* Vertically center the items */
+        width: 100%;
+        margin-top: 2vh;
+        color: $text-color;
+        font-weight: lighter; /* Corrected to use $title-weight */
+        font-size: 1.2rem;
+        height: 5vh;
+        line-height: 1.6; /* Adjust line height as needed for minimal spacing */
+        justify-content: center; /* Add space between text and logo */
+
+        .text {
+
+          display: flex;
+          flex-direction: column; /* Stack the track name and artist vertically */
+          justify-content: center; /* Vertically center the text */
+          width: 80%;
+          align-items: center;
+
+          .track_name{
+            text-decoration: underline;
+          }
+        }
+
+        .logo {
+          width: 2.2rem; /* Adjust the width as needed */
+          height: auto;
+        }
       }
     }
   }
 }
+
 .track_player {
-  display: block; // Ensures the element is a block-level element
-  margin-left: auto; // Automatically adjusts the left margin
-  margin-right: auto; // Automatically adjusts the right margin
-  width: fit-content; // Adjusts the width to fit its content
+  display: flex; // Change to flex for better control
+  justify-content: center; // Center the audio player horizontally
+  margin: 0 auto; // Center the block itself
+  width: 100%; // Make it take the full width of its container
+  max-width: 40vw; // Set a maximum width
+  padding: 1rem; // Optional: Add some padding for better spacing
+  background-color: $text-color; // Optional: Set background color if needed
+  border-radius: 0.5rem; // Optional: Add rounded corners if desired
+  height: 3vh
+}
+
+.track_player audio {
+  height: 100%;
+  width: 100%; // Make the audio element take the full width of its container
+  &::-webkit-media-controls-panel {
+    background-color: $text-color;
+  }
+
 }
 
 @media only screen and (min-device-width: 320px) and (max-device-width: 568px) {
