@@ -15,11 +15,13 @@
     background-color: $background-color;  // Ensures it has a background color
     z-index: 1000;  // Ensures it stays on top of other elements
 
-    h1 {
-
-        margin-left: 2.3%;
+    a {
+        text-decoration: none;  // Remove underline from links
+        color: inherit;         // Inherit the color from the parent element
         display: block;
-    }   
+        margin-left: 2.3%
+    }
+    
 
     .buttons {
         display: flex;

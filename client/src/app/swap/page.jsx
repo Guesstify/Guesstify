@@ -25,6 +25,7 @@ const Swap = () => {
   const effectRan = useRef(false);
   const router = useRouter();
 
+
   const playlistName = searchParams.get("name");
 
 
@@ -33,8 +34,6 @@ const Swap = () => {
     
   
     const playlist_id = searchParams.get("id");
-    console.log("playlist_id using search param: ");
-    console.log(playlist_id);
     const response = await fetch(`${backendUrl}/playlist_items?id=${playlist_id}&offset=${offset}`, {
       method: "GET",
       credentials: "include",
@@ -204,12 +203,13 @@ const Swap = () => {
               )}
               <div className={style.track_selectors}>
                 <div className={style.parentOfSong}>
-                  <img
-                    className={style.image}
-                    src={leftTrack.track_image}
-                    alt={`Album cover for ${leftTrack.track_name}`}
-                    onClick={() => getTrack(setRightTrack, "left", leftTrack, rightTrack, 0)}
-                  />
+                    <img
+                      className={style.image}
+                      src={leftTrack.track_image}
+                      alt={`Album cover for ${leftTrack.track_name}`}
+                      onClick={() => getTrack(setRightTrack, "left", leftTrack, rightTrack, 0)}
+                      onMouseOver={() => {setNewTrack(leftTrack)}}
+                    />
                   <p className={style.track_names}>
                     <span className={style.text}>
                       <span className={style.track_name}>
@@ -229,14 +229,15 @@ const Swap = () => {
                   </p>
                 </div>
                 <div className={style.parentOfSong}>
-                  <img
-                    className={style.image}
-                    src={rightTrack.track_image}
-                    alt={`Album cover for ${rightTrack.track_name}`}
-                    onClick={() => {
-                      getTrack(setLeftTrack, "right", leftTrack, rightTrack, 1);
-                    }}
-                  />
+                    <img
+                      className={style.image}
+                      src={rightTrack.track_image}
+                      alt={`Album cover for ${rightTrack.track_name}`}
+                      onClick={() => {
+                        getTrack(setLeftTrack, "right", leftTrack, rightTrack, 1);
+                      }}
+                      onMouseOver={() => {setNewTrack(rightTrack)}}
+                    />
                   <p className={style.track_names}>
                     <span className={style.text}>
                       <span className={style.track_name}>

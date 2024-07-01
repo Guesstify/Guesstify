@@ -85,9 +85,16 @@
         height: auto;
         cursor: pointer;
         transition: transform ease-out 0.3s;
+
       }
 
       img:hover { transform: scale(0.95); }
+
+
+
+      
+
+      
 
       .track_names {
         display: flex; /* Use flexbox */
@@ -111,6 +118,7 @@
 
           .track_name{
             text-decoration: underline;
+            font-weight: 550;
           }
         }
 

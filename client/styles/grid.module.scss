@@ -24,28 +24,35 @@
   .image_grid {
     display: grid;
     grid-template-columns: repeat(6, 11vw); // 6 columns
-    gap: 1vw; // Adjust the space between grid items as needed
+    gap: 0.7vw; // Adjust the space between grid items as needed
     justify-content: center;
     max-width: 100vw;
-    height: 28vh;
+    height: 80vh;
     padding: 0;
     margin: 0;
 
     .grid_item {
         height: 20%;
-        width: 90%; // Each item takes the full width of its cell
-        padding-top: 100%; // Aspect ratio hack (adjust height here)
+        width: 100%; // Each item takes the full width of its cell
+        // padding-top: 100%; // Aspect ratio hack (adjust height here)
         position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+
+
 
         img {
-            position: absolute;
-            width: 100%;
+            position: relative;
+            width: 82%;
             aspect-ratio: 1/1;
             object-fit: scale-down; // Adjust how images fit within the container
             top: 0;
             left: 0;
             cursor: pointer;
             transition: transform ease-out 0.3s;
+            margin-bottom: 5%;
         }
 
         img:hover { transform: scale(0.95); }
@@ -54,7 +61,7 @@
             margin-top: 0;
             font-family: sans-serif;
             font-size: larger;
-            font-weight: bold;
+            font-weight: 500;
             color: rgb(251, 236, 216);
         }
 
@@ -71,17 +78,20 @@
   height: 84vh;
   background-color: $text-color;
   display: flex;
+  margin-top: 7%;
+  position: relative;
+  border-radius: 8px; /* Optional: to give a rounded corner effect */
 
   .artistInfo{
+    width: 54%;
     display: flex;
     align-items: center;
     flex-direction: column;
-    margin-left: 5vw;
-    margin-top: 4vh;
 
     h1{
       font-size: xxx-large;
-      margin-top: 5vh;
+      margin-top: 8vh;
+      margin-bottom: 2vh;
       margin-left: 0vw;
       font-family: sans-serif;
       color: $background-color;
@@ -101,14 +111,15 @@
   }
 
   .songList{
+    display: flex;
     position: absolute;
-    top: 0; // Align to the top of the .modal
     right: 0; // Align to the right of the .modal
-    margin-right: 1em;
-    margin-bottom: 1em;
-    margin-left: 1em;
-    margin-top: 3.5vh;
-    width: 40%;
+    top: 5%;
+    margin-right: 1%;
+    width: 45%;
+    height:90%;
+    justify-content: space-evenly;
+    flex-direction: column;
     
 
     word-wrap: break-word; // This ensures that long words will break and wrap onto the next line
@@ -117,7 +128,7 @@
     .trackItem {
       display: flex;
       align-items: center;
-      margin-bottom: 1vh; // Space between track items
+      height: 18%;
     
       img{
         transition: transform ease-out 0.3s;
@@ -125,8 +136,8 @@
       img:hover { transform: scale(1.15); }
 
       .albumArt {
-        width: 7vw; // Adjust the size as needed
-        height: auto; // Adjust the size as needed
+        width: auto; // Adjust the size as needed
+        height: 100%; // Adjust the size as needed
         margin-right: 1em; // Space between image and text
       }
     
@@ -139,6 +150,13 @@
           margin-top: 1.5vh;
           margin-bottom: 1.5vh;
           font-style: bolder;
+          
+
+          
+        }
+
+        .title{
+          text-decoration: underline;
         }
       }
     }
@@ -146,8 +164,8 @@
   }
   .close{
     position:absolute;
-    top: 2%;
-    right: 2%;
+    top: 20px;
+    right: 20px;
   }
 
   

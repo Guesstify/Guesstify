@@ -76,6 +76,24 @@ def form_artist_list(response):
 
     return returnDict
 
+def form_track_list(response):
+
+    returnDict = {}
+    data_list = []
+
+    for item in response["items"]:
+        item_data = {}
+        item_data["track_name"] = item["name"]
+        item_data["track_picture"] = item["album"]["images"][0]["url"]
+        item_data["id"] = item["id"]
+        data_list.append(item_data)
+
+
+
+    returnDict["data_list"] = data_list
+
+    return returnDict
+
 
 # { outdated
 #     "data": [
@@ -104,6 +122,8 @@ def recommend_songs(response):
         data_list.append(item_data)
 
     returnDict["data_list"] = data_list
+
+    print(returnDict)
 
     return returnDict
 
@@ -171,9 +191,9 @@ def get_playlist_items(response, offset):
         item_data = {}
         item_data["track_name"] = track["track"]["name"]
         item_data["track_uri"] = track["track"]["uri"]
-        print(item_data["track_name"])
         item_data["popularity"] = track["track"]["popularity"]
         item_data["snippet"] = track["track"]["preview_url"]
+        item_data["track_id"] = track["track"]["id"]
 
         item_data["track_image"] = track["track"]["album"]["images"][0]["url"]
         item_data["track_artist"] = track["track"]["artists"][0]["name"]

@@ -56,6 +56,10 @@ const About = () => {
     router.push("/playlists/");
   };
 
+  const handleTracks = () => {
+    router.push("/songs/");
+  };
+
   return (
     <div className={style.container}>
       <HeaderComponent />
@@ -64,6 +68,9 @@ const About = () => {
         Lets explore your music library!
       </p>
       <div>
+        <button className={style.game_button} onClick={handleTracks}>
+          Top Tracks
+        </button>
         <button className={style.game_button} onClick={handleArtists}>
           Top Artists
         </button>

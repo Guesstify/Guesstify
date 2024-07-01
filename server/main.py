@@ -217,30 +217,30 @@ async def user_info(authorization: str = Header(None)):
 # Get user's top 50 tracks, included limit and offset parameters to make it easily customizable on front end
 
 
-@app.get("/user_top_tracks")
-async def user_top_tracks(request: Request, limit: int = 50, offset: int = 0):
-    """Gets the user's top 50 tracks."""
-    token = request.cookies.get("spotify_token")
-    if token:
-        url = "https://api.spotify.com/v1/me/top/tracks"
-        headers = {"Authorization": f"Bearer {token}"}
-        params = {"time_range": "short_term", "limit": limit, "offset": offset}
+# @app.get("/user_top_tracks")
+# async def user_top_tracks(request: Request, limit: int = 50, offset: int = 0):
+#     """Gets the user's top 50 tracks."""
+#     token = request.cookies.get("spotify_token")
+#     if token:
+#         url = "https://api.spotify.com/v1/me/top/tracks"
+#         headers = {"Authorization": f"Bearer {token}"}
+#         params = {"time_range": "short_term", "limit": limit, "offset": offset}
 
-        async with httpx.AsyncClient() as client:
-            response = await client.get(url, headers=headers, params=params)
+#         async with httpx.AsyncClient() as client:
+#             response = await client.get(url, headers=headers, params=params)
 
 
-            if response.status_code != 200:
-                raise HTTPException(
-                    status_code=response.status_code, detail=response.json()
-                )
+#             if response.status_code != 200:
+#                 raise HTTPException(
+#                     status_code=response.status_code, detail=response.json()
+#                 )
 
-            return utilities.form_track_list(response.json())
-    else:
-        raise HTTPException(status_code=400, detail="No cookie")
+#             return utilities.form_track_list(response.json())
+#     else:
+#         raise HTTPException(status_code=400, detail="No cookie")
 
 @app.get("/user_top_artists")
-async def user_top_tracks(request: Request, limit: int = 18, offset: int = 0):
+async def user_top_artists(request: Request, limit: int = 18, offset: int = 0):
     """Gets the user's top 24 artists."""
     token = request.cookies.get("spotify_token")
     
@@ -267,25 +267,54 @@ async def user_top_tracks(request: Request, limit: int = 18, offset: int = 0):
         raise HTTPException(status_code=400, detail="No cookie")
 
 
+@app.get("/user_top_tracks")
+async def user_top_tracks(request: Request, limit: int = 15, offset: int = 0):
+    """Gets the user's top 24 artists."""
+    token = request.cookies.get("spotify_token")
+    
+    if token:
+        url = "https://api.spotify.com/v1/me/top/tracks"
+        headers = {"Authorization": f"Bearer {token}"}
+        params = {"time_range": "medium_term", "limit": limit, "offset": offset}
+        startTime = time.time()
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, headers=headers, params=params)
+
+
+            if response.status_code != 200:
+                raise HTTPException(
+                    status_code=response.status_code, detail=response.json()
+                )
+            fetchTime = time.time()
+            returnVal = utilities.form_track_list(response.json())
+            dataProcessTime = time.time()
+            print("fetch time: ", fetchTime - startTime)
+            print("data processing time: ", dataProcessTime - fetchTime)
+            return returnVal
+    else:
+        raise HTTPException(status_code=400, detail="No cookie")
+
 @app.get("/recommend_songs")
-async def recommend_songs(request:Request, limit: int = 10, market: str = "US"):
+async def recommend_songs(request:Request, limit: int = 5, market: str = "US"):
     # uses user listening history and chosen genre to recommend 10 songs
     token = request.cookies.get("spotify_token")
-    seed_genres = request.query_params.get("seed_genres").lower()
-    target_popularity = request.query_params.get("popularity")
+    min_popularity = 60
+    song1 = request.query_params.get("song1")
+    song2 = request.query_params.get("song2")
+    song3 = request.query_params.get("song3")
+    song4 = request.query_params.get("song4")
+    song5 = request.query_params.get("song5")
 
-    print(seed_genres)
+    seed_tracks = ",".join([song1, song2, song3, song4, song5])
 
-    if not seed_genres:
-        return HTTPException(status_code=500, detail="no_genre")
+    if not seed_tracks:
+        return HTTPException(status_code=500, detail="no_seed_tracks")
     
     if token:
         url = "https://api.spotify.com/v1/recommendations"
         headers = {"Authorization": f"Bearer {token}"}
-        params = {"seed_genres": seed_genres, "limit": limit, "market": market, 
-                   "target_popularity": target_popularity,}
-
-        print(params)
+        params = {"seed_tracks": seed_tracks, "limit": limit, "market": market, 
+                   "min_popularity": min_popularity,}
 
         async with httpx.AsyncClient() as client:
             response = await client.get(url, headers=headers, params=params)
@@ -397,7 +426,6 @@ async def playlist_items(request:Request):
 
 @app.post("/create_playlist")
 async def create_playlist(request:Request):
-    # uses user listening history and chosen genre to recommend 10 songs
     token = request.cookies.get("spotify_token")
     playlist_name = request.query_params.get("playlist_name")
     username = request.query_params.get("username")
@@ -429,6 +457,44 @@ async def create_playlist(request:Request):
             return returnVal
     else:
         raise HTTPException(status_code=400, detail="No cookie")
+
+
+@app.post("/add_songs")
+async def add_songs(request:Request):
+    token = request.cookies.get("spotify_token")
+    playlist_id = request.query_params.get("playlist_id")
+    body_unicode = await request.body()
+    body = json.loads(body_unicode)
+
+    uri_list = [track["track_uri"] for track in body]
+
+    print(playlist_id)
+    print(uri_list)
+
+    
+    if token:
+        url = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
+        headers = {"Authorization": f"Bearer {token}",
+                   "Content-Type": "application/json"
+        }
+        payload = {
+            "uris": uri_list,
+            "position": 0
+        }
+
+        async with httpx.AsyncClient() as client:
+            response = await client.post(url, headers=headers, data=json.dumps(payload))
+
+            if response.status_code != 201:
+                print("issue here")
+                raise HTTPException(
+                    status_code=response.status_code, detail=response.json()
+                )
+
+            return
+    else:
+        raise HTTPException(status_code=400, detail="No cookie")
+
 
 @app.post("/store_game")
 def store_game(request: Request):

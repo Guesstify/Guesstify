@@ -22,35 +22,32 @@ const ImageGrid = ({ data, tracksReady }) => {
                 {
                     close => (
                         <div className={style.modal}>
-                            <div className='content'>
-                                <div className={style.artistInfo}>
-                                  <h1>{item.artist_name}</h1>
-                                  <img className={style.card_image} src={item.artist_picture} alt={`Artist: ${item.artist_name}`}/>
+                          <div className={style.artistInfo}>
+                            <h1>{item.artist_name}</h1>
+                            <img className={style.card_image} src={item.artist_picture} alt={`Artist: ${item.artist_name}`}/>
+                          </div>
+                          
+                          <div className={style.songList}>
+                          {
+                            item.ready ? (
+                              item.artist_top_tracks.map((track, index) => (
+                                <div className={style.trackItem} key={index}> {/* Add a container for each track */}
+                                  <img className={style.albumArt} src={track.album_image} alt={`Album cover for ${track.album_name}`} />
+                                  <div className={style.trackInfo}>
+                                    <p className={style.title}>{index + 1}. {track.track_name.length > 31 ? `${track.track_name.substring(0, 28)}...` : track.track_name}</p>
+                                    <p>Album: {track.album_name.length > 31 ? `${track.album_name.substring(0, 28)}...` : track.album_name}</p>
+                                    <p>Popularity Score: {track.popularity}</p>
+                                  </div>
                                 </div>
-                                
-                                <div className={style.songList}>
-                                {
-                                  item.ready ? (
-                                    item.artist_top_tracks.map((track, index) => (
-                                      <div className={style.trackItem} key={index}> {/* Add a container for each track */}
-                                        <img className={style.albumArt} src={track.album_image} alt={`Album cover for ${track.album_name}`} />
-                                        <div className={style.trackInfo}>
-                                          <p>{index + 1}. {track.track_name.length > 31 ? `${track.track_name.substring(0, 28)}...` : track.track_name}</p>
-                                          <p>Album: {track.album_name.length > 31 ? `${track.album_name.substring(0, 28)}...` : track.album_name}</p>
-                                          <p>Popularity Score: {track.popularity}</p>
-                                        </div>
-                                      </div>
-                                    ))
-                                  ) : <p>loading...</p>
-                                }
-                                </div>
-                                
-                            </div>
-                            <div>
-                                <button className={style.close} onClick={() => close()}>
-                                  X
-                                </button>
-                            </div>
+                              ))
+                            ) : <p>loading...</p>
+                          }
+                          </div>
+                          <div>
+                              <button className={style.close} onClick={() => close()}>
+                                X
+                              </button>
+                          </div>
                         </div>
                     )
                 }
@@ -169,6 +166,7 @@ const Grid = () => {
             </div>
           ) : (
             <ImageGrid data={artists}/>
+            
           )
         }
     </div>

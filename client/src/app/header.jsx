@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 
 const HeaderComponent = () => {
     const router = useRouter();
+
     const handleNavClick = (key) => {
         router.push(`/${key}/`);
     };
@@ -22,7 +23,7 @@ const HeaderComponent = () => {
     const navItems = [
         ['intro', 'Home'],
         ['about', 'About'],
-        ['songs', 'Songs'],
+        ['tracks', 'Tracks'],
         ['grid', 'Artists'],
         ['playlists', 'Playlists']
         
@@ -30,7 +31,13 @@ const HeaderComponent = () => {
 
     return (
         <div className={style.header}>
-            <h1>Spotify Vinyls</h1>
+            <title>Vinyls</title>
+            <link rel="icon" href="vercel.svg" />
+
+            <a href="/intro">
+                <h1>Spotify Vinyls</h1>
+            </a>
+            
             
             <div className={style.buttons}>
                 {navItems.map(([key, buttonText]) => (
