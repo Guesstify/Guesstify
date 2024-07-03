@@ -115,6 +115,7 @@ const Playlists = () => {
     <div className={style.container}>
       <HeaderComponent/>
       <h1>User Playlists</h1>
+      <h3>(Min. 15 Tracks)</h3>
       {playlistsReady ? (
         <div>
           <div className={style.search_box} ref={searchBoxRef}>

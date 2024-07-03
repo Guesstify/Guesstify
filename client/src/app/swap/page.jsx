@@ -24,6 +24,9 @@ const Swap = () => {
   const searchParams = useSearchParams();
   const effectRan = useRef(false);
   const router = useRouter();
+  const audioRef = useRef(null);
+  const [volume, setVolume] = useState(0.5);
+
 
 
   const playlistName = searchParams.get("name");
@@ -54,6 +57,7 @@ const Swap = () => {
   useEffect(() => {
 
     if(effectRan.current === false){
+
       const fetchAllItems = async () => {
         console.log("fetching all Items");
   
@@ -92,6 +96,7 @@ const Swap = () => {
     }
     
     return () => {
+      console.log("INITIAL EFFECT RETURN")
       effectRan.current = true;
     }
 
@@ -164,14 +169,39 @@ const Swap = () => {
     console.log("new ranking:", nextTrack.ranking);
   }
 
-  const AudioPlayer = ({ src }) => {
+  const AudioPlayer = ({ src, volume, setVolume }) => {
+    const audioRef = useRef(null);
+  
+    useEffect(() => {
+      if (audioRef.current) {
+        audioRef.current.volume = volume;
+      }
+    }, [src]);
+  
+    useEffect(() => {
+      if (audioRef.current) {
+        audioRef.current.volume = volume;
+      }
+    }, [volume]);
+  
+    const handleVolumeChange = (event) => {
+      const newVolume = event.target.volume;
+      setVolume(newVolume);
+    };
+  
     return (
-      <audio controls autoPlay>
+      <audio 
+        controls 
+        autoPlay 
+        ref={audioRef} 
+        onVolumeChange={handleVolumeChange}
+      >
         <source src={src} type="audio/mp3" />
         Your browser does not support the audio element.
       </audio>
     );
   };
+
 
   const handleCreate = () => {
     if (tracks && tracks.length > 0) {
@@ -181,9 +211,9 @@ const Swap = () => {
       router.push('/create?name=[Vinyl] ' + playlistName);
     }
   };
-  
+
   const audioPlayer = useMemo(
-    () => <AudioPlayer src={newTrack.snippet} />,
+    () => <AudioPlayer src={newTrack.snippet} volume={volume} setVolume={setVolume} />,
     [newTrack]
   );
 

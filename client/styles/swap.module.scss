@@ -10,11 +10,11 @@
   align-items: center;
   margin: 0; // Remove default margins
   padding: 0; // Remove default paddings
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   background-color: $background-color;
   font-family: sans-serif;
   color: $text-color;
+
 
   
 
@@ -63,16 +63,15 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    margin-top: 1rem;
+    height: 60vh;
 
     .parentOfSong {
-      margin-top: 2vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      margin-bottom: 2.5vh;
+      height: 100%;
 
       .logo{
         width: 3.5vw;
@@ -80,9 +79,9 @@
       }
 
       .image {
-        width: 25.5vw;
+        width: auto;
         justify-self: end;
-        height: auto;
+        height: 80%;
         cursor: pointer;
         transition: transform ease-out 0.3s;
 
@@ -92,9 +91,6 @@
 
 
 
-      
-
-      
 
       .track_names {
         display: flex; /* Use flexbox */
@@ -104,7 +100,7 @@
         color: $text-color;
         font-weight: lighter; /* Corrected to use $title-weight */
         font-size: 1.2rem;
-        height: 5vh;
+        height: 30%;
         line-height: 1.6; /* Adjust line height as needed for minimal spacing */
         justify-content: center; /* Add space between text and logo */
 
@@ -115,6 +111,7 @@
           justify-content: center; /* Vertically center the text */
           width: 80%;
           align-items: center;
+          height: 100%;
 
           .track_name{
             text-decoration: underline;

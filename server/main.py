@@ -79,13 +79,13 @@ async def get_cookie(spotify_token: str = Cookie(None)):
         raise HTTPException(status_code=400, detail="No cookie")
 
 
-# Token data model
-class TokenData(BaseModel):
-    token: str
+# # Token data model
+# class TokenData(BaseModel):
+#     token: str
 
 
 @app.post("/set-cookie")
-async def set_cookie(response: Response, token_data: TokenData):
+async def set_cookie(response: Response):
     """Sets the Spotify token cookie."""
     token = token_data.token
     # print(f"setting {token}")
@@ -100,6 +100,8 @@ async def set_cookie(response: Response, token_data: TokenData):
 async def delete_cookie(response: Response):
     """Deletes the Spotify token cookie."""
     response.delete_cookie(key="spotify_token")
+
+    return 200
 
 
 @app.get("/login")
@@ -307,6 +309,7 @@ async def recommend_songs(request:Request, limit: int = 5, market: str = "US"):
 
     seed_tracks = ",".join([song1, song2, song3, song4, song5])
 
+
     if not seed_tracks:
         return HTTPException(status_code=500, detail="no_seed_tracks")
     
@@ -333,7 +336,7 @@ async def recommend_songs(request:Request, limit: int = 5, market: str = "US"):
 # for static usage: my top seed tracks are: 7dJYggqjKo71KI9sLzqCs8,14mmDeJOYO6feKPLrdU2li,1aAKe7L1OKsoXJHqy8uMwH,2PspwQLfDzLUOyaxQ7de5L,0THW04vlFAkfflASMFam0t
 
 @app.get("/artist_top_tracks")
-async def recommend_songs(request:Request, market: str = "US"):
+async def artist_top_tracks(request:Request, market: str = "US"):
     # uses user listening history and chosen genre to recommend 10 songs
     token = request.cookies.get("spotify_token")
     artist_id = request.query_params.get("artist_id")
@@ -453,7 +456,6 @@ async def create_playlist(request:Request):
 
         
             returnVal= response.json()["id"]
-            print(returnVal)
             return returnVal
     else:
         raise HTTPException(status_code=400, detail="No cookie")
@@ -467,9 +469,6 @@ async def add_songs(request:Request):
     body = json.loads(body_unicode)
 
     uri_list = [track["track_uri"] for track in body]
-
-    print(playlist_id)
-    print(uri_list)
 
     
     if token:

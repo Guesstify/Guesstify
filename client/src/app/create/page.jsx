@@ -11,7 +11,8 @@ const spotifyToken = Cookies.get('spotify_token') // => 'value'
 
 
 async function getRecs(songs) {
-  const response = await fetch(`${backendUrl}/recommend_songs?song1=${songs[0]}&song2=${songs[1]}&song3=${songs[2]}&song4=${songs[3]}&song5=${songs[4]}`, {
+  print(songs)
+  const response = await fetch(`${backendUrl}/recommend_songs?song1=${songs[0].track_id}&song2=${songs[1].track_id}&song3=${songs[2].track_id}&song4=${songs[3].track_id}&song5=${songs[4].track_id}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -72,16 +73,16 @@ async function addSongs(playlist_id, track_chunk) {
 const Create = () => {
   const [tracks, setTracks] = useState([]);
   const [ready, setReady] = useState(false);
-  const [initialCreate, setInitialCreate] = useState(false);
-  const [addedSongs, setAddedSongs] = useState(false);
   const router = useRouter();
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const username = Cookies.get('username')
   const effectRan = useRef(false);
   const searchParams = useSearchParams();
   const playlistName = searchParams.get("name");
-  const [newPlaylist, setNewPlaylist] = useState({});
-  const [recSongs, setRecSongs] = useState({});
+  const [createButtonClicked, setCreateButtonClicked] = useState(false);
+  const [playlistCreated, setPlaylistCreated] = useState(false);
+  const [songsAdded, setSongsAdded] = useState(false);
+  const [recommendedSongs, setRecommendedSongs] = useState({});
 
 //   const [song1, setSong1] = use
  
@@ -112,6 +113,7 @@ const Create = () => {
         console.log("fetching all Items");
 
         try {
+
           const create = await makePlaylist(username, playlistName);
 
           const numSongs = tracks.length;
@@ -128,12 +130,17 @@ const Create = () => {
           }
           // Send each chunk starting from the highest offset
 
-          // setRecSongs(getRecs(top5Songs))
+          setRecommendedSongs(getRecs(top5Songs))
+
 
           for (let i = numChunks - 1; i >= 0; i--) {
             const chunk = chunks[i];
             await addSongs(create, chunk);
           }
+
+          console.log("songs: ", tracks)
+
+          setPlaylistCreated(true)
 
           
         } catch (error) {
@@ -146,18 +153,30 @@ const Create = () => {
 
       newPlaylist();
     }
-  }, [ready]);
+  }, [tracks]);
 
   const handleCreate = () => {
-    setReady(true);
+    setCreateButtonClicked(true);
   };
+
+  
 
 
 
   return (
     <div className={style.container}>
         <HeaderComponent />
-        <button className={style.create_button} onClick={handleCreate}>Create!</button>
+
+        {createButtonClicked ? (
+          playlistCreated ? (
+            <p>playlist ready</p>
+          ) : (
+            <p>playlist not ready</p>
+          )
+        ) : (
+          <button className={style.create_button} onClick={handleCreate}>Create!</button>
+        ) /*check if playlist create button has been clicked*/}
+        
     </div>
   );
 };
