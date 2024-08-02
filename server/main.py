@@ -297,7 +297,7 @@ async def user_top_tracks(request: Request, limit: int = 15, offset: int = 0):
         raise HTTPException(status_code=400, detail="No cookie")
 
 @app.get("/recommend_songs")
-async def recommend_songs(request:Request, limit: int = 5, market: str = "US"):
+async def recommend_songs(request:Request, limit: int = 8, market: str = "US"):
     # uses user listening history and chosen genre to recommend 10 songs
     token = request.cookies.get("spotify_token")
     min_popularity = 60
@@ -356,7 +356,6 @@ async def artist_top_tracks(request:Request, market: str = "US"):
                 )
 
             returnVal= utilities.artist_fetch_info(response.json())
-            print(returnVal)
             return returnVal
     else:
         raise HTTPException(status_code=400, detail="No cookie")
@@ -454,8 +453,8 @@ async def create_playlist(request:Request):
                     status_code=response.status_code, detail=response.json()
                 )
 
-        
-            returnVal= response.json()["id"]
+
+            returnVal= utilities.create_playlist(response.json())
             return returnVal
     else:
         raise HTTPException(status_code=400, detail="No cookie")

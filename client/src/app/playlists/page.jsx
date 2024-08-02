@@ -72,10 +72,8 @@ const Playlists = () => {
           setPlaylistsReady(true);
         }
         catch (error) {
-          console.error("Failed to fetch playlists data:", error);
-          if (error.response && error.response.status === 401) {
-            router.push("/");
-          }
+          console.error("Failed to fetch playlists data mf:", error);
+          router.push("/");
         }
       };
 
@@ -91,8 +89,8 @@ const Playlists = () => {
     };
   }, []);
 
-  const moveToSwap = (playlistID, playlistName) => {
-    router.push("/swap?id=" + playlistID + "&name=" + playlistName);
+  const moveToSwap = (playlistID, playlistName, playlistSize) => {
+    router.push("/swap?id=" + playlistID + "&name=" + playlistName + "&size=" + playlistSize);
   };
 
   const handleSearch = (event) => {
@@ -134,7 +132,7 @@ const Playlists = () => {
               <div className={style.result_box}>
                 <ul>
                   {searchResults.map(result => (
-                    <li key={result.playlist_id} onClick={() => moveToSwap(result.playlist_id, result.playlist_name)}>
+                    <li key={result.playlist_id} onClick={() => moveToSwap(result.playlist_id, result.playlist_name, result.size)}>
                       {result.playlist_name}
                     </li>
                   ))}
@@ -144,7 +142,7 @@ const Playlists = () => {
           </div>
           <div className={style.playlist_grid}>
             {userPlaylists.map((playlist) => (
-              <div key={playlist.playlist_id} className={style.playlist_item} onClick={() => moveToSwap(playlist.playlist_id, playlist.playlist_name)}>
+              <div key={playlist.playlist_id} className={style.playlist_item} onClick={() => moveToSwap(playlist.playlist_id, playlist.playlist_name, playlist.size)}>
                 <img className={style.playlist_image} src={playlist.playlist_image} alt={playlist.playlist_name} />
                 <p>{playlist.playlist_name.length > 31 ? `${playlist.playlist_name.substring(0, 28)}...` : playlist.playlist_name}</p>
               </div>

@@ -38,7 +38,7 @@ export default function Home() {
         >
           Login with Spotify
         </Link>
-        <div className={style.marquee}>
+        {/* <div className={style.marquee}>
           <Marquee>
             {messages.map((message, index) => (
               <p key={index} className={style.scrolling_text}>
@@ -46,7 +46,7 @@ export default function Home() {
               </p>
             ))}
           </Marquee>
-        </div>
+        </div> */}
       </div>
     </>
   );

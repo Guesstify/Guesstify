@@ -30,6 +30,8 @@ const Swap = () => {
 
 
   const playlistName = searchParams.get("name");
+  const playlistSize = searchParams.get("size");
+
 
 
 
@@ -60,14 +62,17 @@ const Swap = () => {
 
       const fetchAllItems = async () => {
         console.log("fetching all Items");
+        
+        const allPromises = [];
   
         try {
-          const results = await Promise.all([
-            fetchPlaylistItems(0),
-            fetchPlaylistItems(100),
-          ]);
+          const maxItems = 300
+          for (let offset = 0; offset < playlistSize && offset < maxItems; offset += 100) {
+            allPromises.push(fetchPlaylistItems(offset));
+          }
+    
+          const results = await Promise.all(allPromises);
 
-  
   
           let allTracks = results.flatMap(data => data ? data.data_list : []);
           // Sort allTracks based on the popularity score in descending order
@@ -85,9 +90,7 @@ const Swap = () => {
         }
         catch (error) {
           console.error("Failed to fetch playlist items", error);
-          if (error.response && error.response.status === 401) {
-            router.push("/");
-          }
+          router.push("/");
         }
         
       };
@@ -106,10 +109,10 @@ const Swap = () => {
 
   useEffect(() => {
     console.log("ready and setting tracks");
+    console.log(tracks)
     // Additional actions after response.json() resolves
     if(tracks.length > 0){
-      getTrack(setLeftTrack, "none", {}, {},0);
-      getTrack(setRightTrack, "none", {}, {}, 1);
+      initialGetTrack(setLeftTrack, setRightTrack);
     }
     
   }, [ready]);
@@ -128,10 +131,39 @@ const Swap = () => {
     }
   }, [leftStreak, rightStreak]); // Dependency array
 
+  const initialGetTrack = (leftSetter, rightSetter) => {
+
+    const newTracks = [...tracks]
+    const leftTrack = newTracks.shift();
+    const rightTrack = newTracks.shift();
+
+    leftTrack.priorty = leftTrack.priority + 1 + Math.floor(Math.random() * 15)
+    rightTrack.priorty = rightTrack.priority + 1 + Math.floor(Math.random() * 15)
+
+    const leftIndex = newTracks.findIndex(item => item.priority > leftTrack.priority);
+    if (leftIndex === -1) {
+        newTracks.push(leftTrack); // If no such index is found, obj should go at the end
+    } else {
+        newTracks.splice(leftIndex, 0, leftTrack);
+    }
+
+    const rightIndex = newTracks.findIndex(item => item.priority > rightTrack.priority);
+    if (rightIndex === -1) {
+        newTracks.push(rightTrack); // If no such index is found, obj should go at the end
+    } else {
+        newTracks.splice(rightIndex, 0, rightTrack);
+    }
+    
+    setTracks(newTracks)
+    console.log(tracks)
+    leftSetter(leftTrack);
+    rightSetter(rightTrack);
+    setNewTrack(rightTrack);
+  }
+
 
   const getTrack = (setter, trackSide, leftTrack, rightTrack, startVal) => {
     setNumSongs(numSongs + 1)
-    console.log(numSongs)
     if (trackSide === "left") {
         setLeftStreak((prevStreak) => prevStreak + 1);
         setRightStreak(0);
@@ -141,6 +173,9 @@ const Swap = () => {
           leftTrack.ranking = rightTrack.ranking;
           rightTrack.ranking = tempRanking;
           console.log("left ranking: ", leftTrack.ranking);
+        }
+        else{
+          rightTrack.ranking -= 2
         }
     } else if (trackSide === "right") {
         console.log("im on right")
@@ -152,21 +187,27 @@ const Swap = () => {
           leftTrack.ranking = tempRanking;
           console.log("right ranking: ", rightTrack.ranking);
         }
+        else{
+          leftTrack.ranking -= 2
+        }
     }
-    var nextTrack;
-    if(!leftTrack || !rightTrack){
-      nextTrack = tracks[startVal];
+
+    const newTracks = [...tracks];
+    const nextTrack = newTracks.shift()
+
+    nextTrack.priorty = nextTrack.priority + 1 + Math.floor(Math.random() * 15)
+    const index = newTracks.findIndex(item => item.priority > nextTrack.priority);
+    if (index === -1) {
+        newTracks.push(nextTrack); // If no such index is found, obj should go at the end
+    } else {
+        newTracks.splice(index, 0, nextTrack);
     }
-    else{
-      // Randomly select a track until it has a different rank than the current track
-      do {
-          nextTrack = tracks[Math.floor(Math.random() * tracks.length)];
-      } while (((nextTrack.ranking === leftTrack.ranking) || (nextTrack.ranking === rightTrack.ranking)) && tracks.length > 1);
-    }
+
+    setTracks(newTracks)
+    console.log(tracks)
     
     setter(nextTrack);
     setNewTrack(nextTrack);
-    console.log("new ranking:", nextTrack.ranking);
   }
 
   const AudioPlayer = ({ src, volume, setVolume }) => {
@@ -206,9 +247,10 @@ const Swap = () => {
   const handleCreate = () => {
     if (tracks && tracks.length > 0) {
       // Save tracks to local storage
+      tracks.sort((a, b) => b.ranking - a.ranking);
       localStorage.setItem('tracks', JSON.stringify(tracks));
       // Navigate to the new page
-      router.push('/create?name=[Vinyl] ' + playlistName);
+      router.push('/create?name=[Vinyls] ' + playlistName);
     }
   };
 

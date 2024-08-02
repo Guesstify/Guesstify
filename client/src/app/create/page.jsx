@@ -6,19 +6,54 @@ import Cookies from 'js-cookie';
 import { useSearchParams } from 'next/navigation';
 import HeaderComponent from '../header';
 import '../../../styles/header.module.scss';
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-const spotifyToken = Cookies.get('spotify_token') // => 'value'
 
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+const spotifyToken = Cookies.get('spotify_token');
 
 async function getRecs(songs) {
-  print(songs)
   const response = await fetch(`${backendUrl}/recommend_songs?song1=${songs[0].track_id}&song2=${songs[1].track_id}&song3=${songs[2].track_id}&song4=${songs[3].track_id}&song5=${songs[4].track_id}`, {
     method: "GET",
     credentials: "include",
     headers: {
       'Authorization': `Bearer ${spotifyToken}`,
     },
+  });
 
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const returnVal = await response.json();
+  console.log("meow mid rec: ", returnVal);
+  return returnVal.data_list;
+}
+
+async function makePlaylist(username, playlistName) {
+  const response = await fetch(`${backendUrl}/create_playlist?username=${username}&playlist_name=${playlistName}`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      'Authorization': `Bearer ${spotifyToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const returnVal = response.json();
+  return returnVal;
+}
+
+async function addSongs(playlist_id, track_chunk) {
+  console.log(track_chunk);
+  const response = await fetch(`${backendUrl}/add_songs?playlist_id=${playlist_id}`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      'Authorization': `Bearer ${spotifyToken}`,
+    },
+    body: JSON.stringify(track_chunk)
   });
 
   if (!response.ok) {
@@ -29,73 +64,24 @@ async function getRecs(songs) {
   return returnVal;
 }
 
-
-
-async function makePlaylist(username, playlistName) {
-    const response = await fetch(`${backendUrl}/create_playlist?username=${username}&playlist_name=${playlistName}`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        'Authorization': `Bearer ${spotifyToken}`,
-      },
-
-    });
-  
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-  
-    const returnVal = await response.json();
-    return returnVal;
-}
-
-
-async function addSongs(playlist_id, track_chunk) {
-
-    console.log(track_chunk)
-    const response = await fetch(`${backendUrl}/add_songs?playlist_id=${playlist_id}`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        'Authorization': `Bearer ${spotifyToken}`,
-      },
-      body: JSON.stringify(track_chunk)
-    });
-  
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-  
-    const returnVal = await response.json();
-    return returnVal;
-}
-
 const Create = () => {
   const [tracks, setTracks] = useState([]);
   const [ready, setReady] = useState(false);
   const router = useRouter();
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-  const username = Cookies.get('username')
+  const username = Cookies.get('username');
   const effectRan = useRef(false);
   const searchParams = useSearchParams();
   const playlistName = searchParams.get("name");
   const [createButtonClicked, setCreateButtonClicked] = useState(false);
   const [playlistCreated, setPlaylistCreated] = useState(false);
-  const [songsAdded, setSongsAdded] = useState(false);
-  const [recommendedSongs, setRecommendedSongs] = useState({});
-
-//   const [song1, setSong1] = use
- 
-
-
+  const [recommendedSongs, setRecommendedSongs] = useState([]);
+  const [newPlaylist, setNewPlaylist] = useState({});
 
   useEffect(() => {
     if (!spotifyToken) {
-
-        router.push("/")
+      router.push("/");
     }
   }, [spotifyToken]);
-
 
   useEffect(() => {
     if (effectRan.current === false) {
@@ -113,15 +99,19 @@ const Create = () => {
         console.log("fetching all Items");
 
         try {
-
           const create = await makePlaylist(username, playlistName);
+          setNewPlaylist(create)
+          const playlist_id = create.id
 
           const numSongs = tracks.length;
           const numChunks = Math.ceil(numSongs / 100);
 
           const sortedTracks = [...tracks].sort((a, b) => a.ranking - b.ranking);
 
-          const top5Songs = sortedTracks.slice(0,5);
+          const top5Songs = sortedTracks.slice(0, 5);
+
+          const recs = await getRecs(top5Songs);
+          setRecommendedSongs(recs);
 
           // Split the tracks into chunks
           const chunks = [];
@@ -130,19 +120,12 @@ const Create = () => {
           }
           // Send each chunk starting from the highest offset
 
-          setRecommendedSongs(getRecs(top5Songs))
-
-
           for (let i = numChunks - 1; i >= 0; i--) {
             const chunk = chunks[i];
-            await addSongs(create, chunk);
+            await addSongs(playlist_id, chunk);
           }
 
-          console.log("songs: ", tracks)
-
-          setPlaylistCreated(true)
-
-          
+          setPlaylistCreated(true);
         } catch (error) {
           console.error("Failed to make and add to playlist", error);
           if (error.response && error.response.status === 401) {
@@ -153,30 +136,47 @@ const Create = () => {
 
       newPlaylist();
     }
-  }, [tracks]);
+  }, [createButtonClicked]);
 
   const handleCreate = () => {
+    console.log("setting create button click true");
     setCreateButtonClicked(true);
   };
 
-  
-
-
-
   return (
     <div className={style.container}>
-        <HeaderComponent />
+      <HeaderComponent />
 
-        {createButtonClicked ? (
-          playlistCreated ? (
-            <p>playlist ready</p>
-          ) : (
-            <p>playlist not ready</p>
-          )
+      {createButtonClicked ? (
+        (recommendedSongs.length > 0 && playlistCreated) ? (
+          <div className={style.content}>
+            <div className={style.playlist_side}>
+              <h1>Your New Playlist</h1>
+              <p>wassup</p>
+            </div>
+            <div className={style.rec_side}>
+              <h1>Recommended Songs</h1>
+              <div className={style.rec_grid}>
+              {recommendedSongs.map((song) => (
+                <div key={song.song_id} className={style.rec_item}>
+                  <img className={style.rec_image} src={song.album_image} alt={song.song_name} />
+                  <div className={style.rec_song_text}>
+                    <p>{song.song_name.length > 31 ? `${song.song_name.substring(0, 28)}...` : song.song_name}</p>
+                    <p>{song.artist_name.length > 31 ? `${song.artist_name.substring(0, 28)}...` : song.artist_name}</p>
+                  </div>
+                </div>
+              ))}
+              </div>
+            </div>
+          </div>
+          
+          
         ) : (
-          <button className={style.create_button} onClick={handleCreate}>Create!</button>
-        ) /*check if playlist create button has been clicked*/}
-        
+          <p>playlist not ready</p>
+        )
+      ) : (
+        <button className={style.create_button} onClick={handleCreate}>Create!</button>
+      )}
     </div>
   );
 };

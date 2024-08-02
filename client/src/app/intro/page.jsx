@@ -60,22 +60,29 @@ const About = () => {
     router.push("/songs/");
   };
 
+  const handleProfile = () => {
+    router.push("/profile/");
+  };
+
   return (
     <div className={style.container}>
       <HeaderComponent />
       <p className={style.summary}>
-        Hey {userInfo ? userInfo.display_name : "Guest"}!!! <br></br>
-        Lets explore your music library!
+        Hey {userInfo ? userInfo.display_name : ""}!!! <br></br>
+        Lets refine your music library!
       </p>
-      <div>
-        <button className={style.game_button} onClick={handleTracks}>
+      <div className={style.button_controller}>
+        <button className={style.option_button} onClick={handleTracks}>
           Top Tracks
         </button>
-        <button className={style.game_button} onClick={handleArtists}>
+        <button className={style.option_button} onClick={handleArtists}>
           Top Artists
         </button>
-        <button className={style.game_button} onClick={handlePlaylists}>
+        <button className={style.option_button} onClick={handlePlaylists}>
           Order Playlists
+        </button>
+        <button className={style.option_button} onClick={handleProfile}>
+          Share Profile
         </button>
       </div>
     </div>

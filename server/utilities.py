@@ -161,6 +161,7 @@ def form_playlist_list(response):
 
         item_data = {}
         item_data["playlist_name"] = playlist["name"]
+        item_data["size"] = playlist["tracks"]["total"]
 
         item_data["playlist_image"] = playlist["images"][0]["url"]
         item_data["playlist_owner"] = playlist["owner"]["id"]
@@ -194,6 +195,7 @@ def get_playlist_items(response, offset):
         item_data["popularity"] = track["track"]["popularity"]
         item_data["snippet"] = track["track"]["preview_url"]
         item_data["track_id"] = track["track"]["id"]
+        item_data["priority"] = 0
 
         item_data["track_image"] = track["track"]["album"]["images"][0]["url"]
         item_data["track_artist"] = track["track"]["artists"][0]["name"]
@@ -204,6 +206,17 @@ def get_playlist_items(response, offset):
 
     return returnDict
 
+
+def create_playlist(response):
+    returnDict = {}
+    print("hERE")
+    print(response)
+
+    returnDict["id"] = response["id"]
+    returnDict["uri"] = response["uri"]
+    returnDict["name"] = response["name"]
+
+    return returnDict
 
 
 
