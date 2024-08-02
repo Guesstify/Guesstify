@@ -1,4 +1,5 @@
-@import "./variables.module";
+@import "./variables.module.scss";
+@import "./fonts.module.scss";
 
 .title {
   color: $text-color;
@@ -13,65 +14,11 @@
   padding-bottom: 200px;
 }
 
-.title span {
-  display: inline-block;
-  margin-right: 10px;
-  color: $text-color;
-  animation: colorChange 8s ease-in-out infinite;
-}
 
-/* Delay each letter's animation */
-.title span:nth-child(1) {
-  animation-delay: 0s;
-}
-
-.title span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.title span:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-.title span:nth-child(4) {
-  animation-delay: 0.6s;
-}
-
-.title span:nth-child(5) {
-  animation-delay: 0.8s;
-}
-
-.title span:nth-child(6) {
-  animation-delay: 1.0s;
-}
-
-.title span:nth-child(7) {
-  animation-delay: 1.2s;
-}
-
-.title span:nth-child(8) {
-  animation-delay: 1.4s;
-}
-
-.title span:nth-child(9) {
-  animation-delay: 1.6s;
-}
-
-
-@keyframes colorChange {
-  0%, 20%{
-    color: #D7AC40;
-  }
-  10% {
-    color: white;
-  }
-  30%, 100% {
-    color: $text-color;  /* Return to initial color */
-  }
-}
 .container {
   background-color: $background-color;
-  font-family: $primary-font;
+  color: $text-color;
+  font-family: serif;
   height: 100%;
   width: 100%;
   display: flex;
@@ -79,114 +26,46 @@
   justify-content: center;
   align-items: center;
 
-  h2 {
-    color: white;
-    margin: 10px 0;
+  .main_message{
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 64px;
+    font-weight: 400;
+    word-wrap: break-word;
+    width: 37.5%;
+    text-align: center;
   }
 
-  a,
-  .title,
-  button {
-    margin: 10px 0;
+  .description{
+    font-family: 'Hanken Grotesk', serif;
+    font-size: 24px;
+    text-align: center;
+    font-weight: 400;
+    word-wrap: break-word;
+    width: 30%;
+    margin-top: 30px;
+    margin-bottom: 30px;
   }
-}
-// @font-face {
-@font-face {
-  font-family: 'logo';
-  font-style: normal;
-  font-weight: normal;
-  src: url('../fonts/Mordis-DYYnd.woff') format('woff');
-  }
-//   font-family: "logo";
-//   src: url('../fonts/Mexcellent.eot');
-//   src: url('../fonts/Mexcellent.eot') format('embedded-opentype'),
-//        url('../fonts/Mexcellent.woff2') format('woff2'),
-//        url('../fonts/Mexcellent.woff') format('woff'),
-//        url('../fonts/Mexcellent.ttf') format('truetype');
-// }
 
-@keyframes titleFadeInFromLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+
 }
 
-/* Marquee Styling */
-.scrolling_text {
-  color: white;
-  font-size: 2em;
-  padding: 1em 0.5em 0 0.5em;
-}
-.marquee {
-  width: 90%;
-  overflow: hidden;
-  white-space: nowrap;
-  box-sizing: border-box;
-  animation: marquee 15s linear infinite;
-}
 
 /* CSS for login button*/
 .spotify_login_button {
-  appearance: none;
-  background-color: $button-color;
-  border: 1px solid rgba(27, 31, 35, 0.15);
-  border-radius: 20px;
+  background-color: black;
+  color: white;
+  border-radius: 10px;
   box-shadow: rgba(27, 31, 35, 0.1) 0 1px 0;
   box-sizing: border-box;
-  color: rgb(0, 0, 0);
+  font-family: 'Hanken Grotesk';
   cursor: pointer;
-  display: inline-block;
-  font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial,
-    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-  font-size: $web_button_size;
-  font-weight: 600;
-  line-height: 20px;
-  padding: 20px 20px 20px 20px;
-  position: relative;
-  text-align: center;
-  text-decoration: none;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  vertical-align: middle;
-  white-space: nowrap;
-  transition: background-color 0.5s ease; /* Add this line */
-  transition: color 0.1 ease;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+
 }
 
-.spotify_login_button:focus:not(:focus-visible):not(.focus-visible) {
-  box-shadow: none;
-  outline: none;
-  color: rgb(0, 0, 0);
-}
-
-.spotify_login_button:hover {
-  background-color: $spotify-color;
-  color: rgb(256, 256, 256);
-}
-
-.spotify_login_button:focus {
-  box-shadow: rgb(0, 0, 0, 0.4) 0 0 0 3px;
-  outline: none;
-}
-
-.spotify_login_button:disabled {
-  background-color: $spotify-color;
-  border-color: rgba(27, 31, 35, 0.1);
-  color: rgb(0, 0, 0);
-  cursor: default;
-}
-
-.spotify_login_button:active {
-  background-color: $spotify-color;
-  box-shadow: rgba(20, 70, 32, 0.2) 0 1px 0 inset;
-  color: rgb(64, 64, 64);
-}
 
 @media only screen and (min-device-width: 320px) and (max-device-width: 568px) {
   .title {
