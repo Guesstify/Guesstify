@@ -2,5 +2,11 @@
   "dependencies": {
     "react-fast-marquee": "^1.6.2",
     "reactjs-popup": "^2.0.6"
+  },
+
+  "scripts": {
+    "start": "next start",
+    "build": "next build",
+    "dev": "next dev"
   }
 }
