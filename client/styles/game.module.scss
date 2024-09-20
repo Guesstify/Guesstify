@@ -1,6 +1,5 @@
 @import "./variables.module";
 .container {
-  background-color: $color-background;
   font-family: $primary-font;
   display: flex;
   flex-direction: column;
@@ -9,7 +8,6 @@
   min-height: 110vh; // Ensure the container takes at least the full height of the viewport
   width: 100vw;
   .title {
-    color: $color-primary;
     font-weight: 5rem; // Corrected to use $title-weight
     font-size: 3rem;
     font-family: $primary-cursive; // Corrected to use $primary-font
