@@ -25,6 +25,20 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  .title {
+    color: $color-primary;
+    text-align: center;
+    font-family: $primary-cursive;
+    font-size: 6rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    position: relative;
+    padding-top: 0px;
+    padding-bottom: 0rem;
+    margin-left: 0.5rem;
+    margin-right: 1rem;
+  }
 
   .main_message{
     font-family: 'Nanum Myeongjo', serif;
@@ -66,7 +80,6 @@
 
 }
 
-
 @media only screen and (min-device-width: 320px) and (max-device-width: 568px) {
   .title {
     font-size: 6.5rem;
@@ -83,7 +96,36 @@
   }
   .container {
     margin-bottom: 0px;
-    margin-top: 0px;
+    margin-top: -4rem;
     height: 100vh;
+    .title span {
+      font-size: 4rem;
+      color: $color-primary;
+      font-family: $primary-font;
+      font-weight: $title-weight;
+      text-align: center;
+      margin-left: 0rem;
+      margin-right: 0rem;
+      margin-top: -4rem;
+      padding-top: -2rem;
+    }
+    .summary {
+      color: white;
+      font-size: 1.5rem;
+    }
+    .spotify_login_button {
+      margin-top: 1.5rem;
+      font-size: 1.5rem;
+      padding-top: 15px;
+      padding-bottom: 15px;
+    }
+    .marquee{
+      width:75%;
+    }
+  }
+}
+@media only screen and (min-device-width: 1400px) {
+  .title span {
+    font-size: 10rem;
   }
 }

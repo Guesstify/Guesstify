@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import style from "../../../styles/game.module.scss";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 const TrackList = () => {
   const [tracks, setTracks] = useState([]);
@@ -14,9 +14,20 @@ const TrackList = () => {
   const [userInfo, setUserInfo] = useState({});
   const [leftStreak, setLeftStreak] = useState(0);
   const [rightStreak, setRightStreak] = useState(0);
+  const [hearts, setHearts] = useState(3);
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const fetchData = async () => {
+    const spotifyToken = Cookies.get("spotify_token"); // => 'value'
+    const requestOptions = {
+      method: "GET",
+      credentials: "include", // For including cookies in the request
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${spotifyToken}`, // Assuming the token is used for authorization
+      },
+    };
     try {
+
       const spotifyToken = Cookies.get('spotify_token')
 
 
@@ -44,29 +55,6 @@ const TrackList = () => {
     } catch (error) {
       console.error("Error fetching game data:", error);
     }
-    // try {
-    //   const requestOptions = {
-    //     method: "GET",
-    //     headers: { "Content-Type": "application/json" },
-    //     credentials: "include", // For including cookies in the request
-    //   };
-    //   // Missing fetch call added here
-    //   fetch(`${backendUrl}/user_info`, requestOptions)
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //       setUserInfo(data);
-    //       setGameInfo((prevGameInfo) => {
-    //         return {
-    //           ...prevGameInfo,
-    //           userName: data.display_name,
-    //         };
-    //       });
-    //     })
-    //     .catch((error) => console.error("Error:", error));
-    // } catch (error) {
-    //   console.error("Error fetching user data:", error);
-    // }
-    console.log("initial fetch");
   };
 
   useEffect(() => {
@@ -74,7 +62,6 @@ const TrackList = () => {
   }, []);
 
   useEffect(() => {
-    console.log("ready");
     // Additional actions after response.json() resolves
     getTrack(setLeftTrack, "none");
     getTrack(setRightTrack, "none");
@@ -83,17 +70,14 @@ const TrackList = () => {
   // code to keep track of streak counters
   useEffect(() => {
     if (leftStreak === 3) {
-      console.log("entering left streak");
       setLeftStreak(0);
       getTrack(setLeftTrack, "none");
     }
     if (rightStreak >= 3 && rightStreak % 3 === 0) {
-      console.log("entering right streak");
       setRightStreak(0);
       getTrack(setRightTrack, "none");
     }
   }, [score]); // Dependency array
-
 
   //Adjust game score when final score changes
   useEffect(() => {
@@ -104,32 +88,40 @@ const TrackList = () => {
     }));
   }, [score]);
 
+  //End the game when the num of hearts becomes 0
+  useEffect(() => {
+    if (hearts === 0) {
+      setGameOver(true);
+    }
+  }, [hearts]);
+
   const getTrack = (setter, trackSide) => {
-    console.log(" before getTrack: ", tracks.length);
     if (trackSide === "left") {
       if (leftTrack.rank < rightTrack.rank) {
+        // Logic to handle streaks from breaking game
         setScore(score + 1);
         setLeftStreak((prevStreak) => prevStreak + 1);
         setRightStreak(0);
       } else {
-        setGameOver(true);
+        // The Wrong Answer is Picked
+        setHearts((prevCount) => prevCount - 1);
       }
     } else if (trackSide === "right") {
       if (rightTrack.rank < leftTrack.rank) {
+        // Logic to handle streaks from breaking game
         setRightStreak((prevStreak) => prevStreak + 1);
         setLeftStreak(0);
         setScore(score + 1);
       } else {
-        setGameOver(true);
+        // The Wrong Answer is Picked
+        setHearts((prevCount) => prevCount - 1);
       }
     }
-    console.log(tracks.length);
     setTracks((prevTracks) => {
       if (Array.isArray(prevTracks) && prevTracks.length > 0) {
         const [nextTrack, ...remainingTracks] = prevTracks;
         setter(nextTrack);
         setNewTrack(nextTrack);
-        console.log("length:", remainingTracks.length);
         return remainingTracks;
       }
     });
@@ -153,12 +145,26 @@ const TrackList = () => {
     <>
       <div className={style.container}>
         <h1 className={style.title}>Guesstify</h1>
+        <div className="heartsContainer">
+          {Array.from({ length: hearts }).map((_, index) => (
+            <span className={style.hearts} key={index}>
+              ❤️
+            </span>
+          ))}
+          {Array.from({ length: 3 - hearts }).map((_, index) => (
+            <span className={style.hearts} key={index}>
+              💔
+            </span>
+          ))}
+        </div>
+
         {score >= 3 ? (
           <p className={style.score}>🔥Score: {score}🔥</p>
         ) : (
           <p className={style.score}>Score: {score}</p>
         )}
-        {gameOver && <p className={style.score}>Game Over!</p>}
+
+        {gameOver && <p className={style.score}>Game Over</p>}
         {newTrack && rightTrack && !gameOver && (
           <div>
             <h2 className={style.title_question}>
