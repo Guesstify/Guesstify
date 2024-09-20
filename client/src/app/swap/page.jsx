@@ -7,8 +7,10 @@ import { useSearchParams } from 'next/navigation';
 import hamster from "../../../styles/hamster.module.scss";
 import Cookies from 'js-cookie';
 import HeaderComponent from '../header';
+import Loader from '../loader';
 import '../../../styles/header.module.scss';
 const spotifyToken = Cookies.get('spotify_token');
+import Progressbar from "./progressbar.jsx"
 // import {MongoClient} from 'mongodb';
 
 const Swap = () => {
@@ -24,8 +26,11 @@ const Swap = () => {
   const searchParams = useSearchParams();
   const effectRan = useRef(false);
   const router = useRouter();
-  const audioRef = useRef(null);
   const [volume, setVolume] = useState(0.5);
+  const [leftPlaying, setLeftPlaying] = useState(false);
+  const [rightPlaying, setRightPlaying] = useState(false);
+  const [activePlayer, setActivePlayer] = useState(null);
+  const playlist_id = searchParams.get("id");
 
 
 
@@ -38,7 +43,7 @@ const Swap = () => {
   async function fetchPlaylistItems(offset) {
     
   
-    const playlist_id = searchParams.get("id");
+    
     const response = await fetch(`${backendUrl}/playlist_items?id=${playlist_id}&offset=${offset}`, {
       method: "GET",
       credentials: "include",
@@ -124,7 +129,7 @@ const Swap = () => {
       setLeftStreak(0);
       getTrack(setLeftTrack, "none", leftTrack, rightTrack, 0);
     }
-    if (rightStreak >= 3 && rightStreak % 3 === 0) {
+    if (rightStreak === 3) {
       console.log("entering right streak");
       setRightStreak(0);
       getTrack(setRightTrack, "none", leftTrack, rightTrack, 0);
@@ -137,8 +142,8 @@ const Swap = () => {
     const leftTrack = newTracks.shift();
     const rightTrack = newTracks.shift();
 
-    leftTrack.priorty = leftTrack.priority + 1 + Math.floor(Math.random() * 15)
-    rightTrack.priorty = rightTrack.priority + 1 + Math.floor(Math.random() * 15)
+    leftTrack.priority = leftTrack.priority + 2 + Math.floor(Math.random() * 15)
+    rightTrack.priority = rightTrack.priority + 2 + Math.floor(Math.random() * 15)
 
     const leftIndex = newTracks.findIndex(item => item.priority > leftTrack.priority);
     if (leftIndex === -1) {
@@ -158,7 +163,6 @@ const Swap = () => {
     console.log(tracks)
     leftSetter(leftTrack);
     rightSetter(rightTrack);
-    setNewTrack(rightTrack);
   }
 
 
@@ -195,7 +199,7 @@ const Swap = () => {
     const newTracks = [...tracks];
     const nextTrack = newTracks.shift()
 
-    nextTrack.priorty = nextTrack.priority + 1 + Math.floor(Math.random() * 15)
+    nextTrack.priority = nextTrack.priority + 2 + Math.floor(Math.random() * 15)
     const index = newTracks.findIndex(item => item.priority > nextTrack.priority);
     if (index === -1) {
         newTracks.push(nextTrack); // If no such index is found, obj should go at the end
@@ -207,43 +211,68 @@ const Swap = () => {
     console.log(tracks)
     
     setter(nextTrack);
-    setNewTrack(nextTrack);
   }
 
-  const AudioPlayer = ({ src, volume, setVolume }) => {
+  const handleTogglePlay = (playerId) => {
+    setActivePlayer((prevPlayerId) => (prevPlayerId === playerId ? null : playerId));
+  };
+
+  const AudioPlayer = ({ src, isPlaying, onTogglePlay, playerId }) => {
     const audioRef = useRef(null);
-  
+
     useEffect(() => {
-      if (audioRef.current) {
-        audioRef.current.volume = volume;
+      // Access the audio elements by class name
+      const audioElements = document.getElementsByClassName("volume");
+      if (audioElements.length > 0) {
+        // Set the default volume for each audio element found
+        audioElements[0].volume = 0.6; // Set to your desired default volume (0.0 to 1.0)
+        audioElements[1].volume = 0.6; // Set to your desired default volume (0.0 to 1.0)
       }
+
+      console.log(playerId)
+
     }, [src]);
+
+    const handleAudioEnd = () => {
+      setActivePlayer(null);
+    }
   
     useEffect(() => {
       if (audioRef.current) {
-        audioRef.current.volume = volume;
+        if (isPlaying) {
+          audioRef.current.play();
+        } else {
+          audioRef.current.pause();
+        }
       }
-    }, [volume]);
-  
-    const handleVolumeChange = (event) => {
-      const newVolume = event.target.volume;
-      setVolume(newVolume);
-    };
+    }, [isPlaying]);
   
     return (
-      <audio 
-        controls 
-        autoPlay 
-        ref={audioRef} 
-        onVolumeChange={handleVolumeChange}
-      >
-        <source src={src} type="audio/mp3" />
-        Your browser does not support the audio element.
-      </audio>
+      <div onClick={onTogglePlay}>
+        <audio ref={audioRef} src={src} onEnded={handleAudioEnd}/>
+        {isPlaying ? <PauseButton /> : <PlayButton />}
+      </div>
     );
   };
 
+  const PlayButton = () => {
+    return(
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={style.pressplaybutton}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z" />
+      </svg>
 
+    )
+  }
+
+  const PauseButton = () => {
+    return(
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={style.pressplaybutton}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M14.25 9v6m-4.5 0V9M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+      </svg>
+    )
+  }
+  
   const handleCreate = () => {
     if (tracks && tracks.length > 0) {
       // Save tracks to local storage
@@ -254,107 +283,112 @@ const Swap = () => {
     }
   };
 
-  const audioPlayer = useMemo(
-    () => <AudioPlayer src={newTrack.snippet} volume={volume} setVolume={setVolume} />,
-    [newTrack]
-  );
+  const handleParentOfSongClick = (side) => {
+    if (side === "left") {
+      getTrack(setRightTrack, "left", leftTrack, rightTrack, 0);
+      setActivePlayer("player2"); // Play the right track
+    } else if (side === "right") {
+      getTrack(setLeftTrack, "right", leftTrack, rightTrack, 1);
+      setActivePlayer("player1"); // Play the left track
+    }
+  };
 
   return (
     <>
       <div className={style.container}>
         <HeaderComponent/>
-        <h1 className={style.title}>Reorder Playlists</h1>
+        <h1 className={style.title}>Which song fits the vibe of "{playlistName.length > 31 ? `${playlistName.substring(0, 28)}...` : playlistName}" more?</h1>
         {ready === "ready" ? (
-          newTrack && rightTrack && (
-            <div>
-              <h2 className={style.title_question}>
-                Which song best fits the playlist?
-              </h2>
-              {numSongs > 20 && (
-                <button onClick={handleCreate}>Create playlist!</button>
-              )}
-              <div className={style.track_selectors}>
-                <div className={style.parentOfSong}>
-                    <img
-                      className={style.image}
-                      src={leftTrack.track_image}
-                      alt={`Album cover for ${leftTrack.track_name}`}
-                      onClick={() => getTrack(setRightTrack, "left", leftTrack, rightTrack, 0)}
-                      onMouseOver={() => {setNewTrack(leftTrack)}}
-                    />
-                  <p className={style.track_names}>
-                    <span className={style.text}>
-                      <span className={style.track_name}>
-                        {leftTrack.track_name && leftTrack.track_name.length > 31
-                          ? `${leftTrack.track_name.substring(0, 28)}...`
-                          : leftTrack.track_name}
-                      </span>
-                      <span className={style.track_artist}>
-                        {leftTrack.track_artist && leftTrack.track_artist.length > 31
-                          ? `${leftTrack.track_artist.substring(0, 28)}...`
-                          : leftTrack.track_artist}
-                      </span>
-                    </span>
-                    <a href={leftTrack.track_uri}>
-                      <img className={style.logo} src="/logo.png"/>
-                    </a>
-                  </p>
-                </div>
-                <div className={style.parentOfSong}>
-                    <img
-                      className={style.image}
-                      src={rightTrack.track_image}
-                      alt={`Album cover for ${rightTrack.track_name}`}
-                      onClick={() => {
-                        getTrack(setLeftTrack, "right", leftTrack, rightTrack, 1);
-                      }}
-                      onMouseOver={() => {setNewTrack(rightTrack)}}
-                    />
-                  <p className={style.track_names}>
-                    <span className={style.text}>
-                      <span className={style.track_name}>
-                        {rightTrack.track_name && rightTrack.track_name.length > 31
-                          ? `${rightTrack.track_name.substring(0, 28)}...`
-                          : rightTrack.track_name}
-                      </span>
-                      <span className={style.track_artist}>
-                        {rightTrack.track_artist && rightTrack.track_artist.length > 31
-                          ? `${rightTrack.track_artist.substring(0, 28)}...`
-                          : rightTrack.track_artist}
-                      </span>
-                    </span>
-                    <a href={rightTrack.track_uri}>
-                      <img className={style.logo} src="/logo.png"/>
-                    </a>
-                  </p>
-                </div>
+          leftTrack && rightTrack && (
+            <div className={style.content}>
+              <Progressbar
+                progress={numSongs/20*100}
+              />
+              <div className={style.create_button}>
+                {numSongs >= 20 && (
+                  <button onClick={handleCreate} className={style.create_playlist}>Create playlist!</button>
+                )}
               </div>
-              <div className={style.track_player}>{audioPlayer}</div>
+              
+              <div className={style.track_selectors}>
+                <div className={style.cardbox}>
+                  <div className={style.parentOfSong} onClick={() => handleParentOfSongClick("left")}>
+                      <img
+                        className={style.image}
+                        src={leftTrack.track_image}
+                        alt={`Album cover for ${leftTrack.track_name}`}
+                        // onMouseOver={() => {setNewTrack(leftTrack)}}
+                      />
+                    <p className={style.track_names}>
+                      <span className={style.text}>
+                        <span className={style.track_name}>
+                          {leftTrack.track_name && leftTrack.track_name.length > 31
+                            ? `${leftTrack.track_name.substring(0, 28)}...`
+                            : leftTrack.track_name}
+                        </span>
+                        <span className={style.track_artist}>
+                          {leftTrack.track_artist && leftTrack.track_artist.length > 31
+                            ? `${leftTrack.track_artist.substring(0, 28)}...`
+                            : leftTrack.track_artist}
+                        </span>
+                      </span>
+                      <a href={leftTrack.track_uri}>
+                        <img className={style.logo} src="/logo.png"/>
+                      </a>
+                    </p>
+                  </div>
+                  <AudioPlayer
+                    src={leftTrack.snippet}
+                    isPlaying={activePlayer === 'player1'}
+                    onTogglePlay={() => handleTogglePlay('player1')}
+                    className={style.track_player}
+                    playerId='player1'
+                  />
+                </div>
+                
+                
+                <div className={style.or_separator}><p>Or</p></div>
+
+                <div className={style.cardbox}>
+                  <div className={style.parentOfSong} onClick={() => handleParentOfSongClick("right")}>
+                      <img
+                        className={style.image}
+                        src={rightTrack.track_image}
+                        alt={`Album cover for ${rightTrack.track_name}`}
+                        // onMouseOver={() => {setNewTrack(rightTrack)}}
+                      />
+                    <p className={style.track_names}>
+                      <span className={style.text}>
+                        <span className={style.track_name}>
+                          {rightTrack.track_name && rightTrack.track_name.length > 31
+                            ? `${rightTrack.track_name.substring(0, 28)}...`
+                            : rightTrack.track_name}
+                        </span>
+                        <span className={style.track_artist}>
+                          {rightTrack.track_artist && rightTrack.track_artist.length > 31
+                            ? `${rightTrack.track_artist.substring(0, 28)}...`
+                            : rightTrack.track_artist}
+                        </span>
+                      </span>
+                      <a href={rightTrack.track_uri}>
+                        <img className={style.logo} src="/logo.png"/>
+                      </a>
+                    </p>
+                  </div>
+                  <AudioPlayer
+                    src={rightTrack.snippet}
+                    isPlaying={activePlayer === 'player2'}
+                    onTogglePlay={() => handleTogglePlay('player2')}
+                    className={style.track_player}
+                    playerId='player2'
+                  />
+                </div>
+                
+              </div>
             </div>
           )
         ) : (
-          <div className={hamster.loader}>
-            <div aria-label="Orange and tan hamster running in a metal wheel" role="img" className={hamster.wheel_and_hamster}>
-              <div className={hamster.wheel}></div>
-              <div className={hamster.hamster}>
-                <div className={hamster.hamster__body}>
-                  <div className={hamster.hamster__head}>
-                    <div className={hamster.hamster__ear}></div>
-                    <div className={hamster.hamster__eye}></div>
-                    <div className={hamster.hamster__nose}></div>
-                  </div>
-                  <div className={hamster.hamster__limb}>
-                    <div className={hamster.fr}></div>
-                    <div className={hamster.fl}></div>
-                    <div className={hamster.br}></div>
-                    <div className={hamster.bl}></div>
-                  </div>
-                  <div className={hamster.hamster__tail}></div>
-                </div>
-              </div>
-              <div className={hamster.spoke}></div>
-            </div>
-          </div>
+          <Loader/>
         )}
       </div>
     </>

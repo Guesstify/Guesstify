@@ -1,8 +1,9 @@
-@import "./variables.module";
+@import "./variables.module.scss";
+@import "./fonts.module.scss";
 
 
 .container {
-  height: 100vh;
+  height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -17,23 +18,30 @@
   color: $text-color;
   margin-bottom: 300px;
   
-  h1{
-    font-family: sans-serif;
+  .header{
     color: $text-color;
+    font-family: "Nanum Myeongjo";
+    width: 40%;
+    font-size: 48px;
+    font-weight: 550;
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: 30px;
   }
 
   h3{
-    margin-top: 2px;
     font-weight: 400;
+    font-family: "Hanken Grotesk";
   }
 
   .search_box{
     position: relative;
-    width: 50vw;
+    width: 50%;
     background: #fff;
     margin: 200px auto 0;
     margin-top: 30px;
     border-radius: 5px;
+    border: 2px solid rgb(160, 160, 160);
 
     .row{
       position: relative;
@@ -94,39 +102,62 @@
   }
 
   .playlist_grid{
-    font-size: 150%;
     font-weight: bold;
-    text-align: center;
+    height: 100%;
+    width: 100%;
     color: $text-color;
     display: grid;
-    grid-template-columns: repeat(3, 15%); // 6 columns
-    column-gap: 2%; // Adjust the space between grid items as needed
+    grid-template-columns: repeat(2, 22.5%); // 6 columns
+    grid-auto-rows: 160px;
+    column-gap: 3%; // Adjust the space between grid items as needed
     justify-content: center;
     justify-items: center;
     // padding-bottom: 100%;
-    margin-top: 10vh;
+    margin-top: 3%;
     margin-bottom: 10%;
-    position:relative;    
 
     .playlist_item{
-        height: 100%;
+        height: 85%;
         width: 100%; // Each item takes the full width of its cell
         position: relative;
         cursor: pointer;
+        border: 1.5px solid black;
+        border-radius: 5px;
+        display: flex;
+        margin-bottom: 24px;
+
+        .image_section {
+          width: 40%;
+          display: flex;                   // Use flexbox
+          justify-content: center;         // Center horizontally
+          align-items: center;             // Center vertically
         
-        .playlist_image{
-            transition: transform ease-out 0.3s;
-            width: 60%;
-            aspect-ratio: 1/1;
+          .playlist_image {
+            width: 80%;
+            aspect-ratio: 1 / 1;
             object-fit: scale-down; // Adjust how images fit within the container
+          }
         }
 
-        .playlist_image:hover { transform: scale(0.95); }
+        .text_section{
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          width: 60%;
+          font-family: "Hanken Grotesk", serif;
+          .playlist_name{
+            margin-top: 10px;
+            margin-left: 10px; // Add left margin to shift text right
+            margin-right: 10px;
+            font-size: 20px;
+            font-weight: bolder;
+          }
+        
+        }
+        
     }
 
-    p{
-      margin-top: 10px;
-    }
+    
 
   }
 

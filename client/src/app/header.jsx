@@ -51,18 +51,18 @@ const HeaderComponent = () => {
             <title>Vinyls</title>
             <link rel="icon" href="vercel.svg" />
 
-            <a href="/intro">
-                <h1>Spotify Vinyls</h1>
+            <a href="/playlists">
+                <h1>Polaroid Playlists</h1>
             </a>
             
             
-            <div className={style.buttons}>
+            {/* <div className={style.buttons}>
                 {navItems.map(([key, buttonText]) => (
                     <button key={key} onClick={() => handleNavClick(key)}>
                         {buttonText}
                     </button>
                 ))}
-            </div>
+            </div> */}
             <div className={style.logout}>
                 <button onClick={handleHelpClick}>
                     Help
