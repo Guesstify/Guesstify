@@ -119,6 +119,7 @@ def recommend_songs(response):
         item_data["artist_name"] = item["artists"][0]["name"]
         item_data["song_name"] = item["name"]
         item_data["song_snippet"] = item["preview_url"]
+        item_data["track_uri"] = item["uri"]
         data_list.append(item_data)
 
     returnDict["data_list"] = data_list
@@ -149,6 +150,8 @@ def artist_fetch_info(response):
 def form_playlist_list(response):
     returnDict = {}
     data_list = []
+
+    print(form_playlist_list)
 
     if len(response["items"]) == 0:
         return None
@@ -185,7 +188,7 @@ def get_playlist_items(response, offset):
 
     for index, track in enumerate(response["items"]):
 
-        if track["track"] is None:  # Check if track is None
+        if track["track"] is None or track["track"]["id"] is None:  # Check if track is None
             continue
 
         print(index)
@@ -215,6 +218,15 @@ def create_playlist(response):
     returnDict["id"] = response["id"]
     returnDict["uri"] = response["uri"]
     returnDict["name"] = response["name"]
+    return returnDict
+
+def get_playlist(response):
+    returnDict = {}
+
+    returnDict["image"] = response["images"][0]["url"]
+    returnDict["name"] = response["name"]
+    returnDict["user"] = response["owner"]["id"]
+    returnDict["playlist_uri"] = response["uri"]
 
     return returnDict
 

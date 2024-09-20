@@ -3,43 +3,36 @@ import Marquee from "react-fast-marquee";
 import React from "react";
 import style from "../../styles/home.module.scss";
 import Link from "next/link";
+import { Helmet } from "react-helmet";
 export default function Home() {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  const messages = [
-    "Test Your Taste!",
-    "Test your friends!",
-    "Test your family!",
-    "Test your coworkers!",
-    "Test your enemies!",
-    "Test your pets!",
-    "Test your siblings!",
-    "Test your parents!",
-    // Repeat the messages as many times as needed for the marquee effect
-  ];
   return (
+
+    
     <>
-      <header>
+      <Helmet>
         <title>Guesstify</title>
-      </header>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap"
+          rel="stylesheet"
+        />
+      </Helmet>
       <div className={style.container}>
-          <h1>Spotify</h1>
-        <div className={style.title}>
-          <span>V</span>
-          <span>I</span>
-          <span>N</span>
-          <span>Y</span>
-          <span>L</span>
-          <span>S</span>
+        <div className={style.main_message}>
+          I wanna listen to new music.
         </div>
-        <p className={style.summary}>
-          Test your music history!
-        </p>
+        
+        <h2 className={style.description}>
+          Tell us which songs you like on your Spotify playlist. We’ll introduce you to some new tunes.
+        </h2>
         <Link
           className={style.spotify_login_button}
           href={`${backendUrl}/login`}
         >
-          Login with Spotify
+          Generate my new playlist
         </Link>
         {/* <div className={style.marquee}>
           <Marquee>

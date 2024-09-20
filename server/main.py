@@ -162,7 +162,7 @@ async def callback(code: str = None, state: str = None):
                 token_query = urllib.parse.urlencode(token_data)
 
                 # Redirect URL for your frontend, must return cookie as part of the response
-                frontend_redirect_url = f"{front_end_url}/intro"
+                frontend_redirect_url = f"{front_end_url}/playlists"
                 response = RedirectResponse(url=frontend_redirect_url)
                 print("response", response)
                 print("callback", token_data["access_token"])
@@ -302,7 +302,7 @@ async def user_top_tracks(request: Request, limit: int = 15, offset: int = 0):
         raise HTTPException(status_code=400, detail="No cookie")
 
 @app.get("/recommend_songs")
-async def recommend_songs(request:Request, limit: int = 8, market: str = "US"):
+async def recommend_songs(request:Request, limit: int = 35, market: str = "US"):
     # uses user listening history and chosen genre to recommend 10 songs
     token = request.cookies.get("spotify_token")
     min_popularity = 60
@@ -460,6 +460,7 @@ async def create_playlist(request:Request):
 
 
             returnVal= utilities.create_playlist(response.json())
+            print(returnVal)
             return returnVal
     else:
         raise HTTPException(status_code=400, detail="No cookie")
@@ -499,9 +500,35 @@ async def add_songs(request:Request):
         raise HTTPException(status_code=400, detail="Authorization header not found")
 
 
-@app.post("/store_game")
-def store_game(request: Request):
-    pass
+
+@app.get("/get_playlist")
+async def get_playlist(request:Request):
+    token = request.cookies.get("spotify_token")
+    playlist_id = request.query_params.get("id")
+
+    print(playlist_id)
+
+    if token:
+        url = f"https://api.spotify.com/v1/playlists/{playlist_id}"
+        headers = {"Authorization": f"Bearer {token}",
+                   "Content-Type": "application/json"
+        }
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, headers=headers)
+
+            if response.status_code != 200:
+                print("issue here")
+                raise HTTPException(
+                    status_code=response.status_code, detail=response.json()
+                )
+
+
+            returnVal= utilities.get_playlist(response.json())
+            print("HEHEHEHEHHEHE: ", returnVal)
+            return returnVal
+    else:
+        raise HTTPException(status_code=400, detail="No cookie")
 
 
 if __name__ == "__main__":
