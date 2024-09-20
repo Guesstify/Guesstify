@@ -5,6 +5,8 @@ import style from "../../../styles/create.module.scss";
 import Cookies from 'js-cookie';
 import { useSearchParams } from 'next/navigation';
 import HeaderComponent from '../header';
+import Loader from '../loader';
+import StaticLoader from '../staticloader'
 import '../../../styles/header.module.scss';
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -23,7 +25,7 @@ async function getRecs(songs) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  const returnVal = await response.json();
+  const returnVal = await response.json();  
   console.log("meow mid rec: ", returnVal);
   return returnVal.data_list;
 }
@@ -37,6 +39,22 @@ async function makePlaylist(username, playlistName) {
     },
   });
 
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const returnVal = response.json();
+  return returnVal;
+}
+
+async function getPlaylist(playlist_id) {
+  const response = await fetch(`${backendUrl}/get_playlist?id=${playlist_id}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      'Authorization': `Bearer ${spotifyToken}`,
+    },
+  });
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
@@ -75,7 +93,7 @@ const Create = () => {
   const [createButtonClicked, setCreateButtonClicked] = useState(false);
   const [playlistCreated, setPlaylistCreated] = useState(false);
   const [recommendedSongs, setRecommendedSongs] = useState([]);
-  const [newPlaylist, setNewPlaylist] = useState({});
+  const [returnedPlaylist, setReturnedPlaylist] = useState({});
 
   useEffect(() => {
     if (!spotifyToken) {
@@ -100,7 +118,7 @@ const Create = () => {
 
         try {
           const create = await makePlaylist(username, playlistName);
-          setNewPlaylist(create)
+          console.log(create)
           const playlist_id = create.id
 
           const numSongs = tracks.length;
@@ -111,19 +129,33 @@ const Create = () => {
           const top5Songs = sortedTracks.slice(0, 5);
 
           const recs = await getRecs(top5Songs);
-          setRecommendedSongs(recs);
+          
+
+          const sortedTracksSongNames = new Set(sortedTracks.map(obj => obj.track_name));
+
+          const filteredRecTracks =  recs.filter(obj => !sortedTracksSongNames.has(obj.song_name));
+
+          const sample = filteredRecTracks.slice(0,6)
+          setRecommendedSongs(sample);
 
           // Split the tracks into chunks
-          const chunks = [];
-          for (let i = 0; i < numSongs; i += 100) {
-            chunks.push(sortedTracks.slice(i, i + 100));
-          }
-          // Send each chunk starting from the highest offset
+          const recsAndOrigCombined = [...sortedTracks.slice(0,20), ...filteredRecTracks.slice(0,20)]
 
-          for (let i = numChunks - 1; i >= 0; i--) {
-            const chunk = chunks[i];
-            await addSongs(playlist_id, chunk);
-          }
+          // chunks.push(filteredSortedTracks.slice(0,15))
+
+          // for (let i = 0; i < numSongs; i += 100) {
+          //   chunks.push(sortedTracks.slice(i, i + 100));
+          // }
+          // // Send each chunk starting from the highest offset
+
+          await addSongs(playlist_id, recsAndOrigCombined)
+
+          // for (let i = numChunks - 1; i >= 0; i--) {
+          //   const chunk = chunks[i];
+          //   await addSongs(playlist_id, chunk);
+          // }
+          setReturnedPlaylist(await getPlaylist(playlist_id))
+          console.log(returnedPlaylist)
 
           setPlaylistCreated(true);
         } catch (error) {
@@ -152,19 +184,36 @@ const Create = () => {
           <div className={style.content}>
             <div className={style.playlist_side}>
               <h1>Your New Playlist</h1>
-              <p>wassup</p>
+              <a href={returnedPlaylist.playlist_uri} className={style.playlist_content}>
+                  <img src={returnedPlaylist.image} alt="Playlist Image" />
+                  <div className={style.playlist_name}>
+                    <p>{returnedPlaylist.name.length > 31 ? `${returnedPlaylist.name.substring(0, 28)}...` : returnedPlaylist.name}</p>
+                  </div>
+                  <div className={style.playlist_user}>
+                    <p>{returnedPlaylist.user.length > 31 ? `${returnedPlaylist.user.substring(0, 28)}...` : returnedPlaylist.user}</p>
+                  </div>
+                  <img className={style.logo} src="/logo.png" alt="Logo" />
+              </a>
+
             </div>
+
             <div className={style.rec_side}>
               <h1>Recommended Songs</h1>
               <div className={style.rec_grid}>
               {recommendedSongs.map((song) => (
-                <div key={song.song_id} className={style.rec_item}>
+                <a href={song.track_uri} className={style.rec_item}>
                   <img className={style.rec_image} src={song.album_image} alt={song.song_name} />
                   <div className={style.rec_song_text}>
-                    <p>{song.song_name.length > 31 ? `${song.song_name.substring(0, 28)}...` : song.song_name}</p>
-                    <p>{song.artist_name.length > 31 ? `${song.artist_name.substring(0, 28)}...` : song.artist_name}</p>
+                    <div className={style.rec_song_name}>
+                      {song.song_name.length > 31 ? `${song.song_name.substring(0, 28)}...` : song.song_name}
+                    </div>
+                    <div className={style.rec_song_artist}>
+                      {song.artist_name.length > 31 ? `${song.artist_name.substring(0, 28)}...` : song.artist_name}
+                    </div>
+                    
                   </div>
-                </div>
+                  <img className={style.logo} src="/logo.png" alt="Logo" />
+                </a>
               ))}
               </div>
             </div>
@@ -172,10 +221,13 @@ const Create = () => {
           
           
         ) : (
-          <p>playlist not ready</p>
+          <Loader/>
         )
       ) : (
-        <button className={style.create_button} onClick={handleCreate}>Create!</button>
+        <div className={style.not_ready}>
+          <StaticLoader/>
+          <button className={style.create_button} onClick={handleCreate}>Create!</button>
+        </div>
       )}
     </div>
   );

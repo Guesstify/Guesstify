@@ -12,7 +12,6 @@ const TrackList = () => {
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
   const [userInfo, setUserInfo] = useState({});
-  const [gameInfo, setGameInfo] = useState({});
   const [leftStreak, setLeftStreak] = useState(0);
   const [rightStreak, setRightStreak] = useState(0);
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
