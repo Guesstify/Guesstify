@@ -23,16 +23,14 @@ export default function Home() {
         <title>Guesstify</title>
       </header>
       <div className={style.container}>
+          <h1>Spotify</h1>
         <div className={style.title}>
-          <span>G</span>
-          <span>U</span>
-          <span>E</span>
-          <span>S</span>
-          <span>S</span>
-          <span>T</span>
+          <span>V</span>
           <span>I</span>
-          <span>F</span>
+          <span>N</span>
           <span>Y</span>
+          <span>L</span>
+          <span>S</span>
         </div>
         <p className={style.summary}>
           Test your music history!
@@ -43,7 +41,7 @@ export default function Home() {
         >
           Login with Spotify
         </Link>
-        <div className={style.marquee}>
+        {/* <div className={style.marquee}>
           <Marquee>
             {messages.map((message, index) => (
               <p key={index} className={style.scrolling_text}>
@@ -51,7 +49,7 @@ export default function Home() {
               </p>
             ))}
           </Marquee>
-        </div>
+        </div> */}
       </div>
     </>
   );

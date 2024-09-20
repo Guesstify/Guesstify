@@ -1,0 +1,59 @@
+@import "./variables.module";
+
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    position: relative;  // Ensuring relative position
+    top: 0;
+    left: 0;  // Ensures it is aligned to the left edge
+    width: 100%;  // Ensures it spans the full width of the viewport
+    align-items: center;
+    padding: 0;  // Remove any padding
+    margin: 0;  // Remove any margin
+    border-bottom: 1px solid #dee2e6;
+    background-color: $background-color;  // Ensures it has a background color
+    z-index: 1000;  // Ensures it stays on top of other elements
+
+    a {
+        text-decoration: none;  // Remove underline from links
+        color: inherit;         // Inherit the color from the parent element
+        display: block;
+        margin-left: 2.3%
+    }
+    
+
+    .buttons {
+        display: flex;
+        gap: 10px;
+        
+
+        button {
+            border: 0;
+            background-color: $background-color;
+            padding: 10px 15px;
+            font-size: 120%;
+            cursor: pointer;
+            color: $text-color;
+        }
+    }
+
+    .logout{
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+    
+    .logout button {
+        padding: 10px 15px;
+        font-size: 16px;
+        background-color: $background-color;
+        color: $text-color;
+        border: none;
+        cursor: pointer;
+        
+    }
+    
+}
+
+

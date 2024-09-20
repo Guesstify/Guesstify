@@ -1,16 +1,76 @@
 @import "./variables.module";
 
+.title {
+  color: $text-color;
+  text-align: center;
+  font-family: "logo";
+  font-size: 150px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  position: relative;
+  padding-top: 0px; 
+  padding-bottom: 200px;
+}
+
+.title span {
+  display: inline-block;
+  margin-right: 10px;
+  color: $text-color;
+  animation: colorChange 8s ease-in-out infinite;
+}
+
+/* Delay each letter's animation */
+.title span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.title span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.title span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.title span:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+.title span:nth-child(5) {
+  animation-delay: 0.8s;
+}
+
+.title span:nth-child(6) {
+  animation-delay: 1.0s;
+}
+
+.title span:nth-child(7) {
+  animation-delay: 1.2s;
+}
+
+.title span:nth-child(8) {
+  animation-delay: 1.4s;
+}
+
+.title span:nth-child(9) {
+  animation-delay: 1.6s;
+}
+
+
 @keyframes colorChange {
-  0%,
-  100% {
-    color: $color-primary;
+  0%, 20%{
+    color: #D7AC40;
   }
-  50% {
+  10% {
     color: white;
+  }
+  30%, 100% {
+    color: $text-color;  /* Return to initial color */
   }
 }
 .container {
-  background-color: $color-background;
+  background-color: $background-color;
   font-family: $primary-font;
   height: 100%;
   width: 100%;
@@ -150,14 +210,21 @@
     color: rgb(64, 64, 64);
   }
 }
+// @font-face {
 @font-face {
-  font-family: "logo";
-  src: url("../fonts/Mexcellent.eot");
-  src: url("../fonts/Mexcellent.eot") format("embedded-opentype"),
-    url("../fonts/Mexcellent.woff2") format("woff2"),
-    url("../fonts/Mexcellent.woff") format("woff"),
-    url("../fonts/Mexcellent.ttf") format("truetype");
-}
+  font-family: 'logo';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../fonts/Mordis-DYYnd.woff') format('woff');
+  }
+//   font-family: "logo";
+//   src: url('../fonts/Mexcellent.eot');
+//   src: url('../fonts/Mexcellent.eot') format('embedded-opentype'),
+//        url('../fonts/Mexcellent.woff2') format('woff2'),
+//        url('../fonts/Mexcellent.woff') format('woff'),
+//        url('../fonts/Mexcellent.ttf') format('truetype');
+// }
+
 @keyframes titleFadeInFromLeft {
   from {
     opacity: 0;
@@ -169,6 +236,19 @@
   }
 }
 @media only screen and (min-device-width: 320px) and (max-device-width: 568px) {
+  .title {
+    font-size: 6.5rem;
+    color: $text-color;
+    font-weight: $title-weight;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .spotify_login_button {
+    margin-top: 30px;
+    font-size: 1.8rem;
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
   .container {
     margin-bottom: 0px;
     margin-top: -4rem;

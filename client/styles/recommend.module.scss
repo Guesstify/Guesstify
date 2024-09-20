@@ -1,0 +1,81 @@
+@import "./variables.module";
+
+
+
+.container {
+  height: 100vh;
+  width: 100vw;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0; // Remove default margins
+  padding: 0; // Remove default paddings
+  overflow: hidden; // Hide overflow to prevent scrollbars
+  background-color: rgb(111, 78, 55);;
+  
+  h1,h2{
+    font-family: sans-serif;
+    color: rgb(251, 236, 216);
+  }
+
+  h2{
+    margin-top: 0.6vh;
+    margin-bottom: 0.6vh;
+  }
+
+  .genre{
+    margin-bottom: 2vh;
+  }
+
+  .form{
+    padding-top: 4vh;
+    margin-top: 15vh;
+  }
+
+
+
+  .recommend_image {
+    height: 4vh;
+    width: 90%; // Each item takes the full width of its cell
+    padding-top: 0; // Aspect ratio hack (adjust height here)
+    position: relative;
+    padding-bottom: 25vh;
+
+    img {
+        position: relative;
+        padding-bottom: 2vh;
+        width: 20vw;
+        height: 20vw;
+        object-fit: scale-down; // Adjust how images fit within the container
+        top: 0;
+        left: 0;
+        cursor: pointer;
+        transition: transform ease-out 0.3s;
+    }
+
+    img:hover { transform: scale(0.95); }
+
+    p{
+        margin-top: 0;
+        font-family: sans-serif;
+        font-size: larger;
+        font-weight: bold;
+        color: rgb(251, 236, 216);
+        line-height: 1vh;
+    }
+
+    .description{
+        font-size: 30px;
+        padding-bottom: 3vh;
+    }
+
+    .descriptionSong{
+        padding-top: 1vh;
+        font-size: 30px;
+    }
+    
+  }
+}
+

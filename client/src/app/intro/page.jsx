@@ -2,17 +2,24 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import style from "../../../styles/intro.module.scss";
-import Cookies from "js-cookie";
+import Cookies from 'js-cookie';
+import HeaderComponent from '../header';
+import '../../../styles/header.module.scss';
 
 const About = () => {
   const [userInfo, setUserInfo] = useState(null);
   const router = useRouter();
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const spotifyToken = Cookies.get('spotify_token') // => 'value'
 
   useEffect(() => {
-    const spotifyToken = Cookies.get("spotify_token"); // => 'value'
-    console.log(spotifyToken);
-    // Retrieve the Spotify token
+    if (!spotifyToken) {
+
+        router.push("/")
+    }
+  }, [spotifyToken]);
+
+  useEffect(() => {
     const requestOptions = {
       method: "GET",
       credentials: "include", // For including cookies in the request
@@ -34,31 +41,48 @@ const About = () => {
       })
       .then((data) => {
         setUserInfo(data);
+        Cookies.set('username', data["id"]);
         console.log(data);
       })
       .catch((error) => console.error("Error:", error));
   }, []);
 
-  // Handling function for clicking the "Start Game" button
-  const handleGlobal = () => {
-    // Perform actions when the "Start Game" button is clicked
-    // console.log("Entering Game");
-    router.push("/game/");
+  const handleArtists = () => {
+    router.push("/grid/");
+  };
+
+  const handlePlaylists = () => {
+    router.push("/playlists/");
+  };
+
+  const handleTracks = () => {
+    router.push("/songs/");
+  };
+
+  const handleProfile = () => {
+    router.push("/profile/");
   };
 
   return (
     <div className={style.container}>
-      <h1 className={style.title}>Guesstify</h1>
+      <HeaderComponent />
       <p className={style.summary}>
-        Hey {userInfo ? userInfo.display_name : "Guest"}!!! <br></br>
-        Lets see how well you know your music!
+        Hey {userInfo ? userInfo.display_name : ""}!!! <br></br>
+        Lets refine your music library!
       </p>
-      <div>
-        <button className={style.game_button} onClick={handleGlobal}>
-          Play
+      <div className={style.button_controller}>
+        <button className={style.option_button} onClick={handleTracks}>
+          Top Tracks
         </button>
-        {/* This is the second mode to implement */}
-        {/* <button onClick={handleShared}>Shared Mode</button> */}
+        <button className={style.option_button} onClick={handleArtists}>
+          Top Artists
+        </button>
+        <button className={style.option_button} onClick={handlePlaylists}>
+          Order Playlists
+        </button>
+        <button className={style.option_button} onClick={handleProfile}>
+          Share Profile
+        </button>
       </div>
     </div>
   );

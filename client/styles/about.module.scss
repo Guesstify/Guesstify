@@ -1,15 +1,32 @@
-$color-primary: rgb(0, 153, 95);
-$color-background: rgb(0, 0, 0);
-$title-weight: 1000;
-$color-text: rgb(255, 255, 255);
+@import "./variables.module";
 
-.title {
-  color: $color-primary;
-  font-weight: $title-weight;
-  text-shadow: 0 0 10px rgba(0, 153, 95, 0.7), 
-               0 0 20px rgba(0, 153, 95, 0.5), 
-               0 0 30px rgba(0, 153, 95, 0.3);
+.container{
+  background-color: $background-color;
+  height: 100vh;
+  font-weight: 100vw;
+  display: flex;
+  flex-direction: column;
+  color: $text-color;
+  font-family: sans-serif;
+
+  .title {
+    color: $text-color;
+    font-weight: $title-weight;
+  }
+
+  .panel_list{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    .panel{
+      display: inline-block;
+      width: 30%;
+      background-color: white;
+      border-style: solid;
+      border-color: red;
+    }
+    
+  }
 }
-.color-background {
-  background-color: $color-background;
-}
+

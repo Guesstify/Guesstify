@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import style from "../../../styles/game.module.scss";
 import Cookies from "js-cookie";
+
 const TrackList = () => {
   const [tracks, setTracks] = useState([]);
   const [leftTrack, setLeftTrack] = useState({});
@@ -27,13 +28,24 @@ const TrackList = () => {
       },
     };
     try {
-      fetch(`${backendUrl}/user_top_tracks`, requestOptions)
+
+      const spotifyToken = Cookies.get('spotify_token')
+
+
+      fetch(`${backendUrl}/user_top_tracks`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          accept: "application/json",
+          'Authorization': `Bearer ${spotifyToken}` // Assuming the token is used for authorization
+        },
+      })
         .then((response) => response.json())
         .then((data) => {
-          setTracks(data);
+          setTracks(data["data_list"]);
           setGameInfo((prevGameInfo) => ({
             ...prevGameInfo,
-            tracks: data,
+            tracks: data["data_list"],
           }));
           setReady("ready");
         })
@@ -43,31 +55,6 @@ const TrackList = () => {
         });
     } catch (error) {
       console.error("Error fetching game data:", error);
-    }
-    try {
-      const requestOptions = {
-        method: "GET",
-        credentials: "include", // For including cookies in the request
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${spotifyToken}`, // Assuming the token is used for authorization
-        },
-      };
-      // Missing fetch call added here
-      fetch(`${backendUrl}/user_info`, requestOptions)
-        .then((response) => response.json())
-        .then((data) => {
-          setUserInfo(data);
-          setGameInfo((prevGameInfo) => {
-            return {
-              ...prevGameInfo,
-              userName: data.display_name,
-            };
-          });
-        })
-        .catch((error) => console.error("Error:", error));
-    } catch (error) {
-      console.error("Error fetching user data:", error);
     }
   };
 
@@ -149,6 +136,7 @@ const TrackList = () => {
       </audio>
     );
   };
+  
   const audioPlayer = useMemo(
     () => <AudioPlayer src={newTrack.snippet} />,
     [newTrack]

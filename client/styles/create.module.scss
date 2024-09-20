@@ -1,0 +1,90 @@
+@import "./variables.module";
+
+.container {
+  background-color: $background-color;
+  font-family: sans-serif;
+  color: $text-color;
+  height: 100vh;
+  width: 100vw;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-y: hidden;
+  overflow-x: hidden;
+
+  .content{
+    width: 100vw;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    margin-top: 2%;
+
+
+    .playlist_side{
+      width:40%;
+      top: 25%;
+    }
+
+    .rec_side{
+      margin-left: 5%;
+      width:60%;
+
+      h1{
+        margin-bottom: 0;
+        margin-right: 5%;
+      }
+
+      .rec_grid{
+        font-size: 100%;
+        font-weight: 400;
+        text-align: center;
+        color: $text-color;
+        display: grid;
+        grid-template-columns: repeat(2, 45%);
+        justify-content: start;
+        justify-items: center;
+        position:relative;    
+    
+        .rec_item{
+            height: 100%;
+            width: 100%; // Each item takes the full width of its cell
+            position: relative;
+            cursor: pointer;
+            display:flex;
+    
+            .rec_song_text{
+              width: 72%;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+            }
+            
+            .rec_image{
+                transition: transform ease-out 0.3s;
+                width: 28%;
+                aspect-ratio: 1/1;
+                object-fit: scale-down; // Adjust how images fit within the container
+            }
+    
+            .rec_image:hover { transform: scale(0.95); }
+    
+            margin-bottom: 5%;
+            margin-top: 5%;
+        }
+    
+        p{
+          margin-top: 10px;
+        }
+    
+      }
+    }
+  }
+
+  
+}
+
+
+

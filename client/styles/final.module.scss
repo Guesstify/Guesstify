@@ -1,0 +1,45 @@
+@import "./variables.module";
+
+.container{
+    width: 100vw;
+    height: 100vh;
+    background-color: $background-color;
+    overflow: hidden;
+    margin: 0; // Remove default margins
+    padding: 0; // Remove default paddings
+    display:flex;
+    position:absolute;
+
+    .loader {
+        position: absolute;
+        margin-left: 22vw;
+        margin-top: 50vh;
+      }
+      .load {
+        display: inline-block;
+        height: calc(var(--i) * 50);
+        width: calc(var(--i) * 50);
+        background-color: transparent;
+        position: absolute;
+        border-top: 10px rgb(0, 0, 0) solid;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        animation: turn 8s infinite linear;
+      }
+      
+      .load:nth-child(odd) {
+        animation: none;
+      }
+      
+      @keyframes turn {
+        100% {
+          transform: translate(-50%, -50%) rotateZ(360deg);
+        }
+      }
+
+}
+
+
+  
