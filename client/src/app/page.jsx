@@ -32,6 +32,9 @@ export default function Home() {
           <span>L</span>
           <span>S</span>
         </div>
+        <p className={style.summary}>
+          Test your music history!
+        </p>
         <Link
           className={style.spotify_login_button}
           href={`${backendUrl}/login`}

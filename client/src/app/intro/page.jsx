@@ -20,18 +20,17 @@ const About = () => {
   }, [spotifyToken]);
 
   useEffect(() => {
-    
     const requestOptions = {
       method: "GET",
       credentials: "include", // For including cookies in the request
       headers: {
         accept: "application/json",
-        'Authorization': `Bearer ${spotifyToken}` // Assuming the token is used for authorization
+        Authorization: `Bearer ${spotifyToken}`, // Assuming the token is used for authorization
       },
     };
     fetch(`${backendUrl}/user_info`, requestOptions)
       .then((response) => {
-        console.log("user_info")
+        console.log("user_info");
         if (!response.ok) {
           console.log(response.details);
           console.log(response.status);
